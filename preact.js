@@ -23,8 +23,9 @@
 					var val = elem.getAttribute(name);
 					if (val) {
 						var result = /\{\{\s*(.+)\s*\}\}/.exec(val);
-						result && result[1] && (elem.removeAttribute(name), elem[name.toLowerCase()] = function() {
-							ceval('return function(){' + result[1] + '();}').call(obj)
+						result && result[1] && (elem.removeAttribute(name), elem[name.toLowerCase()] = function(e) {
+							var fn = ceval('return function(e){' + result[1] + '(e);}', "e");
+							fn.call(obj, e);
 						});
 					}
 				});
