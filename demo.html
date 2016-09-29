@@ -13,23 +13,24 @@
 	</head>
 	<body>
 		<div id="main"></div>
+		<script src="../libs/jquery.1.12.0.js"></script>
 		<script src="preact.js"></script>
 		<script type="text/pReact">
-			(function(win){
-				var AddNum = pReact.createClass({
+			typeof jQuery != "undefined" && (function(win, $, _){
+				var AddNum = _.createClass({
 					num: 0,
 					handleClick: function(){
 						this.num=0;
-						document.getElementById("num").innerHTML = this.num;
+						$("#num").html(this.num);
 					},
 					handleClickA: function(){
 						this.num+=1;
-						document.getElementById("num").innerHTML = this.num;
+						$("#num").html(this.num);
 					},
 					handleClickB: function(){
 						this.num-=1;
 						this.num<0 && (this.num = 0);
-						document.getElementById("num").innerHTML = this.num;
+						$("#num").html(this.num);
 					},
 					render: function(){
 						var a = "view",
@@ -48,11 +49,11 @@
 						);
 					}
 				});
-				pReact.renderDom(
+				_.renderDom(
 					<AddNum {name:'的 num 等于', title:'test', date:(new Date()).getFullYear()} />, 
-					document.getElementById('main')
+					$('#main')[0]
 				);
-			})(this)
+			})(this, jQuery, pReact)
 		</script>
 		<script type="text/pReact">
 			(function(win){
