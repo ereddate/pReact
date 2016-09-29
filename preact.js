@@ -44,21 +44,29 @@
 			}
 			return fragment;
 		},
-		render: function(html, dom) {
-			html = html.replace(/\s{2,}/gi, "").replace(/[\r|\n|\r\n]*/gi, "");
-			var result = /render\s*\:\s*function\(\)\{\s*.*\s*return\s*\(\s*(.+)\s*\);*\s*\}\}\);*/.exec(html);
-			if (result && result[1]) {
-				var exp = "\'" + result[1].replace(/\'/gi, "\\\'").replace(/\"/gi, "\\\"") + "\'";
-				html = html.replace(result[1], exp);
-			}
-			html = html.replace(/\{\{\s*\$([^\}\s*]+)\s*\}\}/gi, function(a, b) {
+		renderExp: /render\s*\:\s*function\(\)\{\s*.*\s*return\s*\(\s*(.+)\s*\);*\s*\}\}\);*/gi,
+		renderDomExp: /\.renderDom\s*\(\s*\<\s*(.+)\/\>/gi,
+		renderObjExp: /\{\{\s*\$([^\}\s*]+)\s*\}\}/gi,
+		evalHtml: function(html) {
+			html = html.replace(/\s{2,}/gi, "").replace(/[\r|\n|\r\n]*/gi, "").replace(map.renderExp, function(a, b) {
+				if (b) {
+					var exp = "\'" + b.replace(/\'/gi, "\\\'").replace(/\"/gi, "\\\"") + "\'";
+					a = a.replace(b, exp);
+				}
+				return a;
+			}).replace(map.renderDomExp, function(a, b) {
+				if (b) {
+					var k = b.split(' ');
+					a = a.replace(b, k[0] + "," + b.replace(k[0] + " ", "").replace(/\/\>/, "")).replace(/\<|\/\>/gi, "");
+				}
+				return a;
+			}).replace(map.renderObjExp, function(a, b) {
 				return "\'+" + b + "+\'"
 			});
-			result = /\.renderDom\s*\(\s*\<\s*(.+)\/\>/.exec(html);
-			if (result) {
-				var k = result[1].split(' ');
-				html = html.replace(result[0], result[0].replace(result[1], k[0] + "," + result[1].replace(k[0] + " ", "").replace(/\/\>/, "")).replace(/\<|\/\>/gi, ""));
-			}
+			return html;
+		},
+		render: function(html, dom) {
+			html = map.evalHtml(html);
 			ceval(html);
 		},
 		each: function(obj, callback) {
