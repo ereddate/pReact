@@ -1,5 +1,9 @@
 (function(win, $, ceval) {
 	var doc = win.document;
+	Array.prototype.del = function(num) {
+		this.splice(num, 1);
+		return this;
+	};
 	$.extend($, {
 		createClass: function() {
 			var args = arguments,
@@ -13,6 +17,88 @@
 			} else {
 				parent.appendChild(map.renderHandle(result, html));
 			}
+			return this;
+		},
+		each: function(obj, callback) {
+			map.each(obj, callback);
+			return this;
+		}
+	});
+
+	function activeEmi() {
+		var self = this,
+			a = this.emi || [];
+
+		function exec(n, a) {
+			switch (a[n].type) {
+				case "load":
+					var item = doc.createElement("script");
+					item.src = a[n].url;
+					item.callback = a[n].callback;
+					item.onload = item.onerror = function() {
+						try {
+							this.callback && this.callback();
+							self.emi && self.emi.del(n), exec(0, self.emi), doc.body.removeChild(this);
+						} catch (e) {
+							doc.body.removeChild(this), self.emi && self.emi.del(n), exec(0, self.emi);
+						}
+					};
+					doc.body.appendChild(item);
+					return self;
+					break;
+				case "done":
+					var $a = self.files || [],
+						p = self.path || "",
+						t = self.ext || ".pjs";
+
+					function loadFile($n, $a) {
+						$.load(p + $a[$n] + t, function(context) {
+							var item = doc.createElement("script");
+							item.type = "text/pReact";
+							item.innerHTML = context;
+							doc.body.appendChild(item);
+							$a && $a.del(0);
+							if (!$a || $a && $a.length === 0) {
+								var b = doc.getElementsByTagName('script');
+								map.each(b, function(i, elem) {
+									elem.type && elem.type == "text/pReact" && map.render(elem.innerHTML, elem);
+								});
+							} else {
+								loadFile(0, $a);
+							}
+						});
+					}
+					$.load && loadFile(0, $a);
+					break;
+			}
+			a && a.del(n);
+			if (!a || a && a.length === 0) {} else {
+				exec(0, a);
+			}
+		}
+		exec(0, a);
+	}
+	$.extend($.fn, {
+		load: function(url, callback) {
+			!this.emi && (this.emi = []);
+			this.emi && this.emi.push({
+				type: "load",
+				url: url,
+				callback: callback
+			});
+			return this;
+		},
+		set: function(ops){
+			ops && $.extend(this, ops);
+			return this;
+		},
+		done: function() {
+			!this.emi && (this.emi = []);
+			this.emi && this.emi.push({
+				type: "done"
+			});
+			activeEmi.call(this);
+			return this;
 		}
 	});
 	win.pReact = $;
