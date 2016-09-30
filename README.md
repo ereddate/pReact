@@ -35,3 +35,17 @@ pReact，不支持ie9(包括ie9）以下版本IE浏览器。
 	})(this)
 </script>
 ```
+或
+```
+<script>
+	pReact({
+		path:"./",
+		ext: ".js",
+		files:["test-jq1","test-native1"]
+	}).load("../libs/jquery.2.2.0.js").load("preact-load.js").set({
+		path:"./",
+		ext: ".pjs",
+		files:["test-jq","test-native"]
+	}).done();
+</script>
+```
