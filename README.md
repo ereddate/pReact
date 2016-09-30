@@ -1,5 +1,6 @@
 # pReact
-pReact
+pReact，不支持ie9(包括ie9）以下版本IE浏览器。
+
 ```
 <script src="preact.js"></script>
 <script type="text/pReact">
