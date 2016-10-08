@@ -138,6 +138,7 @@
 					try {
 						var fn = _.ceval('return function(e){' + result[1] + '(e);}', "e"),
 							then = typeof obj == "function" ? (new obj) : obj;
+						then.elem = this;
 						fn.call(then, e);
 					} catch (e) {
 						console.log(e.message);
