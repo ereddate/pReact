@@ -34,6 +34,25 @@ pReact，不支持ie9(包括ie9）以下版本IE浏览器。
 		);
 	})(this)
 </script>
+<script type="text/pReact">
+	class testEs6{
+		divHandle(e){
+			e.preventDefault();
+			console.log("div click!");
+		}
+		render(){
+			let a = "testEs6-a";
+			return (
+				<div onClick="{{ this.divHandle }}">{{ a }} {{ $a }}</div>
+				<button>no handle</button>
+			)
+		}
+	}
+	pReact.renderDom(
+		<testEs6 {a: "testEs6"} />,
+		document.getElementById("main")
+	);
+</script>
 ```
 或
 ```
