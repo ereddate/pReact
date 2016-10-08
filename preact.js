@@ -1,4 +1,4 @@
-(function(win, $, ceval) {
+(function(win, map, $) {
 	var doc = win.document;
 	Object.prototype.toArray = function(fn) {
 		var a = [];
@@ -115,141 +115,7 @@
 		}
 	});
 	win.pReact = $;
-	var map = {
-		findDom: function(a, obj) {
-			if (a.children.length > 0) {
-				map.each(a.children, function(i, elem) {
-					map.each("onClick onCopy onCut onPaste onKeyDown onKeyPress onKeyUp onFocus onBlur onChange onInput onSubmit onTouchCancel onTouchEnd onTouchMove onTouchStart onScroll onWheel".split(' '), function(i, name) {
-						var val = elem.getAttribute(name);
-						if (val) {
-							var result = /\{\{\s*(.+)\s*\}\}/.exec(val);
-							result && result[1] && (elem.removeAttribute(name), elem[name.toLowerCase()] = function(e) {
-								try {
-									var fn = ceval('return function(e){' + result[1] + '(e);}', "e");
-									fn.call(typeof obj == "function" ? (new obj) : obj, e);
-								} catch (e) {
-									console.log(e.message);
-								}
-							});
-						}
-					});
-					map.findDom(elem, obj);
-				});
-			} else {
-				map.each("onClick onCopy onCut onPaste onKeyDown onKeyPress onKeyUp onFocus onBlur onChange onInput onSubmit onTouchCancel onTouchEnd onTouchMove onTouchStart onScroll onWheel".split(' '), function(i, name) {
-					var val = a.getAttribute(name);
-					if (val) {
-						var result = /\{\{\s*(.+)\s*\}\}/.exec(val);
-						result && result[1] && (a.removeAttribute(name), a[name.toLowerCase()] = function(e) {
-							try {
-								var fn = ceval('return function(e){' + result[1] + '(e);}', "e");
-								fn.call(typeof obj == "function" ? (new obj) : obj, e);
-							} catch (e) {
-								console.log(e.message);
-							}
-						});
-					}
-				});
-			}
-		},
-		renderHandle: function(html, obj) {
-			var fragment = doc.createDocumentFragment();
-			var elem = doc.createElement("div"),
-				i;
-			elem.innerHTML = html;
-			var len = elem.children.length;
-			for (i = 0; i < len; i++) {
-				var item = elem.children[0];
-				fragment.appendChild(item), map.findDom(item, obj);
-			}
-			return fragment;
-		},
-		renderExp: /render\s*\:\s*function\(\)\s*\{\s*.*\s*return\s*\(\s*(.+)\s*\);*\s*\}\}\);*/,
-		renderExpA: /render\s*\(\)\s*\{\s*.*\s*return\s*\(\s*(.+)\s*\);*\s*\}\}/,
-		renderDomExp: /\.renderDom\s*\(\s*\<\s*(.+)\/\>/gi,
-		renderObjExp: /\{\{\s*\$([^\}\s*]+)\s*\}\}/gi,
-		evalHtml: function(html) {
-			html = html.replace(/\s{2,}/gi, "").replace(/[\r|\n|\r\n]*/gi, "");
-			html = html.replace(map.renderExp, function(a, b) {
-				if (b) {
-					var exp = "\'" + b.replace(/\'/gi, "\\\'").replace(/\"/gi, "\\\"") + "\'";
-					a = a.replace(b, exp);
-				}
-				return a;
-			}).replace(map.renderExpA, function(a, b) {
-				if (b) {
-					var exp = "\'" + b.replace(/\'/gi, "\\\'").replace(/\"/gi, "\\\"") + "\'";
-					a = a.replace(b, exp);
-				}
-				return a;
-			}).replace(map.renderDomExp, function(a, b) {
-				if (b) {
-					var k = b.split(' ');
-					a = a.replace(b, k[0] + "," + b.replace(k[0] + " ", "").replace(/\/\>/, "")).replace(/\<|\/\>/gi, "");
-				}
-				return a;
-			}).replace(map.renderObjExp, function(a, b) {
-				return "\'+" + b + "+\'"
-			});
-			return html;
-		},
-		render: function(html, dom) {
-			html = map.evalHtml(html);
-			try {
-				ceval(html);
-			} catch (e) {
-				console.log(e.message)
-			}
-		},
-		each: function(obj, callback) {
-			function r(a) {
-				var b = "length" in a && a.length,
-					c = (typeof a).toLowerCase();
-				return "array" === c || 0 === b || "number" == typeof b && b > 0 && b - 1 in a
-			}
-			if (r(obj)) {
-				var len = obj.length,
-					i;
-				for (i = 0; i < len; i++) {
-					var result = callback.call(obj[i], i, obj[i]);
-					if (result == false) {
-						break;
-					}
-				}
-			} else {
-				for (name in obj) {
-					var result = callback.call(obj[name], name, obj[name]);
-					if (result == false) {
-						break;
-					}
-				}
-			}
-		},
-		isEmptyObject: function(obj) {
-			var name;
-			for (name in obj) {
-				return false;
-			}
-			return true;
-		},
-		isElement: function(obj) {
-			return !!obj && obj.nodeType === 1;
-		},
-		tmpl: function(html, data) {
-			if (map.isEmptyObject(data)) return html;
-			map.each(data, function(name, val) {
-				var reg = new RegExp("{{\\s*(" + name + ")\\s*}}", "gi"),
-					result = reg.exec(html);
-				if (result) {
-					while (result != null && result[1]) {
-						html = html.replace(result[0], val);
-						result = reg.exec(html);
-					}
-				}
-			});
-			return html;
-		}
-	};
+
 	win.onload = function() {
 		var a = doc.getElementsByTagName('script'),
 			i, html;
@@ -261,7 +127,141 @@
 			elem && elem.type && elem.type == "text/pReact" && (html = elem.innerHTML, elem.parentNode.removeChild(elem), map.render(html));
 		}
 	}
-})(this, function() {
+})(this, {
+	bindHandle: function(elem, obj) {
+		var _ = this;
+		_.each("onClick onCopy onCut onPaste onKeyDown onKeyPress onKeyUp onFocus onBlur onChange onInput onSubmit onTouchCancel onTouchEnd onTouchMove onTouchStart onScroll onWheel".split(' '), function(i, name) {
+			var val = elem.getAttribute(name);
+			if (val) {
+				var result = /\{\{\s*(.+)\s*\}\}/.exec(val);
+				result && result[1] && (elem.removeAttribute(name), elem[name.toLowerCase()] = function(e) {
+					try {
+						var fn = _.ceval('return function(e){' + result[1] + '(e);}', "e"),
+							then = typeof obj == "function" ? (new obj) : obj;
+						fn.call(then, e);
+					} catch (e) {
+						console.log(e.message);
+					}
+				});
+			}
+		});
+	},
+	ceval: function(s, ops) {
+		return new Function(ops, s)(ops);
+	},
+	findDom: function(a, obj) {
+		var _ = this;
+		if (a.children.length > 0) {
+			_.each(a.children, function(i, elem) {
+				_.bindHandle(elem, obj);
+				_.findDom(elem, obj);
+			});
+		} else {
+			_.bindHandle(a, obj);
+		}
+	},
+	renderHandle: function(html, obj) {
+		var _ = this;
+		var fragment = document.createDocumentFragment();
+		var elem = document.createElement("div"),
+			i;
+		elem.innerHTML = html;
+		var len = elem.children.length;
+		for (i = 0; i < len; i++) {
+			var item = elem.children[0];
+			fragment.appendChild(item), _.findDom(item, obj);
+		}
+		return fragment;
+	},
+	renderExp: /render\s*\:\s*function\(\)\s*\{\s*.*\s*return\s*\(\s*(.+)\s*\);*\s*\}\}\);*/,
+	renderExpA: /render\s*\(\)\s*\{\s*.*\s*return\s*\(\s*(.+)\s*\);*\s*\}\}/,
+	renderDomExp: /\.renderDom\s*\(\s*\<\s*(.+)\/\>/gi,
+	renderObjExp: /\{\{\s*\$([^\}\s*]+)\s*\}\}/gi,
+	evalHtml: function(html) {
+		var _ = this;
+		html = html.replace(/\s{2,}/gi, "").replace(/[\r|\n|\r\n]*/gi, "");
+		html = html.replace(_.renderExp, function(a, b) {
+			if (b) {
+				var exp = "\'" + b.replace(/\'/gi, "\\\'").replace(/\"/gi, "\\\"") + "\'";
+				a = a.replace(b, exp);
+			}
+			return a;
+		}).replace(_.renderExpA, function(a, b) {
+			if (b) {
+				var exp = "\'" + b.replace(/\'/gi, "\\\'").replace(/\"/gi, "\\\"") + "\'";
+				a = a.replace(b, exp);
+			}
+			return a;
+		}).replace(_.renderDomExp, function(a, b) {
+			if (b) {
+				var k = b.split(' ');
+				a = a.replace(b, k[0] + "," + b.replace(k[0] + " ", "").replace(/\/\>/, "")).replace(/\<|\/\>/gi, "");
+			}
+			return a;
+		}).replace(_.renderObjExp, function(a, b) {
+			return "\'+" + b + "+\'"
+		});
+		return html;
+	},
+	render: function(html, dom) {
+		var _ = this;
+		html = _.evalHtml(html);
+		try {
+			_.ceval(html);
+		} catch (e) {
+			console.log(e.message)
+		}
+	},
+	each: function(obj, callback) {
+		function r(a) {
+			var b = "length" in a && a.length,
+				c = (typeof a).toLowerCase();
+			return "array" === c || 0 === b || "number" == typeof b && b > 0 && b - 1 in a
+		}
+		if (r(obj)) {
+			var len = obj.length,
+				i;
+			for (i = 0; i < len; i++) {
+				var result = callback.call(obj[i], i, obj[i]);
+				if (result == false) {
+					break;
+				}
+			}
+		} else {
+			for (name in obj) {
+				var result = callback.call(obj[name], name, obj[name]);
+				if (result == false) {
+					break;
+				}
+			}
+		}
+	},
+	isEmptyObject: function(obj) {
+		var name;
+		for (name in obj) {
+			return false;
+		}
+		return true;
+	},
+	isElement: function(obj) {
+		return !!obj && obj.nodeType === 1;
+	},
+	tmpl: function(html, data) {
+		var _ = this;
+		if (_.isEmptyObject(data)) return html;
+		_.each(data, function(name, val) {
+			var reg = new RegExp("{{\\s*(" + name + ")\\s*}}", "gi"),
+				result = reg.exec(html);
+			if (result) {
+				while (result != null && result[1]) {
+					html = html.replace(result[0], val);
+					result = reg.exec(html);
+				}
+			}
+		});
+		return html;
+	}
+}, function() {
 	var a = function(b) {
 		return new a.fn.init(b);
 	};
@@ -279,6 +279,4 @@
 	};
 	a.fn.init.prototype = a.fn;
 	return a;
-}(), function(s, ops) {
-	return new Function(ops, s)(ops);
-});
+}());
