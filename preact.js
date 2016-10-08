@@ -33,9 +33,47 @@
 		}
 	});
 
-	function activeEmi() {
-		var self = this,
-			a = this.emi || [];
+	$.extend($.fn, {
+		load: function(url, callback) {
+			!this.emi && (this.emi = []);
+			this.emi && this.emi.push({
+				type: "load",
+				url: url,
+				callback: callback
+			});
+			return this;
+		},
+		set: function(ops) {
+			ops && $.extend(this, ops);
+			return this;
+		},
+		done: function() {
+			!this.emi && (this.emi = []);
+			this.emi && this.emi.push({
+				type: "done"
+			});
+			map.activeEmi(this, $);
+			return this;
+		}
+	});
+	win.pReact = $;
+
+	win.onload = function() {
+		var a = doc.getElementsByTagName('script'),
+			i, html;
+		a = a.toArray(function(obj) {
+			return map.isElement(obj) ? obj : false;
+		});
+		for (i = 0; i <= a.length; i++) {
+			var elem = a[i];
+			elem && elem.type && elem.type == "text/pReact" && (html = elem.innerHTML, elem.parentNode.removeChild(elem), map.render(html));
+		}
+	}
+})(this, {
+	activeEmi: function(self, $) {
+		var _ = this,
+			doc = document,
+			a = self.emi || [];
 
 		function exec(n, a) {
 			switch (a[n].type) {
@@ -70,11 +108,11 @@
 								var b = doc.getElementsByTagName('script'),
 									i;
 								b = b.toArray(function(obj) {
-									return map.isElement(obj) ? obj : false;
+									return _.isElement(obj) ? obj : false;
 								});
 								for (i = 0; i <= b.length; i++) {
 									var elem = b[i];
-									elem && elem.type && elem.type == "text/pReact" && (html = elem.innerHTML, elem.parentNode.removeChild(elem), map.render(elem.innerHTML));
+									elem && elem.type && elem.type == "text/pReact" && (html = elem.innerHTML, elem.parentNode.removeChild(elem), _.render(elem.innerHTML));
 								}
 							} else {
 								loadFile(0, $a);
@@ -90,44 +128,7 @@
 			}
 		}
 		exec(0, a);
-	}
-	$.extend($.fn, {
-		load: function(url, callback) {
-			!this.emi && (this.emi = []);
-			this.emi && this.emi.push({
-				type: "load",
-				url: url,
-				callback: callback
-			});
-			return this;
-		},
-		set: function(ops) {
-			ops && $.extend(this, ops);
-			return this;
-		},
-		done: function() {
-			!this.emi && (this.emi = []);
-			this.emi && this.emi.push({
-				type: "done"
-			});
-			activeEmi.call(this);
-			return this;
-		}
-	});
-	win.pReact = $;
-
-	win.onload = function() {
-		var a = doc.getElementsByTagName('script'),
-			i, html;
-		a = a.toArray(function(obj) {
-			return map.isElement(obj) ? obj : false;
-		});
-		for (i = 0; i <= a.length; i++) {
-			var elem = a[i];
-			elem && elem.type && elem.type == "text/pReact" && (html = elem.innerHTML, elem.parentNode.removeChild(elem), map.render(html));
-		}
-	}
-})(this, {
+	},
 	bindHandle: function(elem, obj) {
 		var _ = this;
 		_.each("onClick onCopy onCut onPaste onKeyDown onKeyPress onKeyUp onFocus onBlur onChange onInput onSubmit onTouchCancel onTouchEnd onTouchMove onTouchStart onScroll onWheel".split(' '), function(i, name) {
