@@ -15,6 +15,25 @@
 	<body>
 		<div id="main"></div>
 		<script src="preact.js"></script>
+		<script type="text/pReact">
+			class testEs6{
+				divHandle(e){
+					e.preventDefault();
+					console.log("div click!");
+				}
+				render(){
+					let a = "testEs6-a";
+					return (
+						<div onClick="{{ this.divHandle }}">{{ a }} {{ $a }}</div>
+						<button>no handle</button>
+					)
+				}
+			}
+			pReact.renderDom(
+				<testEs6 {a: "testEs6"} />,
+				document.getElementById("main")
+			);
+		</script>
 		<script>
 			pReact({
 				path:"./",
