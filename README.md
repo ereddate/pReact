@@ -1,6 +1,8 @@
 # pReact
 pReact，不支持ie9(包括ie9）以下版本IE浏览器。
 
+未对ES6做处理，仅依靠浏览器自身支持。
+
 ```
 <script src="preact.js"></script>
 <script type="text/pReact">
