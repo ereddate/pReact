@@ -1,5 +1,13 @@
 (function(win, $, ceval) {
 	var doc = win.document;
+	Object.prototype.toArray = function(fn) {
+		var a = [];
+		for (name in this) {
+			var result = fn(this[name]);
+			result && a.push(this[name]);
+		}
+		return a;
+	};
 	Array.prototype.del = function(num) {
 		this.splice(num, 1);
 		return this;
@@ -11,7 +19,7 @@
 			return len > 0 && $.extend({}, args[0]);
 		},
 		renderDom: function(html, data, parent) {
-			var result = map.tmpl(typeof html == "string" ? html : html.render(), data);
+			var result = map.tmpl(typeof html == "string" ? html : typeof html == "function" ? (new html()).render() : html.render(), data);
 			if (typeof html == "string") {
 				parent.innerHTML = parent.innerHTML + result;
 			} else {
@@ -59,10 +67,15 @@
 							doc.body.appendChild(item);
 							$a && $a.del(0);
 							if (!$a || $a && $a.length === 0) {
-								var b = doc.getElementsByTagName('script');
-								map.each(b, function(i, elem) {
-									elem.type && elem.type == "text/pReact" && map.render(elem.innerHTML, elem);
+								var b = doc.getElementsByTagName('script'),
+									i;
+								b = b.toArray(function(obj) {
+									return map.isElement(obj) ? obj : false;
 								});
+								for (i = 0; i <= b.length; i++) {
+									var elem = b[i];
+									elem && elem.type && elem.type == "text/pReact" && (html = elem.innerHTML, elem.parentNode.removeChild(elem), map.render(elem.innerHTML));
+								}
 							} else {
 								loadFile(0, $a);
 							}
@@ -88,7 +101,7 @@
 			});
 			return this;
 		},
-		set: function(ops){
+		set: function(ops) {
 			ops && $.extend(this, ops);
 			return this;
 		},
@@ -104,19 +117,40 @@
 	win.pReact = $;
 	var map = {
 		findDom: function(a, obj) {
-			map.each(a.children, function(i, elem) {
+			if (a.children.length > 0) {
+				map.each(a.children, function(i, elem) {
+					map.each("onClick onCopy onCut onPaste onKeyDown onKeyPress onKeyUp onFocus onBlur onChange onInput onSubmit onTouchCancel onTouchEnd onTouchMove onTouchStart onScroll onWheel".split(' '), function(i, name) {
+						var val = elem.getAttribute(name);
+						if (val) {
+							var result = /\{\{\s*(.+)\s*\}\}/.exec(val);
+							result && result[1] && (elem.removeAttribute(name), elem[name.toLowerCase()] = function(e) {
+								try {
+									var fn = ceval('return function(e){' + result[1] + '(e);}', "e");
+									fn.call(typeof obj == "function" ? (new obj) : obj, e);
+								} catch (e) {
+									console.log(e.message);
+								}
+							});
+						}
+					});
+					map.findDom(elem, obj);
+				});
+			} else {
 				map.each("onClick onCopy onCut onPaste onKeyDown onKeyPress onKeyUp onFocus onBlur onChange onInput onSubmit onTouchCancel onTouchEnd onTouchMove onTouchStart onScroll onWheel".split(' '), function(i, name) {
-					var val = elem.getAttribute(name);
+					var val = a.getAttribute(name);
 					if (val) {
 						var result = /\{\{\s*(.+)\s*\}\}/.exec(val);
-						result && result[1] && (elem.removeAttribute(name), elem[name.toLowerCase()] = function(e) {
-							var fn = ceval('return function(e){' + result[1] + '(e);}', "e");
-							fn.call(obj, e);
+						result && result[1] && (a.removeAttribute(name), a[name.toLowerCase()] = function(e) {
+							try {
+								var fn = ceval('return function(e){' + result[1] + '(e);}', "e");
+								fn.call(typeof obj == "function" ? (new obj) : obj, e);
+							} catch (e) {
+								console.log(e.message);
+							}
 						});
 					}
 				});
-				map.findDom(elem, obj);
-			});
+			}
 		},
 		renderHandle: function(html, obj) {
 			var fragment = doc.createDocumentFragment();
@@ -130,11 +164,19 @@
 			}
 			return fragment;
 		},
-		renderExp: /render\s*\:\s*function\(\)\{\s*.*\s*return\s*\(\s*(.+)\s*\);*\s*\}\}\);*/gi,
+		renderExp: /render\s*\:\s*function\(\)\s*\{\s*.*\s*return\s*\(\s*(.+)\s*\);*\s*\}\}\);*/,
+		renderExpA: /render\s*\(\)\s*\{\s*.*\s*return\s*\(\s*(.+)\s*\);*\s*\}\}/,
 		renderDomExp: /\.renderDom\s*\(\s*\<\s*(.+)\/\>/gi,
 		renderObjExp: /\{\{\s*\$([^\}\s*]+)\s*\}\}/gi,
 		evalHtml: function(html) {
-			html = html.replace(/\s{2,}/gi, "").replace(/[\r|\n|\r\n]*/gi, "").replace(map.renderExp, function(a, b) {
+			html = html.replace(/\s{2,}/gi, "").replace(/[\r|\n|\r\n]*/gi, "");
+			html = html.replace(map.renderExp, function(a, b) {
+				if (b) {
+					var exp = "\'" + b.replace(/\'/gi, "\\\'").replace(/\"/gi, "\\\"") + "\'";
+					a = a.replace(b, exp);
+				}
+				return a;
+			}).replace(map.renderExpA, function(a, b) {
 				if (b) {
 					var exp = "\'" + b.replace(/\'/gi, "\\\'").replace(/\"/gi, "\\\"") + "\'";
 					a = a.replace(b, exp);
@@ -153,7 +195,11 @@
 		},
 		render: function(html, dom) {
 			html = map.evalHtml(html);
-			ceval(html);
+			try {
+				ceval(html);
+			} catch (e) {
+				console.log(e.message)
+			}
 		},
 		each: function(obj, callback) {
 			function r(a) {
@@ -186,6 +232,9 @@
 			}
 			return true;
 		},
+		isElement: function(obj) {
+			return !!obj && obj.nodeType === 1;
+		},
 		tmpl: function(html, data) {
 			if (map.isEmptyObject(data)) return html;
 			map.each(data, function(name, val) {
@@ -202,10 +251,15 @@
 		}
 	};
 	win.onload = function() {
-		var a = doc.getElementsByTagName('script');
-		map.each(a, function(i, elem) {
-			elem.type && elem.type == "text/pReact" && map.render(elem.innerHTML, elem);
+		var a = doc.getElementsByTagName('script'),
+			i, html;
+		a = a.toArray(function(obj) {
+			return map.isElement(obj) ? obj : false;
 		});
+		for (i = 0; i <= a.length; i++) {
+			var elem = a[i];
+			elem && elem.type && elem.type == "text/pReact" && (html = elem.innerHTML, elem.parentNode.removeChild(elem), map.render(html));
+		}
 	}
 })(this, function() {
 	var a = function(b) {
