@@ -5,52 +5,19 @@
 		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
 		<title>pReact Demo</title>
-		<style>
-			body{padding:0;margin:0;font-size: 16px;text-align: center;}
-			a{color:rgb(165,42,42);}
-			a:hover{color:rgb(0,0,255);}
-			.clearFx{clear:both;overflow:hidden;position: relative;}
-		</style>
 	</head>
 	<body>
 		<div id="main"></div>
 		<script src="preact.js"></script>
-		<script type="text/pReact">
-			class testEs6{
-				divHandle(e){
-					e.preventDefault();
-					document.getElementById("nohandle").innerHTML = "div click!";
-				}
-				buttonHandle(e){
-					e.preventDefault();
-					this.elem.innerHTML = "no handle";
-				}
-				render(){
-					let a = "testEs6-a";
-					return (
-						<style>
-							.testes6{cursor: pointer;}
-							.testes6:hover{background-color: red;}
-						</style>
-						<div class="testes6" onClick="{{ this.divHandle }}">{{ a }} {{ $a }}</div>
-						<button id="nohandle" onClick="{{ this.buttonHandle }}">no handle</button>
-					)
-				}
-			}
-			pReact.renderDom(
-				<testEs6 {a: "testEs6"} />,
-				document.getElementById("main")
-			);
-		</script>
 		<script>
 			pReact({
 				path:"./",
 				ext: ".js",
 				files:["test-jq1","test-native1"]
-			}).load("../libs/jquery.2.2.0.js").load("preact-load.js").set({
+			}).load("test-loadcss.css").load("../libs/jquery.2.2.0.js").load("preact-load.js").set({
 				path:"./",
 				ext: ".pjs",
-				files:["test-jq","test-native"]
+				files:["test-jq","test-native", "test-es6"]
 			}).done();
 		</script>
 	</body>
