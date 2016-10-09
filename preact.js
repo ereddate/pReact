@@ -495,9 +495,9 @@ Array.prototype.del = function(num) {
 			},
 			jsonp = function(success, error) {
 				var head = document.getElementsByTagName("head")[0],
-					callback = "hexunapi_" + (Math.random(10000) + "").replace(".", "");
+					callback = "preactjsonp_" + (Math.random(10000) + "").replace(".", "");
 				while (window[callback]) {
-					callback = "hexunapi_" + (Math.random(10000) + "").replace(".", "");
+					callback = "preactjsonp_" + (Math.random(10000) + "").replace(".", "");
 				}
 				window[callback] = function(data) {
 					window[callback] = null;
