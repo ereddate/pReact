@@ -1,0 +1,25 @@
+class testEs6{
+	divHandle(e){
+		e.preventDefault();
+		document.getElementById("nohandle").innerHTML = "div click!";
+	}
+	buttonHandle(e){
+		e.preventDefault();
+		this.elem.innerHTML = "no handle";
+	}
+	render(){
+		let a = "testEs6-a";
+		return (
+			<style>
+				.testes6{cursor: pointer;}
+				.testes6:hover{background-color: red;}
+			</style>
+			<div class="testes6" onClick="{{ this.divHandle }}">{{ a }} {{ $a }}</div>
+			<button id="nohandle" onClick="{{ this.buttonHandle }}">no handle</button>
+		)
+	}
+}
+pReact && pReact.renderDom(
+	<testEs6 {a:"testEs6"} />,
+	document.getElementById("main")
+);
