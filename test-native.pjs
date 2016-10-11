@@ -1,6 +1,6 @@
 var newForm = pReact.createClass({
 	getInitData: function(success, error){
-		pReact.jsonp("url").done(function(data){
+		pReact.jsonp("http://m.hexun.com/api/getHotPic").done(function(data){
 			success({nameValue: "帐号：请输入...", passwordValue:"密码：请输入...", submitText: "submit button"});
 		}, function(){
 			error();
@@ -30,5 +30,68 @@ var newForm = pReact.createClass({
 });
 pReact && pReact.renderDom(
 	<newForm />,
+	document.getElementById("main")
+);
+typeof jQuery != "undefined" && (function(win, $, _){
+	var AddNum = _.createClass({
+		num: 0,
+		handleClick: function(){
+			this.num=0;
+			$("#num").html(this.num);
+		},
+		handleClickA: function(){
+			this.num+=1;
+			$("#num").html(this.num);
+		},
+		handleClickB: function(){
+			this.num-=1;
+			this.num<0 && (this.num = 0);
+			$("#num").html(this.num);
+		},
+		render: function(){
+			var a = "view",
+				cE = "增 加",
+				cD = "减 少",
+				cQ = "清 零",
+				num = this.num;
+			return (
+				<style>
+					.view{margin:10px;}
+					.view a{border:1px solid rgb(165,42,42);border-radius: 10px;padding:5px;text-decoration: none;margin:0 5px 0;}
+					.view span{vertical-align: middle;margin:0 5px 0;}
+					.view .bignum{color:red;font-size:20px;font-weight: 700;}
+				</style>
+				<div class="view"><p class="a" title="{{ title }}"><span>{{ date }}, {{ $a }} {{ name }}</span><span id="num" class="bignum">{{ $num }}</span></p><a href="javascript:;" onClick="{{ this.handleClickA }}">{{ $cE }}</a><a href="javascript:;" onClick="{{ this.handleClickB }}">{{ $cD }}</a><a href="javascript:;" onClick="{{ this.handleClick }}">{{ $cQ }}</a></div>
+			);
+		}
+	});
+	_.renderDom(
+		<AddNum {name:'的 num 等于', title:'test', date:(new Date()).getFullYear()} />, 
+		$('#main')[0]
+	);
+})(this, jQuery, pReact);
+class testEs6{
+	divHandle(e){
+		e.preventDefault();
+		document.getElementById("nohandle").innerHTML = "div click!";
+	}
+	buttonHandle(e){
+		e.preventDefault();
+		this.elem.innerHTML = "no handle";
+	}
+	render(){
+		let a = "testEs6-a";
+		return (
+			<style>
+				.testes6{cursor: pointer;}
+				.testes6:hover{background-color: red;}
+			</style>
+			<div class="testes6" onClick="{{ this.divHandle }}">{{ a }} {{ $a }}</div>
+			<button id="nohandle" onClick="{{ this.buttonHandle }}">no handle</button>
+		)
+	}
+}
+pReact && pReact.renderDom(
+	<testEs6 {a:"testEs6"} />,
 	document.getElementById("main")
 );
