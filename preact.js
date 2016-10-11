@@ -201,7 +201,7 @@ Array.prototype.del = function(num) {
 		}
 		return fragment;
 	},
-	renderExp: /(return\s*\(\s*(([^\r|\n]+)\s*\>)\s*\))/gi,///render\s*\:\s*function\(\)\s*\{\s*.*\s*return\s*\(\s*(.+)\s*\);*\s*\}\}\);*/gi,
+	renderExp: /(return\s*\(\s*(([^\r|\n]+)\s*\>)\s*\))/gi,
 	renderExpA: /render\s*\(\)\s*\{\s*.*\s*return\s*\(\s*(.+)\s*\);*\s*\}\}/gi,
 	renderDomExp: /\.renderDom\s*\(\s*\<\s*([^\>]+)\/\>,[^;]+\)/gi,
 	renderObjExp: /\{\{\s*\$([^\}\s*]+)\s*\}\}/gi,
