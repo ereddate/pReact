@@ -110,6 +110,7 @@ Array.prototype.del = function(num) {
 				t = map.obj.ext || ".pjs";
 
 			function loadFile($n, $a) {
+				var html;
 				map.preact.load(p + $a[$n] + t, function(context) {
 					var item = doc.createElement("script");
 					item.type = "text/pReact";
@@ -200,22 +201,21 @@ Array.prototype.del = function(num) {
 		}
 		return fragment;
 	},
-	renderExp: /render\s*\:\s*function\(\)\s*\{\s*.*\s*return\s*\(\s*(.+)\s*\);*\s*\}\}\);*/,
-	renderExpA: /render\s*\(\)\s*\{\s*.*\s*return\s*\(\s*(.+)\s*\);*\s*\}\}/,
-	renderDomExp: /\.renderDom\s*\(\s*\<\s*(.+)\/\>/gi,
+	renderExp: /(return\s*\(\s*(([^\r|\n]+)\s*\>)\s*\))/gi,///render\s*\:\s*function\(\)\s*\{\s*.*\s*return\s*\(\s*(.+)\s*\);*\s*\}\}\);*/gi,
+	renderExpA: /render\s*\(\)\s*\{\s*.*\s*return\s*\(\s*(.+)\s*\);*\s*\}\}/gi,
+	renderDomExp: /\.renderDom\s*\(\s*\<\s*([^\>]+)\/\>,[^;]+\)/gi,
 	renderObjExp: /\{\{\s*\$([^\}\s*]+)\s*\}\}/gi,
 	evalHtml: function(html) {
 		var _ = this;
-		html = html.replace(/\s{2,}/gi, "").replace(/[\r|\n|\r\n]*/gi, "");
-		html = html.replace(_.renderExp, function(a, b) {
-			if (b) {
-				var exp = "\'" + b.replace(/\'/gi, "\\\'").replace(/\"/gi, "\\\"") + "\'";
-				a = a.replace(b, exp);
+		html = html.replace(/\s{2,}/gi, "");
+		html = html.replace(_.renderExp, function(a, b, c) {
+			if (b && c) {
+				a = a.replace(b, b.replace(c, "\'" + c.replace(/\'/gi, "\\\'").replace(/\"/gi, "\\\"") + "\'"));
 			}
 			return a;
-		}).replace(_.renderExpA, function(a, b) {
+		}).replace(/[\r|\n|\r\n]*/gi, "").replace(_.renderExpA, function(a, b) {
 			if (b) {
-				var exp = "\'" + b.replace(/\'/gi, "\\\'").replace(/\"/gi, "\\\"") + "\'";
+				var exp = "\'" + b.replace(/\'/gi, "\\\'") + "\'";
 				a = a.replace(b, exp);
 			}
 			return a;
