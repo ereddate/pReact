@@ -39,6 +39,18 @@ Array.prototype.del = function(num) {
 		each: function(obj, callback) {
 			map.each(obj, callback);
 			return this;
+		},
+		ready: function(callback) {
+			var a = doc.getElementsByTagName('script'),
+				i, html;
+			a = a.toArray(function(obj) {
+				return map.isElement(obj) ? obj : false;
+			});
+			for (i = 0; i <= a.length; i++) {
+				var elem = a[i];
+				elem && elem.type && elem.type == "text/pReact" && (html = elem.innerHTML, elem.parentNode.removeChild(elem), map.render(html));
+			}
+			callback && callback.call($);
 		}
 	});
 
@@ -66,19 +78,6 @@ Array.prototype.del = function(num) {
 		}
 	});
 	win.pReact = $;
-
-	$.ready = function(callback) {
-		var a = doc.getElementsByTagName('script'),
-			i, html;
-		a = a.toArray(function(obj) {
-			return map.isElement(obj) ? obj : false;
-		});
-		for (i = 0; i <= a.length; i++) {
-			var elem = a[i];
-			elem && elem.type && elem.type == "text/pReact" && (html = elem.innerHTML, elem.parentNode.removeChild(elem), map.render(html));
-		}
-		callback && callback.call($);
-	};
 })(this, {
 	emiTypeFn: {
 		load: function(a, map, done) {
