@@ -1,7 +1,9 @@
 var newForm = pReact.createClass({
 	getInitData: function(success, error){
-		pReact.jsonp("http://m.hexun.com/api/getHotPic").done(function(data){
-			success({nameValue: "帐号：请输入...", passwordValue:"密码：请输入...", submitText: "submit button"});
+		var _ = this;
+		pReact.jsonp("url").done(function(data){
+			_.data ={nameValue: "帐号：请输入...", passwordValue:"密码：请输入...", submitText: "submit button"}; 
+			success(_.data);
 		}, function(){
 			error();
 		});
@@ -26,7 +28,8 @@ var newForm = pReact.createClass({
 				</form>
 			</div>
 		)
-	}
+	},
+	b: 1
 });
 pReact && pReact.renderDom(
 	<newForm />,
@@ -48,6 +51,33 @@ typeof jQuery != "undefined" && (function(win, $, _){
 			this.num<0 && (this.num = 0);
 			$("#num").html(this.num);
 		},
+		domloadHandle: function(){
+			newForm.getInitData = function(success, error){
+				success(this.data);
+			},
+			newForm.render = function(){
+				var cQ = "{{ submitText }}";
+				return (
+					<style>
+						input,button{display:block;margin:10px 0;}
+						.form{margin:10px auto;text-align: center;width:300px;}
+						.submit_button{padding:5px;border:0;border-radius: 5px;}
+					</style>
+					<div class="form clearFx">
+						<form id="test" action="" onSubmit="{{ this.handleSubmit }}">
+							<input type="text" name="name" placeholder="{{ nameValue }}" value="" />
+							<input type="password" name="password" placeholder="{{ passwordValue }}" value="" />
+							<button type="submit" class="submit_button">{{ $cQ }}</button>
+							<button type="button" class="submit_button">{{ $cQ }}1</button>
+						</form>
+					</div>
+				)
+			};
+			pReact.renderDom(
+				<newForm />, 
+				document.getElementById("newform")
+			);
+		},
 		render: function(){
 			var a = "view",
 				cE = "增 加",
@@ -62,6 +92,8 @@ typeof jQuery != "undefined" && (function(win, $, _){
 					.view .bignum{color:red;font-size:20px;font-weight: 700;}
 				</style>
 				<div class="view"><p class="a" title="{{ title }}"><span>{{ date }}, {{ $a }} {{ name }}</span><span id="num" class="bignum">{{ $num }}</span></p><a href="javascript:;" onClick="{{ this.handleClickA }}">{{ $cE }}</a><a href="javascript:;" onClick="{{ this.handleClickB }}">{{ $cD }}</a><a href="javascript:;" onClick="{{ this.handleClick }}">{{ $cQ }}</a></div>
+				<button onClick="{{ this.domloadHandle }}">add newForm</button>
+				<div id="newform"></div>
 			);
 		}
 	});
