@@ -21,7 +21,7 @@ Array.prototype.del = function(num) {
 		renderDom: function(html, data, parent) {
 			var obj = typeof html == "function" ? (new html()) : html;
 			$.promise.when(function(resolve, reject) {
-				if (data && "data" in data || !data && "getInitData" in obj) {
+				if (data && "data" in data || !data && "getInitData" in obj && typeof obj.getInitData == "function") {
 					new Function("a", "b", "(" + (!data ? obj : data).getInitData.toString() + ")(a, b)")(resolve, reject);
 				} else {
 					resolve(data);
@@ -201,16 +201,17 @@ Array.prototype.del = function(num) {
 		}
 		return fragment;
 	},
-	renderExp: /(return\s*\(\s*(([^\r|\n]+)\s*\>)\s*\))/gi,
+	renderExp: /return\s*\(\s*[^\r|^\n]+\s*\>\s*\)}|return\s*\(\s*[^\r|^\n]+\s*\>\s*\)/gi,
 	renderExpA: /render\s*\(\)\s*\{\s*.*\s*return\s*\(\s*(.+)\s*\);*\s*\}\}/gi,
 	renderDomExp: /\.renderDom\s*\(\s*\<\s*([^\>]+)\/\>,[^;]+\)/gi,
 	renderObjExp: /\{\{\s*\$([^\}\s*]+)\s*\}\}/gi,
 	evalHtml: function(html) {
 		var _ = this;
 		html = html.replace(/\s{2,}/gi, "");
-		html = html.replace(_.renderExp, function(a, b, c) {
-			if (b && c) {
-				a = a.replace(b, b.replace(c, "\'" + c.replace(/\'/gi, "\\\'").replace(/\"/gi, "\\\"") + "\'"));
+		html = html.replace(_.renderExp, function(a) {
+			var b = /\(\s*([^\r|^\n]+\s*\>)\s*\)/.exec(a);
+			if (b) {
+				a = a.replace(b[0], "\'" + b[1].replace(/\'/gi, "\\\'").replace(/\"/gi, "\\\"") + "\'");
 			}
 			return a;
 		}).replace(/[\r|\n|\r\n]*/gi, "").replace(_.renderExpA, function(a, b) {
