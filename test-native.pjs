@@ -9,7 +9,6 @@ var newForm = pReact.createClass({
 		});
 	},
 	handleSubmit: function(e){
-		e.peventDefault();
 		document.getElementById("test").onsubmit();
 	},
 	render: function(){
@@ -51,12 +50,28 @@ typeof jQuery != "undefined" && (function(win, $, _){
 			this.num<0 && (this.num = 0);
 			$("#num").html(this.num);
 		},
+		clickCount:0,
 		domloadHandle: function(){
-			newForm.getInitData = function(success, error){
+			var num = this.clickCount++;
+			var XnewForm = pReact.extend({}, newForm);
+			XnewForm.getInitData = function(success, error){
 				success(this.data);
-			},
-			newForm.render = function(){
-				var cQ = "{{ submitText }}";
+			};
+			XnewForm.handleSubmit = function(e){
+				e.preventDefault();
+				_.promise.when(function(resolve, reject){
+					_.jsonp("url").done(function(data){
+						resolve(data);
+					}, function(){
+						reject("error");
+					});
+				}).done(function(data){
+					console.log(data)
+				}).fail(function(data){
+					console.log(data)
+				});
+			};
+			XnewForm.render = function(){
 				return (
 					<style>
 						input,button{display:block;margin:10px 0;}
@@ -67,14 +82,13 @@ typeof jQuery != "undefined" && (function(win, $, _){
 						<form id="test" action="" onSubmit="{{ this.handleSubmit }}">
 							<input type="text" name="name" placeholder="{{ nameValue }}" value="" />
 							<input type="password" name="password" placeholder="{{ passwordValue }}" value="" />
-							<button type="submit" class="submit_button">{{ $cQ }}</button>
-							<button type="button" class="submit_button">{{ $cQ }}1</button>
+							<button type="submit" class="submit_button">Xsubmit{{ $num }}</button>
 						</form>
 					</div>
 				)
 			};
 			pReact.renderDom(
-				<newForm />, 
+				<XnewForm />, 
 				document.getElementById("newform")
 			);
 		},
