@@ -286,7 +286,7 @@ Array.prototype.del = function(num) {
 		});
 		return html;
 	}
-}, function(promise, jsonp, ajax) {
+}, function() {
 	var a = function(b) {
 		return new a.fn.init(b);
 	};
@@ -304,9 +304,12 @@ Array.prototype.del = function(num) {
 		return c;
 	};
 	a.fn.init.prototype = a.fn;
-	promise(a);
-	jsonp(a);
-	ajax(a);
+
+	var args = arguments,
+		len = args.length,
+		i;
+	for (i = 0; i < len; i++) args[i](a);
+
 	return a;
 }(function($) {
 	var promise = function(callback) {
