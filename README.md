@@ -39,10 +39,8 @@ pReact，不支持ie9(包括ie9）以下版本IE浏览器。
 <script type="text/pReact">
 	class testEs6{
 		getInitData(success, error){
-			var _ = this;
 			pReact.jsonp("url").done(function(data){
-				_.data = data;
-				success(_.data);
+				success(data);
 			}, function(){
 				error();
 			});
