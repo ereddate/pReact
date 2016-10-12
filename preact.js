@@ -67,7 +67,7 @@ Array.prototype.del = function(num) {
 	});
 	win.pReact = $;
 
-	win.onload = function() {
+	$.ready = function(callback) {
 		var a = doc.getElementsByTagName('script'),
 			i, html;
 		a = a.toArray(function(obj) {
@@ -77,7 +77,8 @@ Array.prototype.del = function(num) {
 			var elem = a[i];
 			elem && elem.type && elem.type == "text/pReact" && (html = elem.innerHTML, elem.parentNode.removeChild(elem), map.render(html));
 		}
-	}
+		callback && callback.call($);
+	};
 })(this, {
 	emiTypeFn: {
 		load: function(a, map, done) {
