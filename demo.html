@@ -10,15 +10,17 @@
 		<div id="main"></div>
 		<script src="preact.js"></script>
 		<script>
-			pReact({
-				path:"./",
-				ext: ".js",
-				files:["test-jq1","test-native1"]
-			}).load("test-loadcss.css").load("../libs/jquery.2.2.0.js").load("preact-load.js").set({
-				path:"./",
-				ext: ".pjs",
-				files:["test-jq","test-native", "test-es6"]
-			}).done();
+			pReact.ready(function(){
+				this({
+					path:"./",
+					ext: ".js",
+					files:["test-jq1","test-native1"]
+				}).load("test-loadcss.css").load("../libs/jquery.2.2.0.js").load("preact-load.js").set({
+					path:"./",
+					ext: ".pjs",
+					files:["test-native"]
+				}).done();
+			});
 		</script>
 	</body>
 </html>
