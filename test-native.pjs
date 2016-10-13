@@ -9,7 +9,41 @@ var newForm = pReact.createClass({
 		});
 	},
 	handleSubmit: function(e){
-		document.getElementById("test").onsubmit();
+		e.preventDefault();
+		var form = document.getElementById("test"),
+			name = form.name,
+			nameIs = true,
+			password = form.password,
+			passwordIs = true;
+		if (pReact.trim(name.value) == "") {
+			name.style.cssText = "border:1px red solid";
+			nameIs = false;
+			return;
+		}else{
+			name.style.cssText = "";
+		}
+		if (pReact.trim(password.value) == "") {
+			password.style.cssText = "border:1px red solid";
+			passwordIs = false;
+			return;
+		}else{
+			password.style.cssText = "";
+		}
+		if (nameIs && passwordIs){
+			var p = $.param([name, password]);
+			pReact.jsonp(form.action+"?"+p).done(function(data){
+				console.log(data)
+			}, function(){
+				console.log("error")
+			});
+		}
+	},
+	handleBlur: function(e){
+		if (pReact.trim(this.elem.value) != ""){
+			this.elem.style.cssText = "";
+		}else{
+			this.elem.style.cssText = "border:1px red solid";
+		}
 	},
 	render: function(){
 		var cQ = "{{ submitText | capitalize }}";
@@ -21,8 +55,8 @@ var newForm = pReact.createClass({
 			</style>
 			<div class="form clearFx">
 				<form id="test" action="" onSubmit="{{ this.handleSubmit }}">
-					<input type="text" name="name" placeholder="{{ nameValue }}" value="" />
-					<input type="password" name="password" placeholder="{{ passwordValue }}" value="" />
+					<input type="text" name="name" placeholder="{{ nameValue }}" onBlur="{{ this.handleBlur }}" value="" />
+					<input type="password" name="password" placeholder="{{ passwordValue }}" onBlur="{{ this.handleBlur }}" value="" />
 					<button type="submit" class="submit_button">{{ $cQ }}</button>
 				</form>
 			</div>
