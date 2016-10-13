@@ -119,3 +119,8 @@ pjs模板, 数据过滤写法如下：
 {{ 100000000000 | passcard }}
 {{ usname | empty : null }}
 ```
+pjs模板，其他写法如下：
+```
+//标签循环
+{{ repeat }} <div>{{ id }}</div> {{ end repeat }}
+```
