@@ -1,7 +1,7 @@
 var newForm = pReact.createClass({
 	getInitData: function(success, error){
 		var _ = this;
-		pReact.jsonp("http://m.hexun.com/api/getHotPic").done(function(data){
+		pReact.jsonp("url").done(function(data){
 			_.data ={nameValue: "帐号：请输入...", passwordValue:"密码：请输入...", submitText: "submit button"}; 
 			success(_.data);
 		}, function(){
@@ -94,7 +94,7 @@ typeof jQuery != "undefined" && (function(win, $, _){
 			XnewForm.handleSubmit = function(e){
 				e.preventDefault();
 				_.promise.when(function(resolve, reject){
-					_.jsonp("http://m.hexun.com/api/getHotPic").done(function(data){
+					_.jsonp("url").done(function(data){
 						resolve(data);
 					}, function(){
 						reject("error");
