@@ -12,205 +12,206 @@ Array.prototype.del = function(num) {
 };
 (function(win, map, $) {
 	var doc = win.document;
-	var tmplFilter = function($) {
-		function is(str, obj) {
-			var bool = false;
-			bool = _getConstructorName(obj).toLowerCase() === str.toLowerCase();
-			return bool;
-		}
 
-		function _getConstructorName(o) {
-			if (o != null && o.constructor != null) {
-				return Object.prototype.toString.call(o).slice(8, -1);
-			} else {
-				return '';
-			}
-		}
+	function is(str, obj) {
+		var bool = false;
+		bool = _getConstructorName(obj).toLowerCase() === str.toLowerCase();
+		return bool;
+	}
 
-		function _mulReplace(s, arr) {
-			for (var i = 0; i < arr.length; i++) {
-				s = s.replace(arr[i][0], arr[i][1]);
-			}
-			return s;
+	function _getConstructorName(o) {
+		if (o != null && o.constructor != null) {
+			return Object.prototype.toString.call(o).slice(8, -1);
+		} else {
+			return '';
 		}
+	}
 
-		function _escapeChars(s) {
-			return _mulReplace(s, [
-				[/\\/g, "\\\\"],
-				[/"/g, "\\\""],
-				[/\r/g, "\\r"],
-				[/\n/g, "\\n"],
-				[/\t/g, "\\t"]
-			]);
+	function _mulReplace(s, arr) {
+		for (var i = 0; i < arr.length; i++) {
+			s = s.replace(arr[i][0], arr[i][1]);
 		}
+		return s;
+	}
 
-		function _type(obj, bool) {
-			var type = _getConstructorName(obj).toLowerCase();
-			if (bool) return type;
-			switch (type) {
-				case 'string':
-					return '"' + _escapeChars(obj) + '"';
-				case 'number':
-					var ret = obj.toString();
-					return /N/.test(ret) ? 'null' : ret;
-				case 'boolean':
-					return obj.toString();
-				case 'date':
-					return 'new Date(' + obj.getTime() + ')';
-				case 'array':
-					var ar = [];
-					for (var i = 0; i < obj.length; i++) {
-						ar[i] = _stringify(obj[i]);
+	function _escapeChars(s) {
+		return _mulReplace(s, [
+			[/\\/g, "\\\\"],
+			[/"/g, "\\\""],
+			[/\r/g, "\\r"],
+			[/\n/g, "\\n"],
+			[/\t/g, "\\t"]
+		]);
+	}
+
+	function _type(obj, bool) {
+		var type = _getConstructorName(obj).toLowerCase();
+		if (bool) return type;
+		switch (type) {
+			case 'string':
+				return '"' + _escapeChars(obj) + '"';
+			case 'number':
+				var ret = obj.toString();
+				return /N/.test(ret) ? 'null' : ret;
+			case 'boolean':
+				return obj.toString();
+			case 'date':
+				return 'new Date(' + obj.getTime() + ')';
+			case 'array':
+				var ar = [];
+				for (var i = 0; i < obj.length; i++) {
+					ar[i] = _stringify(obj[i]);
+				}
+				return '[' + ar.join(',') + ']';
+			case 'object':
+				if ($.isPlainObject(obj)) {
+					ar = [];
+					for (i in obj) {
+						ar.push('"' + _escapeChars(i) + '":' + _stringify(obj[i]));
 					}
-					return '[' + ar.join(',') + ']';
-				case 'object':
-					if ($.isPlainObject(obj)) {
-						ar = [];
-						for (i in obj) {
-							ar.push('"' + _escapeChars(i) + '":' + _stringify(obj[i]));
-						}
-						return '{' + ar.join(',') + '}';
-					}
-			}
+					return '{' + ar.join(',') + '}';
+				}
+		}
+		return 'null';
+	}
+
+	function _capitalize(val) {
+		return val[0].toUpperCase() + val.substr(1);
+	}
+
+	function _stringify(obj) {
+		if (obj == null) {
 			return 'null';
 		}
-
-		function _capitalize(val) {
-			return val[0].toUpperCase() + val.substr(1);
+		if (obj.toJSON) {
+			return obj.toJSON();
 		}
+		return _type(obj);
+	}
 
-		function _stringify(obj) {
-			if (obj == null) {
-				return 'null';
-			}
-			if (obj.toJSON) {
-				return obj.toJSON();
-			}
-			return _type(obj);
-		}
-
-		function _date(d, pattern) {
-			d = new Date(d);
-			pattern = pattern || 'yyyy-MM-dd';
-			var y = d.getFullYear().toString(),
-				o = {
-					M: d.getMonth() + 1, //month
-					d: d.getDate(), //day
-					h: d.getHours(), //hour
-					m: d.getMinutes(), //minute
-					s: d.getSeconds() //second
-				};
-			pattern = pattern.replace(/(y+)/ig, function(a, b) {
-				return y.substr(4 - Math.min(4, b.length));
+	function _date(d, pattern) {
+		d = new Date(d);
+		pattern = pattern || 'yyyy-MM-dd';
+		var y = d.getFullYear().toString(),
+			o = {
+				M: d.getMonth() + 1, //month
+				d: d.getDate(), //day
+				h: d.getHours(), //hour
+				m: d.getMinutes(), //minute
+				s: d.getSeconds() //second
+			};
+		pattern = pattern.replace(/(y+)/ig, function(a, b) {
+			return y.substr(4 - Math.min(4, b.length));
+		});
+		for (var i in o) {
+			pattern = pattern.replace(new RegExp('(' + i + '+)', 'g'), function(a, b) {
+				return (o[i] < 10 && b.length > 1) ? '0' + o[i] : o[i];
 			});
-			for (var i in o) {
-				pattern = pattern.replace(new RegExp('(' + i + '+)', 'g'), function(a, b) {
-					return (o[i] < 10 && b.length > 1) ? '0' + o[i] : o[i];
-				});
-			}
-			return pattern;
 		}
+		return pattern;
+	}
 
-		function _currency(val, symbol) {
-			var places, thousand, decimal;
-			places = 2;
-			symbol = symbol !== undefined ? symbol : "$";
-			thousand = ",";
-			decimal = ".";
-			var number = val,
-				negative = number < 0 ? "-" : "",
-				i = parseInt(number = Math.abs(+number || 0).toFixed(places), 10) + "",
-				j = (j = i.length) > 3 ? j % 3 : 0;
-			return symbol + negative + (j ? i.substr(0, j) + thousand : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + thousand) + (places ? decimal + Math.abs(number - i).toFixed(places).slice(2) : "");
+	function _currency(val, symbol) {
+		var places, thousand, decimal;
+		places = 2;
+		symbol = symbol !== undefined ? symbol : "$";
+		thousand = ",";
+		decimal = ".";
+		var number = val,
+			negative = number < 0 ? "-" : "",
+			i = parseInt(number = Math.abs(+number || 0).toFixed(places), 10) + "",
+			j = (j = i.length) > 3 ? j % 3 : 0;
+		return symbol + negative + (j ? i.substr(0, j) + thousand : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + thousand) + (places ? decimal + Math.abs(number - i).toFixed(places).slice(2) : "");
+	}
+
+	var digitUppercase = function(n, bool) {
+		var fraction = ['角', '分'],
+			digit = [
+				'零', '壹', '贰', '叁', '肆',
+				'伍', '陆', '柒', '捌', '玖'
+			],
+			unit = [
+				['元', '万', '亿'],
+				['', '拾', '佰', '仟']
+			],
+			head = n < 0 ? '欠' : '';
+		n = Math.abs(n);
+		var s = '';
+		for (var i = 0; i < fraction.length; i++) {
+			s += (digit[Math.floor(n * 10 * Math.pow(10, i)) % 10] + (bool ? fraction[i] : '')).replace(/零./, bool ? '' : '零点');
 		}
-
-		var digitUppercase = function(n, bool) {
-			var fraction = ['角', '分'],
-				digit = [
-					'零', '壹', '贰', '叁', '肆',
-					'伍', '陆', '柒', '捌', '玖'
-				],
-				unit = [
-					['元', '万', '亿'],
-					['', '拾', '佰', '仟']
-				],
-				head = n < 0 ? '欠' : '';
-			n = Math.abs(n);
-			var s = '';
-			for (var i = 0; i < fraction.length; i++) {
-				s += (digit[Math.floor(n * 10 * Math.pow(10, i)) % 10] + (bool ? fraction[i] : '')).replace(/零./, bool ? '' : '零点');
+		s = s || '整';
+		n = Math.floor(n);
+		for (var i = 0; i < unit[0].length && n > 0; i++) {
+			var p = '';
+			for (var j = 0; j < unit[1].length && n > 0; j++) {
+				p = digit[n % 10] + unit[1][j] + p;
+				n = Math.floor(n / 10);
 			}
-			s = s || '整';
-			n = Math.floor(n);
-			for (var i = 0; i < unit[0].length && n > 0; i++) {
-				var p = '';
-				for (var j = 0; j < unit[1].length && n > 0; j++) {
-					p = digit[n % 10] + unit[1][j] + p;
-					n = Math.floor(n / 10);
-				}
-				if (bool) {
-					p = p.replace(/(零.)*零$/, '');
-				} else {
-					p = p.replace(/零./, '零点');
-				}
-				var dw = unit[0][i];
-				if (dw == "元" && !bool) {
-					dw = "点";
-				}
-				s = p.replace(/^$/, '零') + dw + s;
+			if (bool) {
+				p = p.replace(/(零.)*零$/, '');
+			} else {
+				p = p.replace(/零./, '零点');
 			}
-			return head + s.replace(/(零.)*零元/, bool ? '元' : '')
-				.replace(/(零.)+/g, bool ? '零' : '零点').replace(/零点$/, "整").replace(/点整$/, "")
-				.replace(/^整$/, bool ? '零元整' : '零整');
-		};
-
-		var getLen = function(str, type) {
-			var str = (str + "").replace(/\r|\n/ig, ""),
-				temp1 = str.replace(/([^\x00-\xff]|[A-Z])/g, "**"),
-				temp2 = temp1.substring(0),
-				x_length = !type ? (temp2.split("\*").length - 1) / 2 + (temp1.replace(/\*/ig, "").length) : temp2.length;
-			return x_length;
-		};
-
-		var textFix = function(name, num) {
-			var max = num ? num : 16;
-			return getLen(name, true) >= max ? _getText(name, max) : name;
-		};
-		var _getText = function(text, max) {
-			var strs = [],
-				n = 0,
-				len = text.length,
-				vtext = "";
-			for (var i = 0; i < len; i++) {
-				vtext = text.substr(i, 1).replace("“", " ").replace("”", " ");
-				if (/([^\x00-\xff]|[A-Z])/.test(vtext)) {
-					n += 2;
-				} else {
-					n += 1;
-				}
-				if (n <= max) {
-					strs.push(vtext);
-				}
+			var dw = unit[0][i];
+			if (dw == "元" && !bool) {
+				dw = "点";
 			}
-			return strs.join('');
-		};
-		var _tmplFilterVal = function(val, filterCondition) {
-			if (typeof filterCondition == "function") {
-				return filterCondition(val);
-			} else if (typeof filterCondition == "object") {
-				if ($.isPlainObject(filterCondition)) {
-					for (name in filterCondition) {
-						var oval = filterCondition[name];
-						var oreg = new RegExp(oval, "igm");
-						if (oreg.test(val)) {
-							return val.replace(oreg, "");
-						}
+			s = p.replace(/^$/, '零') + dw + s;
+		}
+		return head + s.replace(/(零.)*零元/, bool ? '元' : '')
+			.replace(/(零.)+/g, bool ? '零' : '零点').replace(/零点$/, "整").replace(/点整$/, "")
+			.replace(/^整$/, bool ? '零元整' : '零整');
+	};
+
+	var getLen = function(str, type) {
+		var str = (str + "").replace(/\r|\n/ig, ""),
+			temp1 = str.replace(/([^\x00-\xff]|[A-Z])/g, "**"),
+			temp2 = temp1.substring(0),
+			x_length = !type ? (temp2.split("\*").length - 1) / 2 + (temp1.replace(/\*/ig, "").length) : temp2.length;
+		return x_length;
+	};
+
+	var textFix = function(name, num) {
+		var max = num ? num : 16;
+		return getLen(name, true) >= max ? _getText(name, max) : name;
+	};
+	var _getText = function(text, max) {
+		var strs = [],
+			n = 0,
+			len = text.length,
+			vtext = "";
+		for (var i = 0; i < len; i++) {
+			vtext = text.substr(i, 1).replace("“", " ").replace("”", " ");
+			if (/([^\x00-\xff]|[A-Z])/.test(vtext)) {
+				n += 2;
+			} else {
+				n += 1;
+			}
+			if (n <= max) {
+				strs.push(vtext);
+			}
+		}
+		return strs.join('');
+	};
+	var _tmplFilterVal = function(val, filterCondition) {
+		if (typeof filterCondition == "function") {
+			return filterCondition(val);
+		} else if (typeof filterCondition == "object") {
+			if ($.isPlainObject(filterCondition)) {
+				for (name in filterCondition) {
+					var oval = filterCondition[name];
+					var oreg = new RegExp(oval, "igm");
+					if (oreg.test(val)) {
+						return val.replace(oreg, "");
 					}
 				}
 			}
-			var strRegex = new RegExp(filterCondition, "igm");
-			return (val + "").replace(strRegex, "");
-		};
+		}
+		var strRegex = new RegExp(filterCondition, "igm");
+		return (val + "").replace(strRegex, "");
+	};
+	var tmplFilter = function($) {
 		//filter|json|limitToCharacter|limitTo|indexOf|lowercase|uppercase|toCNRMB|toCNumber|orderBy|date|currency|empty|passcard|encodeURI|decodeURI|toString|capitalize
 		return {
 			filter: function(val, filterCondition) {
@@ -365,6 +366,20 @@ Array.prototype.del = function(num) {
 			});
 			return html;
 		},
+		repeatTmpl: function(html, data) {
+			var arr = [];
+			$.each(data, function(i, item) {
+				var result = html.split("{{ repeat }}");
+				if (result.length > 1) {
+					$.each(result, function(i, str) {
+						/{{\s+end\s+repeat\s+}}/.test(str) && arr.push($.tmpl(str.split(/{{\s+end\s+repeat\s+}}/)[0], item));
+					});
+				} else if (result.length === 1){
+					arr.push($.tmpl(result.split(/{{\s+end\s+repeat\s+}}/)[0], item));
+				}
+			});
+			return html.replace(/{{\s+repeat\s+}}\r*\n*\s*(.+)\s*\r*\n*{{\s+end\s+repeat\s+}}/, arr.join(''));
+		},
 		createClass: function() {
 			var args = arguments,
 				len = args.length;
@@ -384,7 +399,7 @@ Array.prototype.del = function(num) {
 					resolve(data);
 				}
 			}).done(function(data) {
-				var result = $.tmpl(typeof obj == "string" ? obj : obj.render(), data);
+				var result = is("object", data) ? $.tmpl(typeof obj == "string" ? obj : obj.render(), data) : is("array", data) ? $.repeatTmpl(typeof obj == "string" ? obj : obj.render(), data) : typeof obj == "string" ? obj : obj.render();
 				if (typeof html == "string") {
 					parent.innerHTML = parent.innerHTML + result;
 				} else {
