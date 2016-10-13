@@ -1,7 +1,7 @@
 var newForm = pReact.createClass({
 	getInitData: function(success, error){
 		var _ = this;
-		pReact.jsonp("url").done(function(data){
+		pReact.jsonp("http://m.hexun.com/api/getHotPic").done(function(data){
 			_.data ={nameValue: "帐号：请输入...", passwordValue:"密码：请输入...", submitText: "submit button"}; 
 			success(_.data);
 		}, function(){
@@ -12,7 +12,7 @@ var newForm = pReact.createClass({
 		document.getElementById("test").onsubmit();
 	},
 	render: function(){
-		var cQ = "{{ submitText }}";
+		var cQ = "{{ submitText | capitalize }}";
 		return (
 			<style>
 				input,button{display:block;margin:10px 0;}
@@ -60,7 +60,7 @@ typeof jQuery != "undefined" && (function(win, $, _){
 			XnewForm.handleSubmit = function(e){
 				e.preventDefault();
 				_.promise.when(function(resolve, reject){
-					_.jsonp("url").done(function(data){
+					_.jsonp("http://m.hexun.com/api/getHotPic").done(function(data){
 						resolve(data);
 					}, function(){
 						reject("error");
@@ -105,18 +105,25 @@ typeof jQuery != "undefined" && (function(win, $, _){
 					.view span{vertical-align: middle;margin:0 5px 0;}
 					.view .bignum{color:red;font-size:20px;font-weight: 700;}
 				</style>
-				<div class="view"><p class="a" title="{{ title }}"><span>{{ date }}, {{ $a }} {{ name }}</span><span id="num" class="bignum">{{ $num }}</span></p><a href="javascript:;" onClick="{{ this.handleClickA }}">{{ $cE }}</a><a href="javascript:;" onClick="{{ this.handleClickB }}">{{ $cD }}</a><a href="javascript:;" onClick="{{ this.handleClick }}">{{ $cQ }}</a></div>
+				<div class="view"><p class="a" title="{{ title | filter : 'e' }}"><span>{{ date }}, {{ $a }} {{ name | capitalize }}</span><span id="num" class="bignum">{{ $num }}</span></p><a href="javascript:;" onClick="{{ this.handleClickA }}">{{ $cE }}</a><a href="javascript:;" onClick="{{ this.handleClickB }}">{{ $cD }}</a><a href="javascript:;" onClick="{{ this.handleClick }}">{{ $cQ }}</a></div>
 				<button onClick="{{ this.domloadHandle }}">add newForm</button>
 				<div id="newform"></div>
 			);
 		}
 	});
 	_.renderDom(
-		<AddNum {name:'的 num 等于', title:'test', date:(new Date()).getFullYear()} />, 
+		<AddNum {name:'的 num 等于', title:'testeeee', date:(new Date()).getFullYear()} />, 
 		$('#main')[0]
 	);
 })(this, jQuery, pReact);
 class testEs6{
+	getInitData(success, error){
+		pReact.jsonp("http://m.hexun.com/api/getHotPic").done(function(data){
+			success({a:"testEs6"});
+		}, function(){
+			error();
+		});
+	}
 	divHandle(e){
 		e.preventDefault();
 		document.getElementById("nohandle").innerHTML = "div click!";
@@ -138,6 +145,6 @@ class testEs6{
 	}
 }
 pReact && pReact.renderDom(
-	<testEs6 {a:"testEs6"} />,
+	<testEs6 />,
 	document.getElementById("main")
 );
