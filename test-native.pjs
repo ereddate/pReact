@@ -68,6 +68,36 @@ pReact && pReact.renderDom(
 	<newForm />,
 	document.getElementById("main")
 );
+var newList = pReact.createClass({
+	getInitData: function(success, error){
+		pReact.jsonp("url").done(function(data){
+			pReact.each(data, function(i,item){
+				pReact.extend(data[i], {
+					img: item.img.split(/\.[jpg|gif|png]/)[0]+".jpg"
+				});
+			});
+			success(data);
+		}, function(){
+			error();
+		});
+	},
+	render: function(){
+		return (
+			<div class="form clearFx">
+				<ul>
+					{{ repeat }}
+						<li id="{{ id }}"><a href="{{ url }}" target="_blank"><img src="{{ img }}" /></a><div><h2><a href="{{ url }}" target="_blank">{{ title | limitTo : 8 }}</a></h2>{{ media | limitTo : 4 }}... {{ time }}</div></li>
+					{{ end repeat }}
+				</ul>
+			</div>
+		)
+	},
+	b: 1
+});
+pReact && pReact.renderDom(
+	<newList />,
+	document.getElementById("main")
+);
 typeof jQuery != "undefined" && (function(win, $, _){
 	var AddNum = _.createClass({
 		num: 0,
@@ -152,7 +182,7 @@ typeof jQuery != "undefined" && (function(win, $, _){
 })(this, jQuery, pReact);
 class testEs6{
 	getInitData(success, error){
-		pReact.jsonp("http://m.hexun.com/api/getHotPic").done(function(data){
+		pReact.jsonp("url").done(function(data){
 			success({a:"testEs6"});
 		}, function(){
 			error();
