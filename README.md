@@ -4,8 +4,6 @@ pReact，不支持ie9(包括ie9）以下版本IE浏览器。模板文件扩展�
 未对ES6做处理，仅依靠浏览器自身支持。
 
 ```
-<script src="preact.js"></script>
-<script type="text/pReact">
 	(function(win){
 		var newForm = pReact.createClass({
 			handleSubmit: function(e){
@@ -35,8 +33,9 @@ pReact，不支持ie9(包括ie9）以下版本IE浏览器。模板文件扩展�
 			document.getElementById("main")
 		);
 	})(this)
-</script>
-<script type="text/pReact">
+```
+或
+```
 	class testEs6{
 		getInitData(success, error){
 			pReact.jsonp("url").done(function(data){
@@ -61,11 +60,9 @@ pReact，不支持ie9(包括ie9）以下版本IE浏览器。模板文件扩展�
 		<testEs6 />,
 		document.getElementById("main")
 	);
-</script>
 ```
 或
 ```
-<script>
 	pReact.ready(function(){
 		this({
 			path:"./",
@@ -77,7 +74,6 @@ pReact，不支持ie9(包括ie9）以下版本IE浏览器。模板文件扩展�
 			files:["test-native"]
 		}).done();
 	});
-</script>
 ```
 pjs模板, 数据过滤方法如下：
 ```
