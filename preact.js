@@ -349,8 +349,8 @@ Array.prototype.del = function(num) {
 			if (map.isEmptyObject(data)) return html;
 			map.each(data, function(name, val) {
 				html = html.replace(/{{\s+[^<>,]+\s+}}/gim, function(a) {
-					if ((new RegExp("{{\\s+" + name + "\\s+")).test(a)) {
-						a = a.replace(new RegExp("{{\\s+(" + name + ")\\s+([^<>,]+\\s)*}}"), function(a, b, c) {
+					if ((new RegExp("{{\\s+(" + name + ")\\s+([^<>,]+\\s+)*}}")).test(a)) {
+						a = a.replace(new RegExp("{{\\s+(" + name + ")\\s+([^<>,}]+\\s+)*}}"), function(a, b, c) {
 							if (c) {
 								var result = c.split('|')[0].split(' : ');
 								a = a.replace(a, tmplFilter[$.trim(result[0])](val, result[1] && $.trim(result[1]).replace(/[\'\"]/gim, "") || 0));
@@ -525,7 +525,7 @@ Array.prototype.del = function(num) {
 							then.elem = this;
 							fn.call(then, e);
 						} catch (e) {
-							console.log(e.message);
+							console.log(e);
 						}
 					});
 				}
@@ -753,7 +753,7 @@ Array.prototype.del = function(num) {
 								try {
 									item.callback && item.callback.apply(self, item.args || self.thenArgs || []);
 								} catch (e) {
-									console.log(e.message);
+									console.log(e);
 								} finally {
 									arr.del(n);
 									_emi.call(self, n, arr);
