@@ -118,6 +118,12 @@ pjs模板, 数据过滤写法如下：
 pjs模板，其他写法如下：
 ```
 //标签循环。repeat、if语法不能同名嵌套使用，repeat可以套if使用，反之不可。
-{{ repeat }} <div>{{ id }}</div> {{ end repeat }}
-{{ if (a >= b) }} <div>1</div> {{ else }} <div>2</div> {{ end if }}
+{{ repeat }}
+	<div>{{ id }}</div>
+	{{ if (a >= b) }}
+		<div>1</div>
+	{{ else }}
+		<div>2</div>
+	{{ end if }}
+{{ end repeat }}
 ```
