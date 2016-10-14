@@ -383,7 +383,7 @@ Array.prototype.del = function(num) {
 				});
 			});
 
-			map.each(["ifend"], function(i, name){
+			map.each(map.tmplLang, function(name, fn){
 				html = map.tmplLang[name](html);
 			});
 			return html;
