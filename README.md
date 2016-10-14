@@ -129,10 +129,12 @@ pjs模板，伪标签写法如下：
 //伪标签。repeat（循环）、if（如果）语法不能同名嵌套使用，repeat可以套if使用，反之不可。
 {{ repeat }}
 	<div>{{ id }}</div>
-	{{ if (a >= b) }}
+	{{ if (a > b) }}
 		<div>1</div>
-	{{ else }}
+	{{ else if (a < b) }}
 		<div>2</div>
+	{{ else }}
+		<div>3</div>
 	{{ end if }}
 {{ end repeat }}
 ```
