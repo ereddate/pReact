@@ -349,13 +349,15 @@ Array.prototype.del = function(num) {
 							a = t.replace(/{{\s+[^}]+\s+}}/gi, function(a, b) {
 								if (/{{\s+if\s+/.test(a)) {
 									a = a.replace("{{ ", "var _ifend = _###__###_;").replace(" }}", "{ _ifend = _###_").replace(/\'/gi, "_###_").replace(/\"/gi, "_###_");
+								} else if (/{{\s+else\s+if\s+/.test(a)){
+									a = a.replace("{{ ", "_###_;}").replace(" }}", "{ _ifend = _###_").replace(/\'/gi, "_###_").replace(/\"/gi, "_###_");
 								} else if (/{{\s+else\s+}}/.test(a)) {
 									a = "_###_;}else{ _ifend = _###_";
 								} else if (/{{\s+end\s+if\s+}}/.test(a)) {
 									a = "_###_;}";
 								}
 								return a;
-							}).replace(/_###_/gi, "'") + "return _ifend;";
+							}).replace(/\'/gi, "\\\'").replace(/\"/gi, "\\\"").replace(/_###_/gi, "'") + "return _ifend;";
 							a = map.ceval("return function(){" + a + "}")();
 							html = html.replace(o, a);
 						}
