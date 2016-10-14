@@ -390,6 +390,10 @@ Array.prototype.del = function(num) {
 		}
 	});
 	$.extend($, {
+		tmplFilterExtend: function(filters){
+			filters && $.extend(tmplFilter, filters);
+			return this;
+		},
 		tmplLangExtend:function(langs){
 			langs && $.extend(map.tmplLang, langs);
 			return this;
