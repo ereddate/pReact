@@ -322,6 +322,64 @@ Array.prototype.del = function(num) {
 		};
 	};
 	tmplFilter = tmplFilter($);
+	$.extend(map, {
+		repeatTmpl: function(html, data) {
+			var arr = [];
+			$.each(data, function(i, item) {
+				var result = html.split("{{ repeat }}");
+				if (result.length > 1) {
+					$.each(result, function(i, str) {
+						/{{\s+end\s+repeat\s+}}/.test(str) && arr.push(map.tmpl(str.split(/{{\s+end\s+repeat\s+}}/)[0], item));
+					});
+				} else if (result.length === 1) {
+					/{{\s+end\s+repeat\s+}}/.test(result[0]) && arr.push(map.tmpl(result[0].split(/{{\s+end\s+repeat\s+}}/)[0], item));
+				}
+			});
+			return html.replace(/{{\s+repeat\s+}}\r*\n*\s*(.+)\s*\r*\n*{{\s+end\s+repeat\s+}}/, arr.join(''));
+		},
+		tmpl: function(html, data) {
+			if (map.isEmptyObject(data)) return html;
+			map.each(data, function(name, val) {
+				html = html.replace(/{{\s+[^<>,]+\s+}}/gim, function(a) {
+					if ((new RegExp("{{\\s+(" + name + ")\\s+([^<>,]+\\s+)*}}")).test(a)) {
+						a = a.replace(new RegExp("{{\\s+(" + name + ")\\s+([^<>,}]+\\s+)*}}"), function(a, b, c) {
+							if (c) {
+								var result = c.split('|')[0].split(' : ');
+								a = a.replace(a, tmplFilter[$.trim(result[0])](val, result[1] && $.trim(result[1]).replace(/[\'\"]/gim, "") || 0));
+							} else {
+								a = a.replace(new RegExp("{{\\s+" + name + "\\s+}}", "gim"), val);
+							}
+							return a;
+						});
+					}
+					return a;
+				});
+			});
+			var a = html.split("{{ if ");
+			if (a.length > 1) {
+				map.each(a, function(i, str) {
+					if (/{{\s+end\s+if\s+}}/.test(str)) {
+						var a = ("{{ if " + str).split("{{ end if }}"),
+							o = a[0] + "{{ end if }}",
+							t = o;
+						a = t.replace(/{{\s+[^}]+\s+}}/gi, function(a, b) {
+							if (/{{\s+if\s+/.test(a)) {
+								a = a.replace("{{ ", "var _ifend = _###__###_;").replace(" }}", "{ _ifend = _###_").replace(/\'/gi, "_###_").replace(/\"/gi, "_###_");
+							} else if (/{{\s+else\s+}}/.test(a)) {
+								a = "_###_;}else{ _ifend = _###_";
+							} else if (/{{\s+end\s+if\s+}}/.test(a)) {
+								a = "_###_;}";
+							}
+							return a;
+						}).replace(/_###_/gi, "'") + "return _ifend;";
+						a = map.ceval("return function(){" + a +"}")();
+						html = html.replace(o, a);
+					}
+				});
+			}
+			return html;
+		}
+	});
 	$.extend($, {
 		trim: function(text) {
 			var rtrim = /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g;
@@ -347,38 +405,12 @@ Array.prototype.del = function(num) {
 			return key === undefined || hasOwn.call(obj, key);
 		},
 		tmpl: function(html, data) {
-			if (map.isEmptyObject(data)) return html;
-			map.each(data, function(name, val) {
-				html = html.replace(/{{\s+[^<>,]+\s+}}/gim, function(a) {
-					if ((new RegExp("{{\\s+(" + name + ")\\s+([^<>,]+\\s+)*}}")).test(a)) {
-						a = a.replace(new RegExp("{{\\s+(" + name + ")\\s+([^<>,}]+\\s+)*}}"), function(a, b, c) {
-							if (c) {
-								var result = c.split('|')[0].split(' : ');
-								a = a.replace(a, tmplFilter[$.trim(result[0])](val, result[1] && $.trim(result[1]).replace(/[\'\"]/gim, "") || 0));
-							} else {
-								a = a.replace(new RegExp("{{\\s+" + name + "\\s+}}", "gim"), val);
-							}
-							return a;
-						});
-					}
-					return a;
-				});
-			});
+			if (is("array", data)) {
+				html = map.repeatTmpl(html, data);
+			} else if (is("object", data)) {
+				html = map.tmpl(html, data);
+			}
 			return html;
-		},
-		repeatTmpl: function(html, data) {
-			var arr = [];
-			$.each(data, function(i, item) {
-				var result = html.split("{{ repeat }}");
-				if (result.length > 1) {
-					$.each(result, function(i, str) {
-						/{{\s+end\s+repeat\s+}}/.test(str) && arr.push($.tmpl(str.split(/{{\s+end\s+repeat\s+}}/)[0], item));
-					});
-				} else if (result.length === 1){
-					arr.push($.tmpl(result.split(/{{\s+end\s+repeat\s+}}/)[0], item));
-				}
-			});
-			return html.replace(/{{\s+repeat\s+}}\r*\n*\s*(.+)\s*\r*\n*{{\s+end\s+repeat\s+}}/, arr.join(''));
 		},
 		createClass: function() {
 			var args = arguments,
@@ -399,7 +431,7 @@ Array.prototype.del = function(num) {
 					resolve(data);
 				}
 			}).done(function(data) {
-				var result = is("object", data) ? $.tmpl(typeof obj == "string" ? obj : obj.render(), data) : is("array", data) ? $.repeatTmpl(typeof obj == "string" ? obj : obj.render(), data) : typeof obj == "string" ? obj : obj.render();
+				var result = $.tmpl(typeof obj == "string" ? obj : obj.render(), data);
 				if (typeof html == "string") {
 					parent.innerHTML = parent.innerHTML + result;
 				} else {
