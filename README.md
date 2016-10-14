@@ -88,6 +88,10 @@ pjs模板，数据赋值方法如下：
 引用js中的方法，如标签加事件：
 数据 },a:function(){...},{
 模板 <a onClick = "{{ this.a }}" ...
+
+事件支持如下：
+onClick onCopy onCut onPaste onKeyDown onKeyPress onKeyUp onFocus onBlur onChange onInput onSubmit onTouchCancel onTouchEnd onTouchMove
+onTouchStart onScroll onWheel
 注：事件名在on后首字母应为大字。
 ```
 pjs模板, 数据过滤方法如下：
