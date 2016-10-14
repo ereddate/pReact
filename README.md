@@ -115,9 +115,18 @@ pjs模板, 数据过滤写法如下：
 {{ 100000000000 | passcard }}
 {{ usname | empty : null }}
 ```
-pjs模板，其他写法如下：
+pjs模板，数据过滤扩展写法如下：
 ```
-//标签循环。repeat、if语法不能同名嵌套使用，repeat可以套if使用，反之不可。
+pReact.tmplFilterExtend({
+	name: function(val, filterCondition){
+		...
+		return val;
+	}
+});
+```
+pjs模板，伪标签写法如下：
+```
+//伪标签。repeat（循环）、if（如果）语法不能同名嵌套使用，repeat可以套if使用，反之不可。
 {{ repeat }}
 	<div>{{ id }}</div>
 	{{ if (a >= b) }}
@@ -126,4 +135,13 @@ pjs模板，其他写法如下：
 		<div>2</div>
 	{{ end if }}
 {{ end repeat }}
+```
+pjs模板，伪标签扩展写法如下：
+```
+pReact.tmplLangExtend({
+	name: function(html){
+		...
+		return html;
+	}
+});
 ```
