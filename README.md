@@ -1,4 +1,4 @@
-# pReact
+# pReact + pjs template
 pReact，不支持ie9(包括ie9）以下版本IE浏览器。模板文件扩展名为*.pjs。
 
 未对ES6做处理，仅依靠浏览器自身支持。
