@@ -383,18 +383,18 @@ Array.prototype.del = function(num) {
 				});
 			});
 
-			map.each(map.tmplLang, function(name, fn){
-				html = map.tmplLang[name](html);
+			map.each(map.tmplLang, function(name, fn) {
+				name != "toArray" && (html = fn(html));
 			});
 			return html;
 		}
 	});
 	$.extend($, {
-		tmplFilterExtend: function(filters){
+		tmplFilterExtend: function(filters) {
 			filters && $.extend(tmplFilter, filters);
 			return this;
 		},
-		tmplLangExtend:function(langs){
+		tmplLangExtend: function(langs) {
 			langs && $.extend(map.tmplLang, langs);
 			return this;
 		},
