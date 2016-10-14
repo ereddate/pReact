@@ -2,7 +2,7 @@ var newForm = pReact.createClass({
 	getInitData: function(success, error){
 		var _ = this;
 		pReact.jsonp("url").done(function(data){
-			_.data ={nameValue: "帐号：请输入...", passwordValue:"密码：请输入...", submitText: "submit button"}; 
+			_.data ={nameValue: "帐号：请输入...", passwordValue:"密码：请输入...", submitText: "submit button", num: "true"}; 
 			success(_.data);
 		}, function(){
 			error();
@@ -75,6 +75,7 @@ var newList = pReact.createClass({
 				pReact.extend(data[i], {
 					img: item.img.split(/\.[jpg|gif|png]/)[0]+".jpg"
 				});
+				pReact.extend(data[i].data, data[i]);
 			});
 			success(data);
 		}, function(){
@@ -86,7 +87,11 @@ var newList = pReact.createClass({
 			<div class="form clearFx">
 				<ul>
 					{{ repeat }}
-						<li id="{{ id }}"><a href="{{ url }}" target="_blank"><img src="{{ img }}" /></a><div><h2><a href="{{ url }}" target="_blank">{{ title | limitTo : 8 }}</a></h2>{{ media | limitTo : 4 }}... {{ time }}</div></li>
+						{{ if ('{{ title }}'.length > 8) }}
+							<li id="{{ id }}"><a href="{{ url }}" target="_blank"><img src="{{ img }}" /></a><div><h2><a href="{{ url }}" target="_blank">{{ title | limitTo : 8 }}...</a></h2>{{ media | limitTo : 4 }}... {{ time }}</div></li>
+						{{ else }}
+							<li id="{{ id }}"><a href="{{ url }}" target="_blank"><img src="{{ img }}" /></a><div><h2><a href="{{ url }}" target="_blank">{{ title }}</a></h2>{{ media | limitTo : 4 }}... {{ time }}</div></li>
+						{{ end if }}
 					{{ end repeat }}
 				</ul>
 			</div>
@@ -143,11 +148,19 @@ typeof jQuery != "undefined" && (function(win, $, _){
 						.submit_button{padding:5px;border:0;border-radius: 5px;}
 					</style>
 					<div class="form clearFx">
-						<form id="test" action="" onSubmit="{{ this.handleSubmit }}">
-							<input type="text" name="name" placeholder="{{ nameValue }}" value="" />
-							<input type="password" name="password" placeholder="{{ passwordValue }}" value="" />
-							<button type="submit" class="submit_button">Xsubmit{{ $num }}</button>
-						</form>
+						{{ if ({{ num }} === "false") }}
+							<form id="test" action="" onSubmit="{{ this.handleSubmit }}">
+								<input type="text" name="name" placeholder="{{ nameValue }}" value="" />
+								<input type="password" name="password" placeholder="{{ passwordValue }}" value="" />
+								<button type="submit" class="submit_button">Xsubmit{{ $num }}-1</button>
+							</form>
+						{{ else }}
+							<form id="test" action="" onSubmit="{{ this.handleSubmit }}">
+								<input type="text" name="name" placeholder="{{ nameValue }}" value="" />
+								<input type="password" name="password" placeholder="{{ passwordValue }}" value="" />
+								<button type="submit" class="submit_button">Xsubmit{{ $num }}-2</button>
+							</form>
+						{{ end if }}
 					</div>
 				)
 			};
