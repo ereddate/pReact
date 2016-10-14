@@ -337,6 +337,33 @@ Array.prototype.del = function(num) {
 			});
 			return html.replace(/{{\s+repeat\s+}}\r*\n*\s*(.+)\s*\r*\n*{{\s+end\s+repeat\s+}}/, arr.join(''));
 		},
+		tmplLang: {
+			ifend: function(html) {
+				var a = html.split("{{ if ");
+				if (a.length > 1) {
+					map.each(a, function(i, str) {
+						if (/{{\s+end\s+if\s+}}/.test(str)) {
+							var a = ("{{ if " + str).split("{{ end if }}"),
+								o = a[0] + "{{ end if }}",
+								t = o;
+							a = t.replace(/{{\s+[^}]+\s+}}/gi, function(a, b) {
+								if (/{{\s+if\s+/.test(a)) {
+									a = a.replace("{{ ", "var _ifend = _###__###_;").replace(" }}", "{ _ifend = _###_").replace(/\'/gi, "_###_").replace(/\"/gi, "_###_");
+								} else if (/{{\s+else\s+}}/.test(a)) {
+									a = "_###_;}else{ _ifend = _###_";
+								} else if (/{{\s+end\s+if\s+}}/.test(a)) {
+									a = "_###_;}";
+								}
+								return a;
+							}).replace(/_###_/gi, "'") + "return _ifend;";
+							a = map.ceval("return function(){" + a + "}")();
+							html = html.replace(o, a);
+						}
+					});
+				}
+				return html;
+			}
+		},
 		tmpl: function(html, data) {
 			if (map.isEmptyObject(data)) return html;
 			map.each(data, function(name, val) {
@@ -355,32 +382,18 @@ Array.prototype.del = function(num) {
 					return a;
 				});
 			});
-			var a = html.split("{{ if ");
-			if (a.length > 1) {
-				map.each(a, function(i, str) {
-					if (/{{\s+end\s+if\s+}}/.test(str)) {
-						var a = ("{{ if " + str).split("{{ end if }}"),
-							o = a[0] + "{{ end if }}",
-							t = o;
-						a = t.replace(/{{\s+[^}]+\s+}}/gi, function(a, b) {
-							if (/{{\s+if\s+/.test(a)) {
-								a = a.replace("{{ ", "var _ifend = _###__###_;").replace(" }}", "{ _ifend = _###_").replace(/\'/gi, "_###_").replace(/\"/gi, "_###_");
-							} else if (/{{\s+else\s+}}/.test(a)) {
-								a = "_###_;}else{ _ifend = _###_";
-							} else if (/{{\s+end\s+if\s+}}/.test(a)) {
-								a = "_###_;}";
-							}
-							return a;
-						}).replace(/_###_/gi, "'") + "return _ifend;";
-						a = map.ceval("return function(){" + a +"}")();
-						html = html.replace(o, a);
-					}
-				});
-			}
+
+			map.each(["ifend"], function(i, name){
+				html = map.tmplLang[name](html);
+			});
 			return html;
 		}
 	});
 	$.extend($, {
+		tmplLangExtend:function(langs){
+			langs && $.extend(map.tmplLang, langs);
+			return this;
+		},
 		trim: function(text) {
 			var rtrim = /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g;
 			return text == null ?
