@@ -55,7 +55,7 @@ var newForm = pReact.createClass({
 			</style>
 			<div class="form clearFx">
 				<form id="test" action="" onSubmit="{{ this.handleSubmit }}">
-					<input type="text" name="name" placeholder="{{ nameValue }}" onBlur="{{ this.handleBlur }}" value="" />
+					<input type="text" name="name" placeholder="{{ nameValue }}" onBlur="{{ this.handleBlur }}" value="" style="display:-webkit-box;" isHide />
 					<input type="password" name="password" placeholder="{{ passwordValue }}" onBlur="{{ this.handleBlur }}" value="" />
 					<button type="submit" class="submit_button">{{ $cQ }}</button>
 				</form>
