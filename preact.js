@@ -472,7 +472,7 @@ Array.prototype.del = function(num) {
 			langs && $.extend(map.tmplLang, langs);
 			return this;
 		},
-		tmplBindsExtend: function(binds){
+		tmplBindsExtend: function(binds) {
 			binds && $.extend(map.binds, binds);
 			return this;
 		},
@@ -576,7 +576,6 @@ Array.prototype.del = function(num) {
 			return this;
 		}
 	});
-	win.pReact = $;
 })(this, {
 		emiTypeFn: {
 			load: function(a, map, done) {
@@ -779,6 +778,13 @@ Array.prototype.del = function(num) {
 			len = args.length,
 			i;
 		for (i = 0; i < len; i++) args[i](a);
+
+		if (typeof define === "function" && define.amd) {
+			define("preact", [], function() {
+				return a;
+			});
+		}
+		window.pReact = a;
 
 		return a;
 	}(function($) {
