@@ -329,9 +329,9 @@ Array.prototype.del = function(num) {
 			if (result.length >= 1) {
 				$.each(result, function(i, str) {
 					if (/{{\s+end\s+for\s+}}/.test(str)) {
-						str = str.split(/{{\s+end\s+for\s+}}/)[0];
-						str = "{{ for " + str + "{{ end for }}";
-						str = str.replace(/{{\s+[^}]+\s+}}/gi, function(a, b) {
+						var o = "{{ for " + str.split(/{{\s+end\s+for\s+}}/)[0] + "{{ end for }}",
+							t = o;
+						str = t.replace(/{{\s+[^}]+\s+}}/gi, function(a, b) {
 							if (/{{\s+for\s+/.test(a)) {
 								a = a.replace("{{ for ", "var data = result, arr = [];for ").replace(" }}", "{arr.push(pReact.tmpl(_###_");
 							} else if (/{{\s+end\s+for\s+}}/.test(a)) {
@@ -339,7 +339,7 @@ Array.prototype.del = function(num) {
 							}
 							return a;
 						}).replace(/\'/gi, "\\\'").replace(/\"/gi, "\\\"").replace(/_###_/gi, "'");
-						html = map.ceval("return function(result){" + str + "}")(data);
+						html = html.replace(o, map.ceval("return function(result){" + str + "}")(data));
 					}
 				});
 			}
@@ -372,6 +372,33 @@ Array.prototype.del = function(num) {
 					});
 				}
 				return html;
+			},
+			switchend: function(html) {
+				var a = html.split("{{ switch ");
+				if (a.length > 1) {
+					map.each(a, function(i, str) {
+						if (/{{\s+end\s+switch\s+}}/.test(str)) {
+							var a = ("{{ switch " + str).split("{{ end switch }}"),
+								o = a[0] + "{{ end switch }}",
+								t = o;
+							a = t.replace(/{{\s+[^}]+\s+}}/gi, function(a, b) {
+								if (/{{\s+switch\s+/.test(a)) {
+									a = a.replace("{{ ", "var switchstr= _###__###_;").replace(" }}", "{").replace(/\'/gi, "_###_").replace(/\"/gi, "_###_");
+								} else if (/{{\s+end\s+switch\s+}}/.test(a)) {
+									a = "}";
+								} else if (/{{\s+case\s+/.test(a)) {
+									a = a.replace("{{ ", "").replace(" }}", " : switchstr = _###_").replace(/\'/gi, "_###_").replace(/\"/gi, "_###_");
+								} else if (/{{\s+end\s+case\s+}}/.test(a)) {
+									a = a.replace(/{{\s+end\s+case\s+}}/, "_###_;break;");
+								}
+								return a;
+							}).replace(/\'/gi, "\\\'").replace(/\"/gi, "\\\"").replace(/_###_/gi, "'") + "return switchstr;";
+							a = map.ceval("return function(){" + a + "}")();
+							html = html.replace(o, a);
+						}
+					});
+				}
+				return html;
 			}
 		},
 		tmpl: function(html, data) {
@@ -392,7 +419,6 @@ Array.prototype.del = function(num) {
 					return a;
 				});
 			});
-
 			map.each(map.tmplLang, function(name, fn) {
 				name != "toArray" && (html = fn(html));
 			});
