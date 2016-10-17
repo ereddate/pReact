@@ -51,7 +51,7 @@ pReact，不支持ie9(包括ie9）以下版本IE浏览器。模板文件扩展�
 		render(){
 			let a = "testEs6-a";
 			return (
-				<div onClick="{{ this.divHandle }}">{{ a }} {{ $a }}</div>
+				<div onClick="{{ this.divHandle }}" isHide>{{ a }} {{ $a }}</div>
 				<button>no handle</button>
 			)
 		}
@@ -93,6 +93,18 @@ pjs模板，数据赋值方法如下：
 onClick onCopy onCut onPaste onKeyDown onKeyPress onKeyUp onFocus onBlur onChange onInput onSubmit onTouchCancel onTouchEnd onTouchMove
 onTouchStart onScroll onWheel
 注：事件名在on后首字母应为大字。
+
+伪类属性：
+isHide 隐藏
+isShow 显示
+```
+pjs模板，伪类属性扩展写法如下：
+```
+pReact.tmplBindsExtend({
+	name: function(elem, obj){
+		...
+	}
+});
 ```
 pjs模板, 数据过滤方法如下：
 ```
