@@ -325,17 +325,25 @@ Array.prototype.del = function(num) {
 	$.extend(map, {
 		repeatTmpl: function(html, data) {
 			var arr = [];
-			$.each(data, function(i, item) {
-				var result = html.split("{{ repeat }}");
-				if (result.length > 1) {
-					$.each(result, function(i, str) {
-						/{{\s+end\s+repeat\s+}}/.test(str) && arr.push(map.tmpl(str.split(/{{\s+end\s+repeat\s+}}/)[0], item));
-					});
-				} else if (result.length === 1) {
-					/{{\s+end\s+repeat\s+}}/.test(result[0]) && arr.push(map.tmpl(result[0].split(/{{\s+end\s+repeat\s+}}/)[0], item));
-				}
-			});
-			return html.replace(/{{\s+repeat\s+}}\r*\n*\s*(.+)\s*\r*\n*{{\s+end\s+repeat\s+}}/, arr.join(''));
+			var result = html.split("{{ repeat ");
+			if (result.length >= 1) {
+				$.each(result, function(i, str) {
+					if (/{{\s+end\s+repeat\s+}}/.test(str)) {
+						str = str.split(/{{\s+end\s+repeat\s+}}/)[0];
+						str = "{{ repeat " + str + "{{ end repeat }}";
+						str = str.replace(/{{\s+[^}]+\s+}}/gi, function(a, b) {
+							if (/{{\s+repeat\s+/.test(a)) {
+								a = a.replace("{{ repeat ", "var data = result, arr = [];for ").replace(" }}", "{arr.push(pReact.tmpl(_###_");
+							} else if (/{{\s+end\s+repeat\s+}}/.test(a)) {
+								a = a.replace(/{{\s+end\s+repeat\s+}}/, "_###_, data[i]));}return arr.join(_###__###_);");
+							}
+							return a;
+						}).replace(/\'/gi, "\\\'").replace(/\"/gi, "\\\"").replace(/_###_/gi, "'");
+						html = map.ceval("return function(result){" + str + "}")(data);
+					}
+				});
+			}
+			return html;
 		},
 		tmplLang: {
 			ifend: function(html) {
@@ -349,7 +357,7 @@ Array.prototype.del = function(num) {
 							a = t.replace(/{{\s+[^}]+\s+}}/gi, function(a, b) {
 								if (/{{\s+if\s+/.test(a)) {
 									a = a.replace("{{ ", "var _ifend = _###__###_;").replace(" }}", "{ _ifend = _###_").replace(/\'/gi, "_###_").replace(/\"/gi, "_###_");
-								} else if (/{{\s+else\s+if\s+/.test(a)){
+								} else if (/{{\s+else\s+if\s+/.test(a)) {
 									a = a.replace("{{ ", "_###_;}").replace(" }}", "{ _ifend = _###_").replace(/\'/gi, "_###_").replace(/\"/gi, "_###_");
 								} else if (/{{\s+else\s+}}/.test(a)) {
 									a = "_###_;}else{ _ifend = _###_";
