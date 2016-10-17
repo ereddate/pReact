@@ -323,6 +323,44 @@ Array.prototype.del = function(num) {
 	};
 	tmplFilter = tmplFilter($);
 	$.extend(map, {
+		binds: {
+			bindHandle: function(elem, obj) {
+				var _ = map;
+				_.each("onClick onCopy onCut onPaste onKeyDown onKeyPress onKeyUp onFocus onBlur onChange onInput onSubmit onTouchCancel onTouchEnd onTouchMove onTouchStart onScroll onWheel".split(' '), function(i, name) {
+					var val = elem.getAttribute(name);
+					if (val) {
+						var result = /\{\{\s*(.+)\s*\}\}/.exec(val);
+						result && result[1] && (elem.removeAttribute(name), elem[name.toLowerCase()] = function(e) {
+							try {
+								var fn = _.ceval('return function(e){' + result[1] + '(e);}', "e"),
+									then = typeof obj == "function" ? (new obj) : obj;
+								then.elem = this;
+								fn.call(then, e);
+							} catch (e) {
+								console.log(e);
+							}
+						});
+					}
+				});
+			},
+			bindShow: function(elem, obj) {
+				var _ = map;
+				_.each("isShow isHide".split(' '), function(i, name) {
+					var val = elem.getAttribute(name);
+					if (val == "") {
+						if (name == "isShow") {
+							var a = elem.style.cssText != "" ? elem.style.cssText.replace(/display\s*\:\s*none\s*;*/gi, "") : "";
+							elem.style.cssText = a;
+						} else if (name == "isHide") {
+							var a = elem.style.cssText != "" ? elem.style.cssText.replace(/display\s*\:\s*[a-zA-Z-]*\s*;*/gi, "") : "";
+							a = a + "display:none";
+							elem.style.cssText = a;
+						}
+						elem.removeAttribute(name);
+					}
+				});
+			}
+		},
 		repeatTmpl: function(html, data) {
 			var arr = [];
 			var result = html.split("{{ for ");
@@ -432,6 +470,10 @@ Array.prototype.del = function(num) {
 		},
 		tmplLangExtend: function(langs) {
 			langs && $.extend(map.tmplLang, langs);
+			return this;
+		},
+		tmplBindsExtend: function(binds){
+			binds && $.extend(map.binds, binds);
 			return this;
 		},
 		trim: function(text) {
@@ -612,25 +654,6 @@ Array.prototype.del = function(num) {
 			}
 			exec(0, a);
 		},
-		bindHandle: function(elem, obj) {
-			var _ = this;
-			_.each("onClick onCopy onCut onPaste onKeyDown onKeyPress onKeyUp onFocus onBlur onChange onInput onSubmit onTouchCancel onTouchEnd onTouchMove onTouchStart onScroll onWheel".split(' '), function(i, name) {
-				var val = elem.getAttribute(name);
-				if (val) {
-					var result = /\{\{\s*(.+)\s*\}\}/.exec(val);
-					result && result[1] && (elem.removeAttribute(name), elem[name.toLowerCase()] = function(e) {
-						try {
-							var fn = _.ceval('return function(e){' + result[1] + '(e);}', "e"),
-								then = typeof obj == "function" ? (new obj) : obj;
-							then.elem = this;
-							fn.call(then, e);
-						} catch (e) {
-							console.log(e);
-						}
-					});
-				}
-			});
-		},
 		ceval: function(s, ops) {
 			return new Function(ops, s)(ops);
 		},
@@ -638,11 +661,15 @@ Array.prototype.del = function(num) {
 			var _ = this;
 			if (a.children.length > 0) {
 				_.each(a.children, function(i, elem) {
-					_.bindHandle(elem, obj);
+					_.each(_.binds, function(name, fn) {
+						name != "toArray" && fn(elem, obj);
+					});
 					_.findDom(elem, obj);
 				});
 			} else {
-				_.bindHandle(a, obj);
+				_.each(_.binds, function(name, fn) {
+					name != "toArray" && fn(a, obj);
+				});
 			}
 		},
 		renderHandle: function(html, obj) {
