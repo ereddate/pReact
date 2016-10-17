@@ -325,17 +325,17 @@ Array.prototype.del = function(num) {
 	$.extend(map, {
 		repeatTmpl: function(html, data) {
 			var arr = [];
-			var result = html.split("{{ repeat ");
+			var result = html.split("{{ for ");
 			if (result.length >= 1) {
 				$.each(result, function(i, str) {
-					if (/{{\s+end\s+repeat\s+}}/.test(str)) {
-						str = str.split(/{{\s+end\s+repeat\s+}}/)[0];
-						str = "{{ repeat " + str + "{{ end repeat }}";
+					if (/{{\s+end\s+for\s+}}/.test(str)) {
+						str = str.split(/{{\s+end\s+for\s+}}/)[0];
+						str = "{{ for " + str + "{{ end for }}";
 						str = str.replace(/{{\s+[^}]+\s+}}/gi, function(a, b) {
-							if (/{{\s+repeat\s+/.test(a)) {
-								a = a.replace("{{ repeat ", "var data = result, arr = [];for ").replace(" }}", "{arr.push(pReact.tmpl(_###_");
-							} else if (/{{\s+end\s+repeat\s+}}/.test(a)) {
-								a = a.replace(/{{\s+end\s+repeat\s+}}/, "_###_, data[i]));}return arr.join(_###__###_);");
+							if (/{{\s+for\s+/.test(a)) {
+								a = a.replace("{{ for ", "var data = result, arr = [];for ").replace(" }}", "{arr.push(pReact.tmpl(_###_");
+							} else if (/{{\s+end\s+for\s+}}/.test(a)) {
+								a = a.replace(/{{\s+end\s+for\s+}}/, "_###_, data[i]));}return arr.join(_###__###_);");
 							}
 							return a;
 						}).replace(/\'/gi, "\\\'").replace(/\"/gi, "\\\"").replace(/_###_/gi, "'");
