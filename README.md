@@ -168,10 +168,16 @@ pjs模板，伪标签写法如下：
 		<div>3</div>
 	{{ end if }}
 {{ end for }}
-
+//switch和if可以嵌套使用。
 {{ switch ({{ index }}) }}
 	{{ case 0 }}
-		<li id="{{ id }}">1</li>
+		{{ if (a > b) }}
+			<div>1</div>
+		{{ else if (a < b) }}
+			<div>2</div>
+		{{ else }}
+			<div>3</div>
+		{{ end if }}
 	{{ end case }}
 	{{ case 1 }}
 		<li id="{{ id }}">2</li>
