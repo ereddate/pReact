@@ -145,8 +145,8 @@ pReact.tmplFilterExtend({
 ```
 pjs模板，伪标签写法如下：
 ```
-//伪标签。repeat（循环）、if（如果）语法不能同名嵌套使用，repeat可以套if使用，反之不可。
-{{ repeat (var i=0;i<data.length;i++) }} 或 {{ repeat (var i=0;i<2;i++) }}
+//伪标签。for（循环）、if（如果）语法不能同名嵌套使用，for可以套if使用，反之不可。
+{{ for (var i=0;i<data.length;i++) }} 或 {{ for (var i=0;i<2;i++) }}
 	<div>{{ id }}</div>
 	{{ if (a > b) }}
 		<div>1</div>
@@ -155,7 +155,7 @@ pjs模板，伪标签写法如下：
 	{{ else }}
 		<div>3</div>
 	{{ end if }}
-{{ end repeat }}
+{{ end for }}
 ```
 pjs模板，伪标签扩展写法如下：
 ```
