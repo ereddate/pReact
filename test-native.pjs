@@ -95,6 +95,19 @@ var newList = pReact.createClass({
 							<li id="{{ id }}">3<a href="{{ url }}" target="_blank"><img src="{{ img }}" /></a><div><h2><a href="{{ url }}" target="_blank">{{ title | limitTo : 8 }}...</a></h2>{{ media | limitTo : 4 }}... {{ time }}</div></li>
 						{{ end if }}
 					{{ end for }}
+					{{ for (var i=0;i<data.length;i++) }}
+						{{ switch ({{ index }}) }}
+							{{ case 0 }}
+								<li id="{{ id }}">1<a href="{{ url }}" target="_blank"><img src="{{ img }}" /></a><div><h2><a href="{{ url }}" target="_blank">{{ title | limitTo : 8 }}...</a></h2>{{ media | limitTo : 4 }}... {{ time }}</div></li>
+							{{ end case }}
+							{{ case 1 }}
+								<li id="{{ id }}">2<a href="{{ url }}" target="_blank"><img src="{{ img }}" /></a><div><h2><a href="{{ url }}" target="_blank">{{ title | limitTo : 8 }}...</a></h2>{{ media | limitTo : 5 }}... {{ time }}</div></li>
+							{{ end case }}
+							{{ case 2 }}
+								<li id="{{ id }}">3<a href="{{ url }}" target="_blank"><img src="{{ img }}" /></a><div><h2><a href="{{ url }}" target="_blank">{{ title | limitTo : 8 }}...</a></h2>{{ media | limitTo : 4 }}... {{ time }}</div></li>
+							{{ end case }}
+						{{ end switch }}
+					{{ end for }}
 				</ul>
 			</div>
 		)
