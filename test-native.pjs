@@ -86,7 +86,7 @@ var newList = pReact.createClass({
 		return (
 			<div class="form clearFx">
 				<ul>
-					{{ repeat (var i=0;i<data.length;i++) }}
+					{{ for (var i=0;i<data.length;i++) }}
 						{{ if ('{{ media }}'.length > 8) }}
 							<li id="{{ id }}">1<a href="{{ url }}" target="_blank"><img src="{{ img }}" /></a><div><h2><a href="{{ url }}" target="_blank">{{ title | limitTo : 8 }}...</a></h2>{{ media | limitTo : 4 }}... {{ time }}</div></li>
 						{{ else if ('{{ media }}'.length >= 2 && '{{ media }}'.length <= 4) }}
@@ -94,7 +94,7 @@ var newList = pReact.createClass({
 						{{ else }}
 							<li id="{{ id }}">3<a href="{{ url }}" target="_blank"><img src="{{ img }}" /></a><div><h2><a href="{{ url }}" target="_blank">{{ title | limitTo : 8 }}...</a></h2>{{ media | limitTo : 4 }}... {{ time }}</div></li>
 						{{ end if }}
-					{{ end repeat }}
+					{{ end for }}
 				</ul>
 			</div>
 		)
