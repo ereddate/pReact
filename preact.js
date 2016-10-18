@@ -226,6 +226,7 @@ Array.prototype.del = function(num) {
 				elem && elem.type && elem.type == "text/pReact" && (html = elem.innerHTML, elem.parentNode.removeChild(elem), map.render(html));
 			}
 			callback && callback.call($);
+			return this;
 		}
 	});
 
