@@ -68,6 +68,17 @@ pReact && pReact.renderDom(
 	<newForm />,
 	document.getElementById("main")
 );
+pReact && pReact.renderDom(
+	<newForm />,
+	document.getElementById("main")
+);
+var emptyHtml = pReact.createClass({
+	render: function(){
+		return (
+			<article>empty html</article>
+		)
+	}
+});
 var newList = pReact.createClass({
 	getInitData: function(success, error){
 		pReact.jsonp("url").done(function(data){
