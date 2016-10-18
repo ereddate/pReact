@@ -293,7 +293,7 @@ pReact && ((function($) {
 							a = "_###_;}";
 						}
 						return a;
-					}).replace(/\'/gi, "\\\'").replace(/\"/gi, "\\\"").replace(/_###_/gi, "'") + "return _ifend;";
+					}).replace(/_###_/gi, "'") + "return _ifend;";
 					a = pReact.sEval("return function(){" + a + "}")();
 					html = html.replace(o, a);
 				}
@@ -320,7 +320,7 @@ pReact && ((function($) {
 							a = a.replace(/{{\s+end\s+case\s+}}/, "_###_;break;");
 						}
 						return a;
-					}).replace(/\'/gi, "\\\'").replace(/\"/gi, "\\\"").replace(/_###_/gi, "'") + "return switchstr;";
+					}).replace(/_###_/gi, "'") + "return switchstr;";
 					a = pReact.sEval("return function(){" + a + "}")();
 					html = html.replace(o, a);
 				}
@@ -338,7 +338,7 @@ pReact && ((function($) {
 			},
 			browser: {
 				version: 0,
-				isFirefox: ua.indexOf("fxios/") > -1,				
+				isFirefox: ua.indexOf("fxios/") > -1,
 				isQQ: ua.indexOf("qq/") > -1,
 				isqqbrowser: ua.indexOf("mqqbrowser/") > -1,
 				isUC: ua.indexOf("ucbrowser/") > -1,
