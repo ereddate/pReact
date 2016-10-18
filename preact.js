@@ -206,11 +206,11 @@ Array.prototype.del = function(num) {
 					resolve(data);
 				}
 			}).done(function(data) {
-				var result = $.tmpl(typeof obj == "string" ? obj : obj.render(), data);
+				var result = data ? $.tmpl(typeof obj == "string" ? obj : obj.render(), data) : typeof obj == "string" ? obj : obj.render();
 				if (typeof html == "string") {
 					parent.innerHTML = parent.innerHTML + result;
 				} else {
-					parent.appendChild(map.renderHandle(result, html));
+					(result != "" || result) && parent.appendChild(map.renderHandle(result, html));
 				}
 			});
 			return this;
