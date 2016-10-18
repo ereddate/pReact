@@ -193,11 +193,15 @@ Array.prototype.del = function(num) {
 			$.promise.when(function(resolve, reject) {
 				if (data && "data" in data || !data && "getInitData" in obj && typeof obj.getInitData == "function") {
 					var fn = (!data ? obj : data).getInitData,
-						fnStr = fn.toString().replace(/getInitData\s*\(/gi, function(a, b) {
+						fnStr = fn.toString();
+					try {
+						new Function("a", "b", "(" + fnStr + ")(a, b)")(resolve, reject);
+					} catch (e) {
+						new Function("a", "b", "(" + fnStr.replace(/getInitData\s*\(/gi, function(a, b) {
 							a = a.replace(a, "function(");
 							return a;
-						});
-					new Function("a", "b", "(" + fnStr + ")(a, b)")(resolve, reject);
+						}) + ")(a, b)")(resolve, reject);
+					}
 				} else {
 					resolve(data);
 				}
