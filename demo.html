@@ -19,7 +19,10 @@
 					path:"./",
 					ext: ".pjs",
 					files:["test-native"]
-				}).done();
+				}).done(function(){
+					console.log(pReact.ua)
+					console.log(pReact.device)
+				});
 			});
 		</script>
 	</body>
