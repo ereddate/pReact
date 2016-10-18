@@ -351,6 +351,14 @@ pReact && ((function($) {
 	device.browser.isIApp = device.os.isiOS && !device.browser.isSafari && !device.browser.isqqbrowser && !device.browser.isUC && !device.browser.isWechat && !device.browser.isSamsung && !device.browser.isSogou && !device.browser.isPinganWifi;
 	$.extend($, {
 		ua: ua,
-		device: device
+		device: device,
+		toMobile: function(num) {
+			function setFontSize() {
+				var iWidth = document.documentElement.clientWidth;
+				document.getElementsByTagName('html')[0].style.fontSize = (iWidth / num).toFixed(2) + 'px';
+			}
+			setFontSize();
+			window.addEventListener("onorientationchange" in window ? "orientationchange" : "resize", setFontSize, false);
+		}
 	});
 })(pReact));
