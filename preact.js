@@ -3,79 +3,73 @@ Array.prototype.del = function(num) {
 	return this;
 };
 (function(win, map, $) {
-	var doc = win.document;
-
-	function is(str, obj) {
-		var bool = false;
-		bool = _getConstructorName(obj).toLowerCase() === str.toLowerCase();
-		return bool;
-	}
-
-	function _getConstructorName(o) {
-		if (o != null && o.constructor != null) {
-			return Object.prototype.toString.call(o).slice(8, -1);
-		} else {
-			return '';
-		}
-	}
-
-	function _mulReplace(s, arr) {
-		for (var i = 0; i < arr.length; i++) {
-			s = s.replace(arr[i][0], arr[i][1]);
-		}
-		return s;
-	}
-
-	function _escapeChars(s) {
-		return _mulReplace(s, [
-			[/\\/g, "\\\\"],
-			[/"/g, "\\\""],
-			[/\r/g, "\\r"],
-			[/\n/g, "\\n"],
-			[/\t/g, "\\t"]
-		]);
-	}
-
-	function _type(obj, bool) {
-		var type = _getConstructorName(obj).toLowerCase();
-		if (bool) return type;
-		switch (type) {
-			case 'string':
-				return '"' + _escapeChars(obj) + '"';
-			case 'number':
-				var ret = obj.toString();
-				return /N/.test(ret) ? 'null' : ret;
-			case 'boolean':
-				return obj.toString();
-			case 'date':
-				return 'new Date(' + obj.getTime() + ')';
-			case 'array':
-				var ar = [];
-				for (var i = 0; i < obj.length; i++) {
-					ar[i] = _stringify(obj[i]);
-				}
-				return '[' + ar.join(',') + ']';
-			case 'object':
-				if ($.isPlainObject(obj)) {
-					ar = [];
-					for (i in obj) {
-						ar.push('"' + _escapeChars(i) + '":' + _stringify(obj[i]));
+	var doc = win.document,
+		is = function is(str, obj) {
+			var bool = false;
+			bool = _getConstructorName(obj).toLowerCase() === str.toLowerCase();
+			return bool;
+		},
+		_getConstructorName = function(o) {
+			if (o != null && o.constructor != null) {
+				return Object.prototype.toString.call(o).slice(8, -1);
+			} else {
+				return '';
+			}
+		},
+		_mulReplace = function(s, arr) {
+			for (var i = 0; i < arr.length; i++) {
+				s = s.replace(arr[i][0], arr[i][1]);
+			}
+			return s;
+		},
+		_escapeChars = function(s) {
+			return _mulReplace(s, [
+				[/\\/g, "\\\\"],
+				[/"/g, "\\\""],
+				[/\r/g, "\\r"],
+				[/\n/g, "\\n"],
+				[/\t/g, "\\t"]
+			]);
+		},
+		_type = function(obj, bool) {
+			var type = _getConstructorName(obj).toLowerCase();
+			if (bool) return type;
+			switch (type) {
+				case 'string':
+					return '"' + _escapeChars(obj) + '"';
+				case 'number':
+					var ret = obj.toString();
+					return /N/.test(ret) ? 'null' : ret;
+				case 'boolean':
+					return obj.toString();
+				case 'date':
+					return 'new Date(' + obj.getTime() + ')';
+				case 'array':
+					var ar = [];
+					for (var i = 0; i < obj.length; i++) {
+						ar[i] = _stringify(obj[i]);
 					}
-					return '{' + ar.join(',') + '}';
-				}
-		}
-		return 'null';
-	}
-
-	function _stringify(obj) {
-		if (obj == null) {
+					return '[' + ar.join(',') + ']';
+				case 'object':
+					if ($.isPlainObject(obj)) {
+						ar = [];
+						for (i in obj) {
+							ar.push('"' + _escapeChars(i) + '":' + _stringify(obj[i]));
+						}
+						return '{' + ar.join(',') + '}';
+					}
+			}
 			return 'null';
-		}
-		if (obj.toJSON) {
-			return obj.toJSON();
-		}
-		return _type(obj);
-	}
+		},
+		_stringify = function(obj) {
+			if (obj == null) {
+				return 'null';
+			}
+			if (obj.toJSON) {
+				return obj.toJSON();
+			}
+			return _type(obj);
+		};
 
 	$.extend(map, {
 		binds: {},
@@ -127,6 +121,7 @@ Array.prototype.del = function(num) {
 			return html;
 		}
 	});
+	
 	$.extend($, {
 		jsonToArray: function(obj, fn) {
 			var a = [];
