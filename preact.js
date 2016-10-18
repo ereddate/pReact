@@ -244,10 +244,11 @@ Array.prototype.del = function(num) {
 			ops && $.extend(this, ops);
 			return this;
 		},
-		done: function() {
+		done: function(callback) {
 			!this.emi && (this.emi = []);
 			this.emi && this.emi.push({
-				type: "done"
+				type: "done",
+				callback:callback
 			});
 			map.activeEmi(this, $);
 			return this;
@@ -302,6 +303,7 @@ Array.prototype.del = function(num) {
 								var elem = b[i];
 								elem && elem.type && elem.type == "text/pReact" && (html = elem.innerHTML, elem.parentNode.removeChild(elem), map.render(elem.innerHTML));
 							}
+							a.callback && a.callback.call($);
 						} else {
 							loadFile(0, $a);
 						}
