@@ -121,7 +121,11 @@ Array.prototype.del = function(num) {
 			return html;
 		}
 	});
-	
+	$.tmplModel = {};
+	$.tmplModel.filters = map.tmplFilter;
+	$.tmplModel.langs = map.tmplLang;
+	$.tmplModel.binds = map.binds;
+
 	$.extend($, {
 		jsonToArray: function(obj, fn) {
 			var a = [];
@@ -138,15 +142,24 @@ Array.prototype.del = function(num) {
 			return is(str, obj);
 		},
 		tmplFilterExtend: function(filters) {
-			filters && $.extend(map.tmplFilter, filters);
+			filters && $.extend($.tmplModel.filters, filters);
 			return this;
 		},
 		tmplLangExtend: function(langs) {
-			langs && $.extend(map.tmplLang, langs);
+			langs && $.extend($.tmplModel.langs, langs);
 			return this;
 		},
 		tmplBindsExtend: function(binds) {
-			binds && $.extend(map.binds, binds);
+			binds && $.extend($.tmplModel.binds, binds);
+			return this;
+		},
+		tmplValidsExtend: function(valids) {
+			valids && $.extend($.tmplModel.valids, valids);
+			return this;
+		},
+		tmplControlExtend: function(binds, controllers){
+			binds && $.extend($.tmplModel.binds, binds);
+			controllers && $.extend($.tmplModel.binds.controllers, controllers);
 			return this;
 		},
 		trim: function(text) {
@@ -252,7 +265,7 @@ Array.prototype.del = function(num) {
 			!this.emi && (this.emi = []);
 			this.emi && this.emi.push({
 				type: "done",
-				callback:callback
+				callback: callback
 			});
 			map.activeEmi(this, $);
 			return this;
@@ -342,15 +355,16 @@ Array.prototype.del = function(num) {
 		findDom: function(a, obj) {
 			var _ = this;
 			if (a.children.length > 0) {
-				_.each(a.children, function(i, elem) {
-					_.each(_.binds, function(name, fn) {
-						fn(elem, obj);
+				_.each(_.binds, function(name, fn) {
+					typeof fn == "function" && fn(a, obj);
+					_.each(a.children, function(i, elem) {
+						_.findDom(elem, obj);
 					});
-					_.findDom(elem, obj);
 				});
 			} else {
+				//console.log(a)
 				_.each(_.binds, function(name, fn) {
-					fn(a, obj);
+					typeof fn == "function" && fn(a, obj);
 				});
 			}
 		},
