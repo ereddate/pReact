@@ -79,7 +79,7 @@ pReact && pReact.renderDom(
 	<emptyHtml />,
 	document.getElementById("main")
 );
-var formControler = pReact.createClass({
+var formController = pReact.createClass({
 	submitHandle: function(status){
 		console.log("submit callback!")
 	},
@@ -92,7 +92,7 @@ var formControler = pReact.createClass({
 				.submit_button{padding:5px;border:0;border-radius: 5px;}
 				.error{border:1px red solid;}
 			</style>
-			<div class="form clearFx" p-controler="formControler">
+			<div class="form clearFx" p-controller="formController">
 				<form id="test" action="" method="post">
 					<input type="text" name="name" placeholder="{{ nameValue }}" value="" p-valid="{{ noEmpty }}" p-error="{{ .error }}" />
 					<input type="password" name="password" placeholder="{{ passwordValue }}" value="" p-valid="{{ noEmpty }}" p-error="{{ .error }}" />
@@ -103,7 +103,7 @@ var formControler = pReact.createClass({
 	}
 });
 pReact && pReact.renderDom(
-	<formControler {nameValue: "帐号：请输入...", passwordValue:"密码：请输入...", submitText: "enter", num: "true"} />,
+	<formController {nameValue: "帐号：请输入...", passwordValue:"密码：请输入...", submitText: "enter", num: "true"} />,
 	document.getElementById("main")
 );
 var newList = pReact.createClass({
