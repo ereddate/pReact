@@ -286,8 +286,12 @@ pReact && ((function($) {
 		return true;
 	}
 })), (pReact.extend(pReact, {
+	tmplControlExtend: function(controllers) {
+		controllers && pReact.extend(pReact.tmplModel.binds.controllers, controllers);
+		return this;
+	},
 	tmplValidsExtend: function(valids) {
-		valids && $.extend($.tmplModel.valids, valids);
+		valids && pReact.extend(pReact.tmplModel.valids, valids);
 		return this;
 	}
 })), (pReact.extend(pReact.tmplModel.binds, {
