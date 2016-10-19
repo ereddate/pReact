@@ -202,8 +202,8 @@ pjs模板，伪类控件属性写法如下：
 </style>
 <div class="form clearFx" p-controller="formController">
 	<form id="test" action="" method="post">
-		<input type="text" name="name" placeholder="{{ nameValue }}" value="" p-valid="{{ noEmpty }}" p-error="{{ .error }}" />
-		<input type="password" name="password" placeholder="{{ passwordValue }}" value="" p-valid="{{ noEmpty }}" p-error="{{ .error }}" />
+		<input type="text" name="name" placeholder="{{ nameValue }}" value="" p-valid="noEmpty" p-error="error" />
+		<input type="password" name="password" placeholder="{{ passwordValue }}" value="" p-valid="noEmpty" p-error="error" />
 		<button type="submit" class="submit_button" p-submit="{{ this.submitHandle }}">{{ $cQ }}</button>
 	</form>
 </div>
