@@ -285,6 +285,11 @@ pReact && ((function($) {
 		if (pReact.trim(elem.value || elem.innerHTML) == "") return false;
 		return true;
 	}
+})), (pReact.extend(pReact, {
+	tmplValidsExtend: function(valids) {
+		valids && $.extend($.tmplModel.valids, valids);
+		return this;
+	}
 })), (pReact.extend(pReact.tmplModel.binds, {
 	controllers: {
 		formController: function(elem, obj) {
