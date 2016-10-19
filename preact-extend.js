@@ -258,13 +258,13 @@ pReact && ((function($) {
 		});
 	},
 	bindShow: function(elem, obj) {
-		pReact.each("isShow isHide".split(' '), function(i, name) {
+		pReact.each("p-show p-hide".split(' '), function(i, name) {
 			var val = elem.getAttribute(name);
 			if (val == "") {
-				if (name == "isShow") {
+				if (name == "p-show") {
 					var a = elem.style.cssText != "" ? elem.style.cssText.replace(/display\s*\:\s*none\s*;*/gi, "") : "";
 					elem.style.cssText = a;
-				} else if (name == "isHide") {
+				} else if (name == "p-hide") {
 					var a = elem.style.cssText != "" ? elem.style.cssText.replace(/display\s*\:\s*[a-zA-Z-]*\s*;*/gi, "") : "";
 					a = a + "display:none";
 					elem.style.cssText = a;
@@ -272,8 +272,91 @@ pReact && ((function($) {
 				elem.removeAttribute(name);
 			}
 		});
+	},
+	bindController: function(elem, obj) {
+		var val = elem.getAttribute("p-controller");
+		if (val) {
+			pReact.tmplModel.binds.controllers[val](elem, obj);
+			elem.removeAttribute("p-controller");
+		}
 	}
-}), pReact.tmplLangExtend({
+}), (pReact.extend(!pReact.tmplModel.valids && (pReact.tmplModel.valids = {}) || pReact.tmplModel.valids, {
+	noEmpty: function(elem, valid) {
+		if (pReact.trim(elem.value || elem.innerHTML) == "") return false;
+		return true;
+	}
+})), (pReact.extend(pReact.tmplModel.binds, {
+	controllers: {
+		formController: function(elem, obj) {
+			var form = elem.getElementsByTagName("form");
+			if (form && form.length > 0) {
+				pReact.each(form, function(i, group) {
+					var children = group.children;
+					pReact.each(children, function(i, item) {
+						var val = item.getAttribute("p-submit");
+						if (val) {
+							group.submitButton = item;
+							var result = /\{\{\s+(.+)\s+\}\}/.exec(val);
+							if (result && result[1]) {
+								group.submitButton.removeAttribute("p-submit");
+								try {
+									var fn = pReact.sEval('return function(e){' + result[1] + '(e);}', "e"),
+										then = typeof obj == "function" ? (new obj) : obj;
+									then.elem = group;
+									group.submitButton_success = function() {
+										fn.call(then);
+									};
+								} catch (e) {
+									console.log(e);
+								}
+							};
+						}
+						var validName = item.getAttribute("p-valid");
+						if (validName) {
+							item.validFn = function() {
+								var list = /\{\{\s+(.+)\s+\}\}/.exec(validName);
+								if (list) {
+									list = list[1].split(','), result = true;
+									pReact.each(list, function(i, valid) {
+										valid = valid.split(':');
+										result = valid ? pReact.tmplModel.valids[valid[0]](item, valid[1] || undefined) : true;
+										return result;
+									});
+									return result;
+								} else {
+									return true;
+								}
+							};
+						}
+					});
+					group.onsubmit = function(e) {
+						e.preventDefault();
+						var children = this.children,
+							result = true;
+						pReact.each(children, function(i, item) {
+							result = item.validFn ? item.validFn() : true;
+							var error = item.getAttribute("p-error"),
+								cls = "";
+							if (error) {
+								error = /\{\{\s+\.(.+)\s+\}\}/.exec(error);
+							}
+							if (!result) {
+								error && error[1] && (cls = item.className.replace(error[1], ""), item.className = cls + " " + error[1]);
+								return false;
+							} else {
+								error && error[1] && (item.className = item.className.replace(error[1], ""));
+							}
+						});
+						if (result) {
+							this.submitButton_success.call(this);
+						}
+					};
+				});
+			}
+
+		}
+	}
+})), pReact.tmplLangExtend({
 	ifend: function(html) {
 		var a = html.split("{{ if ");
 		if (a.length > 1) {
