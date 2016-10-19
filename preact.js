@@ -153,12 +153,7 @@ Array.prototype.del = function(num) {
 			binds && $.extend($.tmplModel.binds, binds);
 			return this;
 		},
-		tmplValidsExtend: function(valids) {
-			valids && $.extend($.tmplModel.valids, valids);
-			return this;
-		},
-		tmplControlExtend: function(binds, controllers){
-			binds && $.extend($.tmplModel.binds, binds);
+		tmplControlExtend: function(controllers){
 			controllers && $.extend($.tmplModel.binds.controllers, controllers);
 			return this;
 		},
