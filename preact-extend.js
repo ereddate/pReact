@@ -323,18 +323,13 @@ pReact && ((function($) {
 						var validName = item.getAttribute("p-valid");
 						if (validName) {
 							item.validFn = function() {
-								var list = /\{\{\s+(.+)\s+\}\}/.exec(validName);
-								if (list) {
-									list = list[1].split(','), result = true;
-									pReact.each(list, function(i, valid) {
-										valid = valid.split(':');
-										result = valid ? pReact.tmplModel.valids[valid[0]](item, valid[1] || undefined) : true;
-										return result;
-									});
+								var result = true;
+								pReact.each(validName.split(','), function(i, valid) {
+									valid = valid.split(':');
+									result = valid ? pReact.tmplModel.valids[valid[0]](item, valid[1] || undefined) : true;
 									return result;
-								} else {
-									return true;
-								}
+								});
+								return result;
 							};
 						}
 					});
@@ -346,14 +341,11 @@ pReact && ((function($) {
 							result = item.validFn ? item.validFn() : true;
 							var error = item.getAttribute("p-error"),
 								cls = "";
-							if (error) {
-								error = /\{\{\s+\.(.+)\s+\}\}/.exec(error);
-							}
 							if (!result) {
-								error && error[1] && (cls = item.className.replace(error[1], ""), item.className = cls + " " + error[1]);
+								error && (cls = item.className.replace(error, ""), item.className = cls + " " + error);
 								return false;
 							} else {
-								error && error[1] && (item.className = item.className.replace(error[1], ""));
+								error && (item.className = item.className.replace(error, ""));
 							}
 						});
 						if (result) {
