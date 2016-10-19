@@ -79,6 +79,33 @@ pReact && pReact.renderDom(
 	<emptyHtml />,
 	document.getElementById("main")
 );
+var formControler = pReact.createClass({
+	submitHandle: function(status){
+		console.log("submit callback!")
+	},
+	render: function(){
+		var cQ = "{{ submitText | capitalize }}";
+		return (
+			<style>
+				input,button{display:block;margin:10px 0;}
+				.form{margin:10px auto;text-align: center;width:300px;}
+				.submit_button{padding:5px;border:0;border-radius: 5px;}
+				.error{border:1px red solid;}
+			</style>
+			<div class="form clearFx" p-controler="formControler">
+				<form id="test" action="" method="post">
+					<input type="text" name="name" placeholder="{{ nameValue }}" value="" p-valid="{{ noEmpty }}" p-error="{{ .error }}" />
+					<input type="password" name="password" placeholder="{{ passwordValue }}" value="" p-valid="{{ noEmpty }}" p-error="{{ .error }}" />
+					<button type="submit" class="submit_button" p-submit="{{ this.submitHandle }}">{{ $cQ }}</button>
+				</form>
+			</div>
+		)
+	}
+});
+pReact && pReact.renderDom(
+	<formControler {nameValue: "帐号：请输入...", passwordValue:"密码：请输入...", submitText: "enter", num: "true"} />,
+	document.getElementById("main")
+);
 var newList = pReact.createClass({
 	getInitData: function(success, error){
 		pReact.jsonp("url").done(function(data){
