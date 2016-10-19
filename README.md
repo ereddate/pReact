@@ -51,7 +51,7 @@ pReact，仅支持ios和android设备。模板文件扩展名为*.pjs。
 		render(){
 			let a = "testEs6-a";
 			return (
-				<div onClick="{{ this.divHandle }}" isHide>{{ a }} {{ $a }}</div>
+				<div onClick="{{ this.divHandle }}" p-hide>{{ a }} {{ $a }}</div>
 				<button>no handle</button>
 			)
 		}
@@ -95,8 +95,8 @@ onTouchStart onScroll onWheel
 注：事件名在on后首字母应为大字。
 
 伪类属性：
-isHide 隐藏
-isShow 显示
+p-hide 隐藏
+p-show 显示
 ```
 pjs模板，伪类属性扩展写法如下：
 ```
@@ -193,6 +193,40 @@ pReact.tmplLangExtend({
 	name: function(html){
 		...
 		return html;
+	}
+});
+```
+pjs模板，伪类控件属性写法如下：
+```
+...
+</style>
+<div class="form clearFx" p-controller="formController">
+	<form id="test" action="" method="post">
+		<input type="text" name="name" placeholder="{{ nameValue }}" value="" p-valid="{{ noEmpty }}" p-error="{{ .error }}" />
+		<input type="password" name="password" placeholder="{{ passwordValue }}" value="" p-valid="{{ noEmpty }}" p-error="{{ .error }}" />
+		<button type="submit" class="submit_button" p-submit="{{ this.submitHandle }}">{{ $cQ }}</button>
+	</form>
+</div>
+...
+只需要标签的父级加入"p-controller"属性并赋值名称（此名称为“控件控制集”中对应的方法），并按要求给控制添加条件属性就可以实现相应的功能。
+现提供控件如下：
+1）formController验证控件。
+使用方法：
+在对应标签加入p-valid（验证条件）、p-error（错误样式）、p-submit（提交验证成功后的回调方法）就可以实现表单验证功能。写法如上例！
+
+验证方法扩展写法如下：
+pReact.tmplValidsExtend({
+	name: function(elem, valid){
+		...
+		return true;
+	}
+}
+```
+pjs模板，伪类控件属性扩展写法如下：
+```
+pReact.tmplControlExtend({
+	name: function(elem, obj){
+		...
 	}
 });
 ```
