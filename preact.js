@@ -153,10 +153,6 @@ Array.prototype.del = function(num) {
 			binds && $.extend($.tmplModel.binds, binds);
 			return this;
 		},
-		tmplControlExtend: function(controllers){
-			controllers && $.extend($.tmplModel.binds.controllers, controllers);
-			return this;
-		},
 		trim: function(text) {
 			var rtrim = /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g;
 			return text == null ?
