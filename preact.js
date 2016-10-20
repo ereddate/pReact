@@ -1,14 +1,16 @@
-Array.prototype.del = function(num) {
-	this.splice(num, 1);
-	return this;
-};
-Array.prototype.concatAll = function(arr) {
-	var len = arr.length,
-		i;
-	for (i = 0; i < len; i++) this.push(arr[i]);
-	return this;
-};
 (function(win, map, $) {
+	$.extend(Array.prototype, {
+		del: function(num) {
+			this.splice(num, 1);
+			return this;
+		},
+		concatAll: function(arr) {
+			var len = arr.length,
+				i;
+			for (i = 0; i < len; i++) this.push(arr[i]);
+			return this;
+		}
+	});
 	var doc = win.document,
 		is = function is(str, obj) {
 			var bool = false;
@@ -141,6 +143,13 @@ Array.prototype.concatAll = function(arr) {
 			}
 			return a;
 		},
+		createFilesDom: function(url, callback) {
+			map.emiTypeFn.load({
+				url: url,
+				callback: callback
+			});
+			return this;
+		},
 		stringify: function(obj) {
 			return _stringify(obj);
 		},
@@ -271,27 +280,20 @@ Array.prototype.concatAll = function(arr) {
 })(this, {
 		emiTypeFn: {
 			load: function(a, map, done) {
-				var doc = document;
-				var item = doc.createElement(/\.js$/.test(a.url) ? "script" : "link");
-				if (/\.js$/.test(a.url)) {
+				var doc = document,
+					type = /\.js$/.test(a.url) ? "script" : "link",
+					item = doc.createElement(type);
+				if (type == "script") {
 					item.src = a.url;
-					item.callback = a.callback;
-					item.onload = item.onerror = function() {
-						try {
-							this.callback && this.callback();
-							doc.body.removeChild(this), map.obj.emi && map.obj.emi.del(a.index), done(0, map.obj.emi);
-						} catch (e) {
-							doc.body.removeChild(this), map.obj.emi && map.obj.emi.del(a.index), done(0, map.obj.emi);
-						}
-					};
 				} else {
 					item.rel = "stylesheet";
 					item.href = a.url;
-					item.onload = item.onerror = function() {
-						map.obj.emi && map.obj.emi.del(a.index), done(0, map.obj.emi);
-					}
 				}
-				doc.body.appendChild(item);
+				item.callback = a.callback;
+				item.onload = item.onerror = function() {
+					type == "script" && doc.body.removeChild(this), this.callback && this.callback(), map && map.obj.emi && map.obj.emi.del(a.index), done && done(0, map.obj.emi);
+				};
+				type == "script" ? doc.body.appendChild(item) : doc.getElementsByTagName("head")[0].appendChild(item);
 			},
 			done: function(a, map, done) {
 				var doc = document;
@@ -723,8 +725,6 @@ Array.prototype.concatAll = function(arr) {
 		var document = window.document,
 			key,
 			name,
-			scriptTypeRE = /^(?:text|application)\/javascript/i,
-			xmlTypeRE = /^(?:text|application)\/xml/i,
 			jsonType = 'application/json',
 			htmlType = 'text/html',
 			blankRE = /^\s*$/
@@ -742,7 +742,7 @@ Array.prototype.concatAll = function(arr) {
 
 		function empty() {}
 
-		$.ajaxSettings = {
+		ajaxSettings = {
 			type: 'GET',
 			success: empty,
 			error: empty,
@@ -752,13 +752,10 @@ Array.prototype.concatAll = function(arr) {
 				return new window.XMLHttpRequest()
 			},
 			accepts: {
-				script: 'text/javascript, application/javascript, application/x-javascript',
 				json: jsonType,
-				xml: 'application/xml, text/xml',
 				html: htmlType,
 				text: 'text/plain'
 			},
-			crossDomain: false,
 			timeout: 3000,
 			processData: true,
 			cache: true
@@ -767,9 +764,7 @@ Array.prototype.concatAll = function(arr) {
 		function mimeToDataType(mime) {
 			if (mime) mime = mime.split(';', 2)[0]
 			return mime && (mime == htmlType ? 'html' :
-				mime == jsonType ? 'json' :
-				scriptTypeRE.test(mime) ? 'script' :
-				xmlTypeRE.test(mime) && 'xml') || 'text'
+				mime == jsonType ? 'json' : 'text')
 		}
 
 		function appendQuery(url, query) {
@@ -779,17 +774,15 @@ Array.prototype.concatAll = function(arr) {
 
 		function serializeData(options) {
 			if (options.processData && options.data && typeof options.data != "string")
-				options.data = $.param(options.data, options.traditional)
+				options.data = $.serialize(options.data, options.traditional)
 			if (options.data && (!options.type || options.type.toUpperCase() == 'GET'))
 				options.url = appendQuery(options.url, options.data), options.data = undefined
 		}
 
-		$.ajax = function(options) {
+		ajax = function(options) {
 			var settings = $.extend({}, options || {})
-			for (key in $.ajaxSettings)
-				if (settings[key] === undefined) settings[key] = $.ajaxSettings[key]
-			if (!settings.crossDomain) settings.crossDomain = /^([\w-]+:)?\/\/([^\/]+)/.test(settings.url) &&
-				RegExp.$2 != window.location.host
+			for (key in ajaxSettings)
+				if (settings[key] === undefined) settings[key] = ajaxSettings[key]
 
 			if (!settings.url) settings.url = window.location.toString()
 			serializeData(settings)
@@ -797,16 +790,16 @@ Array.prototype.concatAll = function(arr) {
 
 			var dataType = settings.dataType
 
-			var mime = $.ajaxSettings.accepts[dataType],
+			var mime = ajaxSettings.accepts[dataType],
 				headers = {},
 				setHeader = function(name, value) {
 					name && (headers[name.toLowerCase()] = [name, value])
 				},
 				protocol = /^([\w-]+:)\/\//.test(settings.url) ? RegExp.$1 : window.location.protocol,
-				xhr = $.ajaxSettings.xhr()
+				xhr = ajaxSettings.xhr()
 			xhr.setRequestHeader = setHeader
 			var nativeSetHeader = xhr.setRequestHeader,
-				abortTimeout
+				abortTimeout;
 
 			setHeader('X-Requested-With', 'XMLHttpRequest')
 			setHeader('Accept', mime || '*/*')
@@ -821,9 +814,7 @@ Array.prototype.concatAll = function(arr) {
 						result = xhr.responseText
 
 						try {
-							if (dataType == 'script')(1, eval)(result)
-							else if (dataType == 'xml') result = xhr.responseXML
-							else if (dataType == 'json') result = blankRE.test(result) ? null : $.parseJSON(result)
+							if (dataType == 'json') result = blankRE.test(result) ? null : $.sEval("return " + result)();
 						} catch (e) {
 							error = e
 						}
@@ -854,21 +845,21 @@ Array.prototype.concatAll = function(arr) {
 			return xhr
 		}
 
-		$.load = function(url, success) {
+		$.load = function(url, success, type) {
 			var parts = url.split(/\s/),
 				selector,
 				options = {
 					url: url,
 					data: undefined,
 					success: success,
-					dataType: "html"
+					dataType: type || "html"
 				},
 				callback = options.success
 			if (parts.length > 1) options.url = parts[0], selector = parts[1]
 			options.success = function(response) {
 				callback && callback(response)
 			}
-			$.ajax(options)
+			ajax(options);
 			return this
 		}
 
@@ -888,7 +879,7 @@ Array.prototype.concatAll = function(arr) {
 			})
 		}
 
-		$.param = function(obj, traditional) {
+		$.serialize = function(obj, traditional) {
 			var params = []
 			params.add = function(k, v) {
 				this.push(escape(k) + '=' + escape(v))
