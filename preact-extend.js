@@ -282,7 +282,7 @@ pReact && ((function($) {
 	}
 }), (pReact.extend(!pReact.tmplModel.valids && (pReact.tmplModel.valids = {}) || pReact.tmplModel.valids, {
 	noEmpty: function(elem, valid) {
-		if (pReact.trim(elem.value || elem.innerHTML) == "") return false;
+		if (pReact.trim(elem.value || elem.innerHTML) === "" || ("checked" in elem) && (elem.type == "checkbox" || elem.type == "radio") && !elem.checked) return false;
 		return true;
 	}
 })), (pReact.extend(pReact, {
@@ -300,7 +300,11 @@ pReact && ((function($) {
 			var form = elem.getElementsByTagName("form");
 			if (form && form.length > 0) {
 				pReact.each(form, function(i, group) {
-					var children = group.children;
+					var children = [];
+					pReact.each("input button select textarea".split(' '), function(i, name){
+						var arr = group.getElementsByTagName(name);
+						arr && arr.length>0 && (children = children.concatAll(arr));
+					});
 					pReact.each(children, function(i, item) {
 						var val = item.getAttribute("p-submit");
 						if (val) {
@@ -335,17 +339,22 @@ pReact && ((function($) {
 					});
 					group.onsubmit = function(e) {
 						e.preventDefault();
-						var children = this.children,
-							result = true;
+						var result = true;
 						pReact.each(children, function(i, item) {
 							result = item.validFn ? item.validFn() : true;
 							var error = item.getAttribute("p-error"),
-								cls = "";
+								cls = "",
+								tip = item.getAttribute("p-tip"),
+								tipbox = item.getAttribute("p-for"),
+								dom;
+							if (tipbox) dom = document.getElementById(tipbox);
 							if (!result) {
 								error && (cls = item.className.replace(error, ""), item.className = cls + " " + error);
+								tip && dom && (dom.innerHTML = tip);
 								return false;
 							} else {
 								error && (item.className = item.className.replace(error, ""));
+								tip && dom && (dom.innerHTML = "");
 							}
 						});
 						if (result) {
