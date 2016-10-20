@@ -94,8 +94,12 @@ var formController = pReact.createClass({
 			</style>
 			<div class="form clearFx" p-controller="formController">
 				<form id="test" action="" method="post">
-					<input type="text" name="name" placeholder="{{ nameValue }}" value="" p-valid="noEmpty" p-error="error" />
-					<input type="password" name="password" placeholder="{{ passwordValue }}" value="" p-valid="noEmpty" p-error="error" />
+					<span id="name"></span>
+					<input type="text" name="name" placeholder="{{ nameValue }}" value="" p-valid="noEmpty" p-error="error" p-for="name" p-tip="这是错误的1" />
+					<input type="password" name="password" placeholder="{{ passwordValue }}" value="" p-valid="noEmpty" p-error="error" p-for="name" p-tip="这是错误的2" />
+					<label id="checklebel"><input type="checkbox" name="check" p-valid="noEmpty" p-for="check" p-tip="这是错误的3" for="checklebel"/>1<em id="check"></em></label>
+					<input type="radio" name="radiobox" p-valid="noEmpty" p-for="name" p-tip="这是错误的4"/>
+					<textarea name="desc" p-valid="noEmpty" p-error="error" p-for="name" p-tip="这是错误的5"></textarea>
 					<button type="submit" class="submit_button" p-submit="{{ this.submitHandle }}">{{ $cQ }}</button>
 				</form>
 			</div>
