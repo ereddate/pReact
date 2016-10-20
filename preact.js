@@ -2,6 +2,12 @@ Array.prototype.del = function(num) {
 	this.splice(num, 1);
 	return this;
 };
+Array.prototype.concatAll = function(arr) {
+	var len = arr.length,
+		i;
+	for (i = 0; i < len; i++) this.push(arr[i]);
+	return this;
+};
 (function(win, map, $) {
 	var doc = win.document,
 		is = function is(str, obj) {
