@@ -301,9 +301,9 @@ pReact && ((function($) {
 			if (form && form.length > 0) {
 				pReact.each(form, function(i, group) {
 					var children = [];
-					pReact.each("input button select textarea".split(' '), function(i, name){
+					pReact.each("input button select textarea".split(' '), function(i, name) {
 						var arr = group.getElementsByTagName(name);
-						arr && arr.length>0 && (children = children.concatAll(arr));
+						arr && arr.length > 0 && (children = children.concatAll(arr));
 					});
 					pReact.each(children, function(i, item) {
 						var val = item.getAttribute("p-submit");
@@ -445,6 +445,18 @@ pReact && ((function($) {
 	$.extend($, {
 		ua: ua,
 		device: device,
+		toHTML5: function() {
+			var head = document.getElementsByTagName("head")[0],
+				style = document.createElement("style");
+			head.appendChild(style);
+			style.innerHTML = "abbr,article,aside,audio,canvas,datalist,details,dialog,eventsource,figure,footer,object,header,hgroup,mark,menu,meter,nav,output,progress,section,time,video{display:block}";
+			var e = "abbr,article,aside,audio,canvas,datalist,details,dialog,eventsource,figure,footer,object,header,hgroup,mark,menu,meter,nav,output,progress,section,time,video".split(',');
+			var i = e.length;
+			while (i--) {
+				document.createElement(e[i])
+			}
+			return this;
+		},
 		toMobile: function(num) {
 			function setFontSize() {
 				var iWidth = document.documentElement.clientWidth;
@@ -452,6 +464,7 @@ pReact && ((function($) {
 			}
 			setFontSize();
 			window.addEventListener("onorientationchange" in window ? "orientationchange" : "resize", setFontSize, false);
+			return this;
 		}
 	});
 })(pReact));
