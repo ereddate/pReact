@@ -325,7 +325,7 @@
 						}
 					});
 				}
-				map.preact.load && loadFile(0, $a);
+				map.preact.load && $a.length > 0 && loadFile(0, $a);
 			}
 		},
 		activeEmi: function(self, $) {
@@ -349,6 +349,7 @@
 			exec(0, a);
 		},
 		ceval: function(s, ops) {
+			//console.log(s)
 			return new Function(ops, s)(ops);
 		},
 		findDom: function(a, obj) {
@@ -380,21 +381,22 @@
 			}
 			return fragment;
 		},
-		renderExp: /return\s*\(\s*[^\r\n]+\s*\>\s*\)}|return\s*\(\s*[^\r\n]+\s*\>\s*\)/gi,
+		renderExp: /return\s*\(.+\);+}/gi,
 		renderExpA: /render\s*\(\)\s*\{\s*.*\s*return\s*\(\s*(.+)\s*\);*\s*\}\}/gi,
 		renderDomExp: /\.renderDom\s*\(\s*\<\s*([^\>]+)\/\>,[^;]+\)/gi,
 		renderObjExp: /\{\{\s*\$([^\}\s*]+)\s*\}\}/gi,
 		evalHtml: function(html) {
 			var _ = this;
-			html = html.replace(/\s{2,}/gi, "");
+			html = html.replace(/\s{2,}/gi, "").replace(/\);+}/gi, ");}\r\n");
 			html = html.replace(_.renderExp, function(a) {
 				var b = /\(\s*([^\r\n]+\s*\>)\s*\)/.exec(a);
 				if (b) {
 					a = a.replace(b[0], "\'" + b[1].replace(/\'/gi, "\\\'").replace(/\"/gi, "\\\"") + "\'");
 				}
+				//console.log(b)
 				return a;
 			}).replace(/[\r|\n|\r\n]*/gi, "").replace(_.renderExpA, function(a, b) {
-				if (b) {
+				if (b) {	
 					var exp = "\'" + b.replace(/\'/gi, "\\\'") + "\'";
 					a = a.replace(b, exp);
 				}
@@ -458,7 +460,6 @@
 		a.fn = a.prototype = {
 			init: function(b) {
 				b && a.extend(this, b);
-				this.Callbacks = [];
 				return this;
 			}
 		};
