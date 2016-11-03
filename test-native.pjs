@@ -1,7 +1,7 @@
 var newForm = pReact.createClass({
 	getInitData: function(success, error){
 		var _ = this;
-		pReact.jsonp("url").done(function(data){
+		pReact.jsonp("http://m.hexun.com/api/getHotPic").done(function(data){
 			_.data ={nameValue: "帐号：请输入...", passwordValue:"密码：请输入...", submitText: "submit button", num: "true"}; 
 			success(_.data);
 		}, function(){
@@ -55,12 +55,12 @@ var newForm = pReact.createClass({
 			</style>
 			<div class="form clearFx">
 				<form id="test" action="" onSubmit="{{ this.handleSubmit }}">
-					<input type="text" name="name" placeholder="{{ nameValue }}" onBlur="{{ this.handleBlur }}" value="" style="display:-webkit-box;" isHide />
+					<input type="text" name="name" placeholder="{{ nameValue }}" onBlur="{{ this.handleBlur }}" value="" style="display:-webkit-box;" p-hide />
 					<input type="password" name="password" placeholder="{{ passwordValue }}" onBlur="{{ this.handleBlur }}" value="" />
 					<button type="submit" class="submit_button">{{ $cQ }}</button>
 				</form>
 			</div>
-		)
+		);
 	},
 	b: 1
 });
@@ -68,26 +68,15 @@ pReact && pReact.renderDom(
 	<newForm />,
 	document.getElementById("main")
 );
-var emptyHtml = pReact.createClass({
-	render: function(){
-		return (
-			<article>empty html</article>
-		)
-	}
-});
-pReact && pReact.renderDom(
-	<emptyHtml />,
-	document.getElementById("main")
-);
 var formController = pReact.createClass({
 	submitHandle: function(status){
-		console.log("submit callback!")
+		console.log("callback!")
 	},
 	render: function(){
 		var cQ = "{{ submitText | capitalize }}";
 		return (
 			<style>
-				input,button{display:block;margin:10px 0;}
+				input,button,span{display:block;margin:10px 0;}
 				.form{margin:10px auto;text-align: center;width:300px;}
 				.submit_button{padding:5px;border:0;border-radius: 5px;}
 				.error{border:1px red solid;}
@@ -103,19 +92,31 @@ var formController = pReact.createClass({
 					<button type="submit" class="submit_button" p-submit="{{ this.submitHandle }}">{{ $cQ }}</button>
 				</form>
 			</div>
-		)
+		);
 	}
 });
 pReact && pReact.renderDom(
 	<formController {nameValue: "帐号：请输入...", passwordValue:"密码：请输入...", submitText: "enter", num: "true"} />,
 	document.getElementById("main")
 );
+var emptyHtml = pReact.createClass({
+	render: function(){
+		return (
+			<article>empty html</article>
+		);
+	}
+});
+pReact && pReact.renderDom(
+	<emptyHtml />,
+	document.getElementById("main")
+);
 var newList = pReact.createClass({
 	getInitData: function(success, error){
-		pReact.jsonp("url").done(function(data){
+		pReact.jsonp("http://m.hexun.com/api/getHotPic").done(function(data){
 			pReact.each(data, function(i,item){
 				pReact.extend(data[i], {
-					img: item.img.split(/\.[jpg|gif|png]/)[0]+".jpg"
+					img: item.img.split(/\.[jpg|gif|png]/)[0]+".jpg",
+					index: i
 				});
 				pReact.extend(data[i].data, data[i]);
 			});
@@ -137,10 +138,17 @@ var newList = pReact.createClass({
 							<li id="{{ id }}">3<a href="{{ url }}" target="_blank"><img src="{{ img }}" /></a><div><h2><a href="{{ url }}" target="_blank">{{ title | limitTo : 8 }}...</a></h2>{{ media | limitTo : 4 }}... {{ time }}</div></li>
 						{{ end if }}
 					{{ end for }}
+					
 					{{ for (var i=0;i<data.length;i++) }}
 						{{ switch ({{ index }}) }}
 							{{ case 0 }}
-								<li id="{{ id }}">1<a href="{{ url }}" target="_blank"><img src="{{ img }}" /></a><div><h2><a href="{{ url }}" target="_blank">{{ title | limitTo : 8 }}...</a></h2>{{ media | limitTo : 4 }}... {{ time }}</div></li>
+								{{ if ('{{ media }}'.length > 8) }}
+									<li id="{{ id }}">4<a href="{{ url }}" target="_blank"><img src="{{ img }}" /></a><div><h2><a href="{{ url }}" target="_blank">{{ title | limitTo : 8 }}...</a></h2>{{ media | limitTo : 4 }}... {{ time }}</div></li>
+								{{ else if ('{{ media }}'.length >= 2 && '{{ media }}'.length <= 4) }}
+									<li id="{{ id }}">5<a href="{{ url }}" target="_blank"><img src="{{ img }}" /></a><div><h2><a href="{{ url }}" target="_blank">{{ title | limitTo : 8 }}...</a></h2>{{ media | limitTo : 5 }}... {{ time }}</div></li>
+								{{ else }}
+									<li id="{{ id }}">6<a href="{{ url }}" target="_blank"><img src="{{ img }}" /></a><div><h2><a href="{{ url }}" target="_blank">{{ title | limitTo : 8 }}...</a></h2>{{ media | limitTo : 4 }}... {{ time }}</div></li>
+								{{ end if }}
 							{{ end case }}
 							{{ case 1 }}
 								<li id="{{ id }}">2<a href="{{ url }}" target="_blank"><img src="{{ img }}" /></a><div><h2><a href="{{ url }}" target="_blank">{{ title | limitTo : 8 }}...</a></h2>{{ media | limitTo : 5 }}... {{ time }}</div></li>
@@ -152,7 +160,7 @@ var newList = pReact.createClass({
 					{{ end for }}
 				</ul>
 			</div>
-		)
+		);
 	},
 	b: 1
 });
@@ -186,7 +194,7 @@ typeof jQuery != "undefined" && (function(win, $, _){
 			XnewForm.handleSubmit = function(e){
 				e.preventDefault();
 				_.promise.when(function(resolve, reject){
-					_.jsonp("url").done(function(data){
+					_.jsonp("http://m.hexun.com/api/getHotPic").done(function(data){
 						resolve(data);
 					}, function(){
 						reject("error");
@@ -219,7 +227,7 @@ typeof jQuery != "undefined" && (function(win, $, _){
 							</form>
 						{{ end if }}
 					</div>
-				)
+				);
 			};
 			pReact.renderDom(
 				<XnewForm />, 
@@ -252,7 +260,7 @@ typeof jQuery != "undefined" && (function(win, $, _){
 })(this, jQuery, pReact);
 class testEs6{
 	getInitData(success, error){
-		pReact.jsonp("url").done(function(data){
+		pReact.jsonp("http://m.hexun.com/api/getHotPic").done(function(data){
 			success({a:"testEs6"});
 		}, function(){
 			error();
@@ -275,9 +283,9 @@ class testEs6{
 			</style>
 			<div class="testes6" onClick="{{ this.divHandle }}">{{ a }} {{ $a }}</div>
 			<button id="nohandle" onClick="{{ this.buttonHandle }}">no handle</button>
-		)
+		);
 	}
-}
+};
 pReact && pReact.renderDom(
 	<testEs6 />,
 	document.getElementById("main")
