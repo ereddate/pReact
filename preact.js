@@ -9,6 +9,15 @@
 				i;
 			for (i = 0; i < len; i++) this.push(arr[i]);
 			return this;
+		},
+		replaceAll: function(from, to) {
+			var len = this.length,
+				i;
+			for (i = 0; i < len; i++) {
+				var arr = this[i];
+				this[i] = arr.replace(from, to);
+			}
+			return this;
 		}
 	});
 	var doc = win.document,
@@ -381,27 +390,39 @@
 			}
 			return fragment;
 		},
-		renderExp: /return\s*\(.+\);+}/gi,
+		renderExp: /return\s*\(\r*\n*\s*<.+>\s*\r*\n*\);+\r/gi,
 		renderExpA: /render\s*\(\)\s*\{\s*.*\s*return\s*\(\s*(.+)\s*\);*\s*\}\}/gi,
 		renderDomExp: /\.renderDom\s*\(\s*\<\s*([^\>]+)\/\>,[^;]+\)/gi,
 		renderObjExp: /\{\{\s*\$([^\}\s*]+)\s*\}\}/gi,
 		evalHtml: function(html) {
-			var _ = this;
-			html = html.replace(/\s{2,}/gi, "").replace(/\);+}/gi, ");}\r\n");
-			html = html.replace(_.renderExp, function(a) {
-				var b = /\(\s*([^\r\n]+\s*\>)\s*\)/.exec(a);
-				if (b) {
-					a = a.replace(b[0], "\'" + b[1].replace(/\'/gi, "\\\'").replace(/\"/gi, "\\\"") + "\'");
+			var _ = this,
+				item = [],
+				group = [],
+				isIn = false;
+			html.replace(/.+[\s\r\n]*/gi, function(a, b) {
+				if (/return\s*\([\s\r\n]*/.test(a)) {
+					item.push(");");
+					isIn = true;
 				}
-				//console.log(b)
-				return a;
-			}).replace(/[\r|\n|\r\n]*/gi, "").replace(_.renderExpA, function(a, b) {
-				if (b) {	
-					var exp = "\'" + b.replace(/\'/gi, "\\\'") + "\'";
-					a = a.replace(b, exp);
+				if (/^\);[\s\r\n]*/.test(a)) {
+					item.length > 0 && group.push(item);
+					item = [];
+					isIn = false;
 				}
-				return a;
-			}).replace(_.renderDomExp, function(a, b) {
+				if (isIn) {
+					item.push(a);
+				}
+			});
+			pReact.each(group, function(i, arr) {
+				arr = arr.del(0);
+				arr.push(");");
+				var cArr = pReact.extend([], arr);
+				cArr = cArr.replaceAll(/\'/gi, "\\\'").replaceAll(/\"/gi, "\\\"");
+				cArr[0] = cArr[0].replace(/\(/gi, "'");
+				cArr[cArr.length - 1] = "';";
+				html = html.replace(arr.join(''), cArr.join(''));
+			});
+			html = html.replace(/\s{2,}/gi, "").replace(/[\r|\n|\r\n]*/gi, "").replace(_.renderDomExp, function(a, b) {
 				if (b) {
 					var k = b.split(' ');
 					var c = b.replace(k[0] + " ", "").replace(/\/\>/, "");
