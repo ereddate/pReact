@@ -386,7 +386,8 @@ pReact && ((function($) {
 							a = "_###_;}";
 						}
 						return a;
-					}).replace(/_###_/gi, "'") + "return _ifend;";
+					}).replace(/\'/gi, "\\'");
+					a = a.replace(/_###_/gi, "'") + "return _ifend;";
 					a = pReact.sEval("return function(){" + a + "}")();
 					html = html.replace(o, a);
 				}
@@ -458,6 +459,7 @@ pReact && ((function($) {
 			return this;
 		},
 		toMobile: function(num) {
+			num = num || 16;
 			function setFontSize() {
 				var iWidth = document.documentElement.clientWidth;
 				document.getElementsByTagName('html')[0].style.fontSize = (iWidth / num).toFixed(2) + 'px';
