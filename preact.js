@@ -183,6 +183,31 @@
 	}
 
 	$.extend($, {
+		css: function(elem, cssText) {
+			var cls = "";
+			if ($.is("object", cssText)) {
+				pReact.each(cssText, function(name, val) {
+					cls += name + ":" + val + ";";
+				});
+				elem.style.cssText += cls;
+			}else if ($.is("string", cssText)){
+				elem.style.cssText = elem.style.cssText.replace(cssText, "");
+				elem.style.cssText += cssText;
+			}
+			return $;
+		},
+		addClass: function(elem, className) {
+			var cls = elem.className;
+			$.each(($.is("string", className) && className.split(' ') || $.is("array", className) && className), function(i, name) {
+				name = name.replace(/\./, "");
+				var reg = new RegExp("\\s*" + name + "\\s*", "gim");
+				if (reg.test(cls)) {
+					cls = cls.replace(reg, "") + " " + name;
+					elem.className = cls;
+				}
+			});
+			return $;
+		},
 		findElement: function(selector) {
 			var elems, name = selector.replace(/\#|\./ig, "");
 			/^\#/.test(selector) ? (elems = doc.getElementById(name)) : (elems = doc.getElementsByName(name), elems && ("length" in elems) && elems.length === 0 && (elems = doc.getElementsByTagName(name)), elems && ("length" in elems) && elems.length === 0 && /^\./.test(selector) && (elems = getElementsByClassName(name)), elems && ("length" in elems) && elems.length === 0 && ("querySelectorAll" in doc) && (elems = doc.querySelectorAll(selector)));
