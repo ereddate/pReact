@@ -390,8 +390,8 @@
 			}
 			return fragment;
 		},
-		renderExp: /return\s*\(\r*\n*\s*<.+>\s*\r*\n*\);+\r/gi,
-		renderExpA: /render\s*\(\)\s*\{\s*.*\s*return\s*\(\s*(.+)\s*\);*\s*\}\}/gi,
+		//renderExp: /return\s*\(\r*\n*\s*<.+>\s*\r*\n*\);+\r/gi,
+		//renderExpA: /render\s*\(\)\s*\{\s*.*\s*return\s*\(\s*(.+)\s*\);*\s*\}\}/gi,
 		renderDomExp: /\.renderDom\s*\(\s*\<\s*([^\>]+)\/\>,[^;]+\)/gi,
 		renderObjExp: /\{\{\s*\$([^\}\s*]+)\s*\}\}/gi,
 		evalHtml: function(html) {
