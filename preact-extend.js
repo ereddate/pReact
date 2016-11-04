@@ -248,8 +248,10 @@ pReact && ((function($) {
 					try {
 						var fn = pReact.sEval('return function(e){' + result[1] + '(e);}', "e"),
 							then = typeof obj == "function" ? (new obj) : obj;
-						then.elem = this;
-						fn.call(then, e);
+						then.elem = e.path && (this.path = e.path) && this || this;
+						fn.call(then, pReact.extend(e, {
+							target: e.path && (e.target.path = e.path) && e.target || e.target
+						}));
 					} catch (e) {
 						console.log(e);
 					}
