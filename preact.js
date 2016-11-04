@@ -144,6 +144,19 @@
 	$.tmplModel.binds = map.binds;
 
 	$.extend($, {
+		parentAll: function(elem, id) {
+			var parent = elem.parentNode;
+			if (elem.path) {
+				$.each(elem.path, function(i, item) {
+					if (/^#/.test(id) && item.id == id.replace("#", "")) {
+						parent = item;
+					} else if (/^\./.test(id) && (new RegExp(id)).test(item.className)) {
+						parent = item;
+					}
+				});
+			}
+			return parent;
+		},
 		jsonToArray: function(obj, fn) {
 			var a = [];
 			for (name in obj) {
@@ -216,7 +229,7 @@
 				len = args.length;
 			return len > 0 && $.extend({}, args[0]);
 		},
-		renderDom: function(html, data, parent) {
+		renderDom: function(html, data, parent, callback) {
 			var obj = typeof html == "function" ? (new html()) : html;
 			$.promise.when(function(resolve, reject) {
 				if (data && "data" in data || !data && "getInitData" in obj && typeof obj.getInitData == "function") {
@@ -240,6 +253,7 @@
 				} else {
 					(result != "" || result) && parent.appendChild(map.renderHandle(result, html));
 				}
+				callback && callback();
 			});
 			return this;
 		},
