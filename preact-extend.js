@@ -462,6 +462,7 @@ pReact && ((function($) {
 		},
 		toMobile: function(num) {
 			num = num || 16;
+
 			function setFontSize() {
 				var iWidth = document.documentElement.clientWidth;
 				document.getElementsByTagName('html')[0].style.fontSize = (iWidth / num).toFixed(2) + 'px';
@@ -471,4 +472,64 @@ pReact && ((function($) {
 			return this;
 		}
 	});
-})(pReact));
+})(pReact), (function($, win) {
+	var doc = win.document;
+	$.jq && $.jq.extend($.jq.fn, {
+		css: function() {
+			if (this.length > 0) {
+				var args = arguments,
+					len = args.length,
+					keys, cssText;
+				$.each(this, function(i, elem) {
+					if (len === 1) {
+						if (/\:/.test(args[0]) && $.is("string", args[0])) {
+							cssText = args[0];
+							elem.style.cssText = elem.style.cssText.replace(cssText, "");
+							elem.style.cssText += cssText;
+						} else if ($.is("string", args[0])) {
+							keys = args[0];
+							var val = [];
+							$.each(keys.split(' '), function(x, key) {
+								val.push(this[0].style[key] || window.getComputedStyle(this[0])[key]);
+							});
+							return val;
+						} else if ($.is("object", args[0])) {
+							cssText = args[0];
+							var cls = "";
+							pReact.each(cssText, function(name, val) {
+								cls += name + ":" + val + ";";
+							});
+							elem.style.cssText += cls;
+						}
+					} else if (len === 2) {
+						elem.style[args[0]] = args[1];
+					}
+				});
+			}
+			return this;
+		},
+		parents: function(id) {
+			var parent = null;
+			if (this.length > 0) {
+				var elem = this[0];
+				parent = elem.parentElement;
+				if (elem.path) {
+					if (id) {
+						$.each(elem.path, function(i, item) {
+							if (/^#/.test(id) && item.id == id.replace("#", "")) {
+								parent = item;
+								return false;
+							} else if (/^\./.test(id) && (new RegExp(id.replace(".", ""))).test(item.className)) {
+								parent = item;
+								return false;
+							}
+						});
+					} else {
+						parent = elem.path;
+					}
+				}
+			}
+			return parent;
+		}
+	});
+})(pReact, this));
