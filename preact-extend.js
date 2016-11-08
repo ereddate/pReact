@@ -424,7 +424,8 @@ pReact && ((function($) {
 		}
 		return html;
 	}
-}), (function($) {
+}), (function($, win) {
+	var doc = win.document;
 	var ua = navigator.userAgent.toLowerCase(),
 		device = {
 			os: {
@@ -472,8 +473,6 @@ pReact && ((function($) {
 			return this;
 		}
 	});
-})(pReact), (function($, win) {
-	var doc = win.document;
 	var dir = function(elem, dir) {
 		var matched = [];
 
