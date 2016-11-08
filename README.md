@@ -98,7 +98,7 @@ pjs模板，数据赋值方法如下：
 
 事件支持如下：
 onClick onCopy onCut onPaste onKeyDown onKeyPress onKeyUp onFocus onBlur onChange onInput onSubmit onTouchCancel onTouchEnd onTouchMove
-onTouchStart onScroll onWheel
+onTouchStart onScroll onWheel onSwipe
 注：事件名在on后首字母应为大字。
 
 伪类属性：
