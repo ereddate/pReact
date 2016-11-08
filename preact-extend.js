@@ -240,11 +240,22 @@ pReact && ((function($) {
 	$.tmplFilterExtend(tmplFilter);
 })(pReact), pReact.tmplBindsExtend({
 	bindHandle: function(elem, obj) {
-		pReact.each("onClick onCopy onCut onPaste onKeyDown onKeyPress onKeyUp onFocus onBlur onChange onInput onSubmit onTouchCancel onTouchEnd onTouchMove onTouchStart onScroll onWheel".split(' '), function(i, name) {
+		pReact.each("onSwipe onClick onCopy onCut onPaste onKeyDown onKeyPress onKeyUp onFocus onBlur onChange onInput onSubmit onTouchCancel onTouchEnd onTouchMove onTouchStart onScroll onWheel".split(' '), function(i, name) {
 			var val = elem.getAttribute(name);
 			if (val) {
 				var result = /\{\{\s*(.+)\s*\}\}/.exec(val);
-				result && result[1] && (elem.removeAttribute(name), elem[name.toLowerCase()] = function(e) {
+				result && result[1] && (elem.removeAttribute(name), /swipe/.test(name.toLowerCase()) && pReact.jq ? pReact.jq(elem).swipe({
+					callback: function(e, dir) {
+						try {
+							var fn = pReact.sEval('return function(e, dir){' + result[1] + '(e, dir);}', "e", "dir"),
+								then = typeof obj == "function" ? (new obj) : obj;
+							then.elem = e && e.path && (this.path = e.path) && this || this;
+							fn.call(then, e, dir);
+						} catch (e) {
+							console.log(e);
+						}
+					}
+				}) : elem[name.toLowerCase()] = function(e) {
 					try {
 						var fn = pReact.sEval('return function(e){' + result[1] + '(e);}', "e"),
 							then = typeof obj == "function" ? (new obj) : obj;
