@@ -7,6 +7,7 @@ pReact，仅支持ios和android设备。模板文件扩展名为*.pjs。
 ```
 <script src="preact.js"></script>
 <script src="preact-jq.js"></script>
+<script src="preact-swipe.js"></script>
 <script src="preact-extend.js"></script>
 ```
 写法：
