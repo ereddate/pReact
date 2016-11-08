@@ -474,6 +474,16 @@ pReact && ((function($) {
 	});
 })(pReact), (function($, win) {
 	var doc = win.document;
+	var dir = function(elem, dir) {
+		var matched = [];
+
+		while ((elem = elem[dir]) && elem.nodeType !== 9) {
+			if (elem.nodeType === 1) {
+				matched.push(elem);
+			}
+		}
+		return matched;
+	};
 	$.jq && $.jq.extend($.jq.fn, {
 		css: function() {
 			if (this.length > 0) {
@@ -516,7 +526,7 @@ pReact && ((function($) {
 				if (elem.path) {
 					if (id) {
 						$.each(elem.path, function(i, item) {
-							if (/^#/.test(id) && item.id == id.replace("#", "")) {
+							if (/^#/.test(id) && item.id && item.id == id.replace("#", "")) {
 								parent = item;
 								return false;
 							} else if (/^\./.test(id) && (new RegExp(id.replace(".", ""))).test(item.className)) {
@@ -526,6 +536,19 @@ pReact && ((function($) {
 						});
 					} else {
 						parent = elem.path;
+					}
+				} else {
+					parent = dir(elem, "parentNode");
+					if (id) {
+						$.each(parent, function(i, item) {
+							if (/^#/.test(id) && item.id && item.id == id.replace("#", "")) {
+								parent = item;
+								return false;
+							} else if (/^\./.test(id) && (new RegExp(id.replace(".", ""))).test(item.className)) {
+								parent = item;
+								return false;
+							}
+						});
 					}
 				}
 			}
