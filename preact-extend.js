@@ -490,7 +490,7 @@ pReact && ((function($) {
 							keys = args[0];
 							var val = [];
 							$.each(keys.split(' '), function(x, key) {
-								val.push(this[0].style[key] || window.getComputedStyle(this[0])[key]);
+								val.push(elem.style[key] || window.getComputedStyle(elem)[key]);
 							});
 							return val;
 						} else if ($.is("object", args[0])) {
