@@ -143,45 +143,6 @@
 	$.tmplModel.langs = map.tmplLang;
 	$.tmplModel.binds = map.binds;
 
-	getElementsByClassName = function(searchClass, node, tag) {
-		if (doc.getElementsByClassName) {
-			var nodes = (node || doc).getElementsByClassName(searchClass),
-				result = [];
-			for (var i = 0; node = nodes[i++];) {
-				if (tag && tag !== "*" && node.tagName === tag.toUpperCase()) {
-					result.push(node)
-				} else {
-					result.push(node)
-				}
-			}
-			return result
-		} else {
-			var result = [];
-			node = node || doc;
-			tag = tag || "*";
-			var classes = searchClass.split(" "),
-				elements = (tag && tag === "*" && node.all) ? node.all : node.getElementsByTagName(tag),
-				patterns = [],
-				current,
-				match;
-			var i = classes.length;
-			while (--i >= 0) {
-				patterns.push(new RegExp("(^|\s)" + classes[i] + "(\s|$)"));
-			}
-			var j = elements.length;
-			while (--j >= 0) {
-				current = elements[j];
-				match = false;
-				for (var k = 0, kl = patterns.length; k < kl; k++) {
-					match = patterns[k].test(current.className);
-					if (!match) break;
-				}
-				if (match) result.push(current);
-			}
-			return result;
-		}
-	}
-
 	$.extend($, {
 		jsonToArray: function(obj, fn) {
 			var a = [];
