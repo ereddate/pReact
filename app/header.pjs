@@ -1,0 +1,101 @@
+var headerView = pReact.createClass({
+	menuButtonClick: function(e){
+		var a = pReact.jq(this.elem).parent();
+		a.hasClass("open") ? a.removeClass("open") : a.removeClass("open").addClass("open");
+	},
+	render:function(){
+		return (
+			<style>
+				.header{
+					height:1.1592rem;
+					line-height:1.1592rem;
+					background:rgba(220,220,220,1);
+					position:fixed;
+					top:0;
+					left:0;
+					right:0;
+				}
+				.header h1{
+					padding:0;
+					margin:0;
+					font-size: 0.7728rem;
+					text-indent: 0.3864rem;
+					line-height:1.1592rem;
+					float:left;
+				}
+				.header .header_nav{
+					float:right;
+				}
+				.header .header_nav a{
+					display:none;
+				}
+				.header .header_nav i{
+					display:block;
+					font:inherit;
+					font-size:0.7728rem;
+					margin-right: 0.3864rem;
+				}
+				.header .header_nav i.header_nav_close{
+					display:none;
+				}
+				.header .header_nav.open{
+					position:absolute;
+					top:1.1592rem;
+					left:0;
+					right:0;
+					background:rgba(105,105,105,.8);
+					z-index:9999;
+				}
+				.header .header_nav.open span{
+					display:block;
+					width:100%;
+					height:5.7959rem;
+					overflow:auto;
+					overflow-x:hidden;
+				}
+				.header .header_nav.open a{
+					display:block;
+					color:rgba(255,255,255,1);
+					text-decoration:none;
+					font-size: 0.7728rem;
+					text-indent: 0.3864rem;
+				}
+				.header .header_nav.open i.header_nav_close{
+					display:block;
+					color:rgba(255,255,255,1);
+					font-size: 0.7728rem;
+					text-indent: 0.4637rem;
+					background:rgba(105,105,105,1);
+					width:100%;
+				}
+				.header .header_nav.open i.header_nav_open{
+					display:none;
+				}
+				.header .header_nav.open a.on{
+					background:rgba(255,215,0,1);
+					color:rgba(0,0,0,1);
+				}
+			</style>
+			<header class="header">
+				<h1>logo</h1>
+				<nav class="header_nav">
+					<span>
+						<a href="" class="on">home</a>
+						<a href="">menu</a>
+						<a href="">menu</a>
+						<a href="">menu</a>
+						<a href="">menu</a>
+						<a href="">menu</a>
+						<a href="">menu</a>
+					</span>
+					<i class="header_nav_close" onClick="{{ this.menuButtonClick }}">close</i>
+					<i class="header_nav_open" onClick="{{ this.menuButtonClick }}">menu</i>
+				</nav>
+			</header>
+		);
+	}
+});
+pReact.renderDom(
+	<headerView />,
+	document.getElementById("header")
+);

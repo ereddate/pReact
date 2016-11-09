@@ -1,0 +1,44 @@
+var mainView = pReact.createClass({
+	swipeCallback: function(e, dir){
+		console.log(dir)
+	},
+	render:function(){
+		return (
+			<style>
+				.main_content{
+					margin:1.1592rem 0 0;
+					min-height:24.0479rem;
+					display:block;
+					background:rgba(255,255,255,1);
+				}
+				.main_content .priceinfo{
+					position:relative;
+				}
+				.main_content .main_header{
+					background:rgba(128,128,128,1);
+					color:rgba(255,255,255,1);
+					font-size:0.7728rem;
+				}
+				.main_content .main_header h1{
+					font-size:0.7728rem;
+					text-indent:0.3864rem;
+				}
+				.main_content .main_header p{
+					text-indent:0.3864rem;
+				}
+			</style>
+			<article class="main_content">
+				<header class="main_header" onSwipe="{{ this.swipeCallback }}">
+					<h1>输入当日价格</h1>
+					<p>...</p>
+				</header>
+				<div id="inputprice" class="main_item"></div>
+				<div id="priceinfo" class="priceinfo"></div>
+			</article>
+		);
+	}
+});
+pReact.renderDom(
+	<mainView />,
+	document.getElementById("main")
+);

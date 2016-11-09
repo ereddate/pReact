@@ -1,0 +1,150 @@
+var priceinfo = pReact.createClass({
+	num:0,
+	insertcard: function(){
+		
+	},
+	'cancel_click':function(e){
+		var parent = pReact.jq(this.elem).parents(".main_item_card");
+		pReact.jq(parent).remove();
+	},
+	'enter_click':function(e){
+		var parent = pReact.jq(this.elem).parents(".main_item_card");
+		pReact.jq(parent).remove();
+	},
+	render:function(){
+		return (
+			<style>
+				.main_item_bcontent{
+					position:fixed;
+					top:0;
+					left:0;
+					right:0;
+					bottom:0;
+					background-color:rgba(0,0,0,.2);
+				}
+				.main_item_card_content{
+					border:0.0625rem solid rgb(0,0,0);
+					position:fixed;
+					top:30%;
+					left: 5%;
+					right: 5%;
+					background-color:rgba(0,0,0,.8);
+					padding:0.3125rem;
+					border-radius:0.3125rem;
+					color:rgb(255,255,255);
+					z-index:99999;
+				}
+				.main_item_card label{
+					padding:0.3125rem 0;
+					font-size:0.7728rem;
+				}
+				.main_item_card_bottom{
+					text-align:center;
+				}
+				.main_item_card_bottom button{
+					margin:0 0.3125rem;
+				}
+			</style>
+			<div class="main_item_card">
+				<div class="main_item_card_content" id="{{ id }}">
+					<label>日期：<span id="card_date">{{ date | date : "yyyy年MM月dd日" }}</span></label>
+					<label>商家：<span id="card_business">{{ business }}</span></label>
+					<label>种类：<span id="card_type">{{ type }}</span></label>
+					<label>品名：<span id="card_name">{{ name }}</span></label>
+					<label>价格：<span id="card_price">{{ price }}</span>元/斤</label>
+					{{ if ({{ showbottom }} == true) }}
+						<div class="main_item_card_bottom">
+							<button onClick="{{ this['enter_click'] }}">确认并提交</button><button onClick="{{ this['cancel_click'] }}">取 消</button>
+						</div>
+					{{ end if }}
+				</div>
+				<div class="main_item_bcontent"></div>
+			</div>
+		);
+	}
+});
+var inputPrice = pReact.createClass({
+	getInitData: function(success, error){
+		success({date:pReact.getDate()});
+	},
+	"type_change": function(e){
+		console.log(e.target.value)
+	},
+	"name_change": function(e){
+		console.log(e.target.value)
+	},
+	"business_change": function(e){
+		console.log(e.target.value)
+	},
+	"submit_click": function(e){
+		e.preventDefault();
+		var doms = {};
+		pReact.each(this.elem, function(i, elem){
+			var val = elem.value;
+			if(/select/.test(elem.tagName.toLowerCase())){
+				pReact.each(elem, function(i, item){
+					if (item.value === val){
+						val = item.innerHTML;
+						return false;
+					}
+				});
+			}
+			doms[elem.name] = val;
+		});
+		doms["showbottom"] = true;
+		doms["id"] = "price_alert";
+		priceinfo.data = doms;
+		pReact.renderDom(
+			<priceinfo doms/>,
+			document.getElementById("priceinfo")
+		);
+	},
+	dateChange: function(e){
+		console.log(this.elem.value)
+	},
+	render: function(){
+		return (
+			<style>
+				.main_item{
+					margin:1rem;
+				}
+				.main_item .inputpriceform span,.main_item .inputpriceform select{
+					display:block;
+					vertical-align:middle;
+				}
+				.main_item .inputpriceform label{
+					display:block;
+					padding:0.3125rem 0;
+					font-size:0.7728rem;
+				}
+				.main_item .inputpriceform input, .main_item .inputpriceform select, .main_item .inputpriceform button{
+					font-size:0.7728rem;
+				}
+			</style>
+			<form action="" class="inputpriceform" onSubmit="{{ this['submit_click'] }}">
+				<label><span>日期：</span><input name="date" type="date" value="{{ date }}" placeholder="请选择..." onChange="{{ this.dateChange }}"/></label>
+				<label><span>商家：</span><select name="business" onChange="{{ this['business_change'] }}">
+					<option value="0" selected>请选择...</option>
+					<option value="1">XXX市场</option>
+					<option value="2">XXX超市</option>
+				</select></label>
+				<label><span>种类：</span><select name="type" onChange="{{ this['type_change'] }}">
+					<option value="0" selected>请选择...</option>
+					<option value="1">鲜蔬</option>
+					<option value="2">水果</option>
+				</select></label>
+				<label><span>品名：</span><select name="name" onChange="{{ this['name_change'] }}">
+					<option value="0" selected>请选择...</option>
+					<option value="1">白菜</option>
+					<option value="2">萝卜</option>
+				</select></label>
+				<label><span>价格：</span><input type="number" name="price" value="" placeholder="0.00" />元/斤</label>
+				<button type="submit">保存价格</button>
+			</form>
+		);
+	}
+});
+pReact.renderDom(
+	<inputPrice />,
+	document.getElementById("inputprice")
+);

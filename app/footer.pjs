@@ -1,0 +1,23 @@
+var footerView = pReact.createClass({
+	render: function(){
+		return (
+			<style>
+				.footer{
+					display:block;
+					text-align:center;
+					font-size: 0.7728rem;
+					line-height: 0.7728rem;
+					padding-bottom:1.1592rem;
+				}
+				.footer a{
+					color:rgba(0,0,0,1);
+				}
+			</style>
+			<span class="footer">&copy;copyright <a href="https://github.com/ereddate/pReact" target="_blank">pReact</a>. 2016</span>
+		);
+	}
+});
+pReact.renderDom(
+	<footerView />,
+	document.getElementById("footer")
+);

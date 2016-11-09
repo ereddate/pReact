@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+		<style>
+			body{
+				font-size:100%;
+				font-family: "Lucida Grande", "Lucida Sans Unicode", Helvetica, Arial, Verdana, sans-serif;
+				background:rgba(128,128,128,1)
+			}
+			body,ul, ol, li, h1,h2,h3,h4,h5,h6,p{
+				padding:0;
+				margin:0;
+				font-weight:400;
+			}
+			label{
+				display:block;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="header"></div>
+		<div id="main" class="main"></div>
+		<div id="footer"></div>
+		<script src="../preact.js"></script>
+		<script src="../preact-jq.js"></script>
+		<script src="../preact-swipe.js"></script>
+		<script src="../preact-extend.js"></script>
+		<script>
+			pReact.ready(function(){
+				this({
+					path:"./",
+					ext: ".pjs",
+					files:["header","main","footer","app"],
+					debug: true
+				}).done();
+				this.toHTML5().toMobile(16);
+			});
+		</script>
+	</body>
+</html>
