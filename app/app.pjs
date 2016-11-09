@@ -13,43 +13,43 @@ var priceinfo = pReact.createClass({
 	},
 	render:function(){
 		return (
-			<style>
-				.main_item_bcontent{
-					position:fixed;
-					top:0;
-					left:0;
-					right:0;
-					bottom:0;
-					background-color:rgba(0,0,0,.2);
-				}
-				.main_item_card_content{
-					border:0.0625rem solid rgb(0,0,0);
-					position:fixed;
-					top:30%;
-					left: 5%;
-					right: 5%;
-					background-color:rgba(0,0,0,.8);
-					padding:0.3125rem;
-					border-radius:0.3125rem;
-					color:rgb(255,255,255);
-					z-index:99999;
-				}
-				.alert{
-					top: 45%;
-				}
-				.main_item_card label{
-					padding:0.3125rem 0;
-					font-size:0.7728rem;
-				}
-				.main_item_card_bottom{
-					text-align:center;
-				}
-				.main_item_card_bottom button{
-					margin:0 0.3125rem;
-					font-size:0.7728rem;
-				}
-			</style>
 			<div class="main_item_card">
+				<style>
+					.main_item_bcontent{
+						position:fixed;
+						top:0;
+						left:0;
+						right:0;
+						bottom:0;
+						background-color:rgba(0,0,0,.2);
+					}
+					.main_item_card_content{
+						border:0.0625rem solid rgb(0,0,0);
+						position:fixed;
+						top:30%;
+						left: 5%;
+						right: 5%;
+						background-color:rgba(0,0,0,.8);
+						padding:0.3125rem;
+						border-radius:0.3125rem;
+						color:rgb(255,255,255);
+						z-index:99999;
+					}
+					.alert{
+						top: 45%;
+					}
+					.main_item_card label{
+						padding:0.3125rem 0;
+						font-size:0.7728rem;
+					}
+					.main_item_card_bottom{
+						text-align:center;
+					}
+					.main_item_card_bottom button{
+						margin:0 0.3125rem;
+						font-size:0.7728rem;
+					}
+				</style>
 				<div class="main_item_card_content {{ if ({{ priceview }} != true) }}alert{{ end if }}">
 				{{ if ({{ priceview }} == true) }}
 					<label>日期：<span id="card_date">{{ date | date : "yyyy年MM月dd日" }}</span></label>
@@ -105,7 +105,7 @@ var inputPrice = pReact.createClass({
 		priceinfo.data = doms;
 		pReact.renderDom(
 			<priceinfo doms/>,
-			document.getElementById("priceinfo")
+			document.getElementById("main")
 		);
 	},
 	dateChange: function(e){
