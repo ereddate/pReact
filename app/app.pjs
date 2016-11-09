@@ -34,6 +34,9 @@ var priceinfo = pReact.createClass({
 					color:rgb(255,255,255);
 					z-index:99999;
 				}
+				.alert{
+					top: 45%;
+				}
 				.main_item_card label{
 					padding:0.3125rem 0;
 					font-size:0.7728rem;
@@ -43,20 +46,26 @@ var priceinfo = pReact.createClass({
 				}
 				.main_item_card_bottom button{
 					margin:0 0.3125rem;
+					font-size:0.7728rem;
 				}
 			</style>
 			<div class="main_item_card">
-				<div class="main_item_card_content" id="{{ id }}">
+				<div class="main_item_card_content {{ if ({{ priceview }} != true) }}alert{{ end if }}">
+				{{ if ({{ priceview }} == true) }}
 					<label>日期：<span id="card_date">{{ date | date : "yyyy年MM月dd日" }}</span></label>
 					<label>商家：<span id="card_business">{{ business }}</span></label>
 					<label>种类：<span id="card_type">{{ type }}</span></label>
 					<label>品名：<span id="card_name">{{ name }}</span></label>
 					<label>价格：<span id="card_price">{{ price }}</span>元/斤</label>
-					{{ if ({{ showbottom }} == true) }}
-						<div class="main_item_card_bottom">
-							<button onClick="{{ this['enter_click'] }}">确认并提交</button><button onClick="{{ this['cancel_click'] }}">取 消</button>
-						</div>
-					{{ end if }}
+					<div class="main_item_card_bottom">
+						<button onClick="{{ this['enter_click'] }}">确认并提交</button><button onClick="{{ this['cancel_click'] }}">取 消</button>
+					</div>
+				{{ else }}
+					<span>{{ message }}</span>
+					<div class="main_item_card_bottom">
+						<button onClick="{{ this['cancel_click'] }}">确 认</button>
+					</div>
+				{{ end if }}
 				</div>
 				<div class="main_item_bcontent"></div>
 			</div>
@@ -91,8 +100,8 @@ var inputPrice = pReact.createClass({
 			}
 			doms[elem.name] = val;
 		});
-		doms["showbottom"] = true;
-		doms["id"] = "price_alert";
+		doms["priceview"] = false;
+		doms["message"] = "alert test!";
 		priceinfo.data = doms;
 		pReact.renderDom(
 			<priceinfo doms/>,
