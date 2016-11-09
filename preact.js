@@ -1,7 +1,7 @@
 (function(win, map, $) {
 	$.extend(Array.prototype, {
 		del: function(num) {
-			this.splice(num, 1);
+			typeof num != "undefined" && this.splice(num, 1) || (this.length = 0);
 			return this;
 		},
 		concatAll: function(arr) {
