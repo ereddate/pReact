@@ -3,12 +3,16 @@ var headerView = pReact.createClass({
 		var a = pReact.jq(this.elem).parent();
 		a.hasClass("open") ? a.removeClass("open") : a.removeClass("open").addClass("open");
 	},
+	menuButtonGohomeClick: function(e){
+		var val = pReact.jq(this.elem).attr("gohome");
+		location.href = val;
+	},
 	render:function(){
 		return (
 			<style>
 				.header{
-					height:1.1592rem;
-					line-height:1.1592rem;
+					height:1.7002rem;
+					line-height:1.7002rem;
 					background:rgba(220,220,220,1);
 					position:fixed;
 					top:0;
@@ -20,7 +24,7 @@ var headerView = pReact.createClass({
 					margin:0;
 					font-size: 0.7728rem;
 					text-indent: 0.3864rem;
-					line-height:1.1592rem;
+					line-height:1.7002rem;
 					float:left;
 				}
 				.header .header_nav{
@@ -40,7 +44,7 @@ var headerView = pReact.createClass({
 				}
 				.header .header_nav.open{
 					position:absolute;
-					top:1.1592rem;
+					top:1.7002rem;
 					left:0;
 					right:0;
 					background:rgba(105,105,105,.8);
@@ -49,7 +53,7 @@ var headerView = pReact.createClass({
 				.header .header_nav.open span{
 					display:block;
 					width:100%;
-					height:5.7959rem;
+					height:8.5008rem;
 					overflow:auto;
 					overflow-x:hidden;
 				}
@@ -62,22 +66,54 @@ var headerView = pReact.createClass({
 				}
 				.header .header_nav.open i.header_nav_close{
 					display:block;
-					color:rgba(255,255,255,1);
+					color:rgba(0,0,0,1);
 					font-size: 0.7728rem;
-					text-indent: 0.4637rem;
-					background:rgba(105,105,105,1);
-					width:100%;
+					position:absolute;
+					top:-1.7002rem;
+					right:0;
 				}
 				.header .header_nav.open i.header_nav_open{
+					display:none;
+				}
+				.header .header_nav i.header_nav_goback{
 					display:none;
 				}
 				.header .header_nav.open a.on{
 					background:rgba(255,215,0,1);
 					color:rgba(0,0,0,1);
 				}
+				.header .section_title{
+					font-weight:700;
+					text-align:center;
+					float:none;
+				}
+				.header_section .header_nav i.header_nav_open{
+					position:absolute;
+					top:0;
+					right:0;
+				}
+				.header_section .header_nav i.header_nav_goback{
+					display:block;
+					position:absolute;
+					top:0;
+					left:0;
+					text-indent: 0.3864rem;
+				}
+				.header_section .header_nav.open i.header_nav_goback{
+					display:block;
+					position:absolute;
+					top:-1.7002rem;
+					left:0;
+					text-indent: 0.3864rem;
+				}
 			</style>
-			<header class="header">
-				<h1>logo</h1>
+			{{ if ({{ isIndex }} == true) }}
+				<header class="header">
+					<h1>logo</h1>
+			{{ else }}
+				<header class="header header_section">
+					<h1 class="section_title">{{ sectionTitle }}</h1>
+			{{ end if }}
 				<nav class="header_nav">
 					<span>
 						<a href="" class="on">home</a>
@@ -90,12 +126,13 @@ var headerView = pReact.createClass({
 					</span>
 					<i class="header_nav_close" onClick="{{ this.menuButtonClick }}">close</i>
 					<i class="header_nav_open" onClick="{{ this.menuButtonClick }}">menu</i>
+					<i class="header_nav_goback" gohome="{{ homeSrc }}" onClick="{{ this.menuButtonGohomeClick }}">gohome</i>
 				</nav>
 			</header>
 		);
 	}
 });
 pReact.renderDom(
-	<headerView />,
+	<headerView window.pReact_web_config/>,
 	document.getElementById("header")
 );
