@@ -6,7 +6,7 @@ var mainView = pReact.createClass({
 		return (
 			<style>
 				.main_content{
-					margin:1.1592rem 0 0;
+					margin:1.7002rem 0 0;
 					min-height:24.0479rem;
 					display:block;
 					background:rgba(255,255,255,1);
@@ -29,8 +29,8 @@ var mainView = pReact.createClass({
 			</style>
 			<article class="main_content">
 				<header class="main_header" onSwipe="{{ this.swipeCallback }}">
-					<h1>{{ title }}</h1>
-					<p>{{ desc }}</p>
+					<h1>{{ mainTitle }}</h1>
+					<p>{{ mainDesc }}</p>
 				</header>
 				<div id="inputprice" class="main_item"></div>
 				<div id="priceinfo" class="priceinfo"></div>
@@ -39,6 +39,6 @@ var mainView = pReact.createClass({
 	}
 });
 pReact.renderDom(
-	<mainView {title: "输入当日价格", desc:"..."}/>,
+	<mainView window.pReact_web_config/>,
 	document.getElementById("main")
 );
