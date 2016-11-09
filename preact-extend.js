@@ -5,7 +5,7 @@ pReact && ((function($) {
 	}
 
 	function _date(d, pattern) {
-		d = new Date(d);
+		d = d ? new Date(d) : new Date();
 		pattern = pattern || 'yyyy-MM-dd';
 		var y = d.getFullYear().toString(),
 			o = {
@@ -24,6 +24,10 @@ pReact && ((function($) {
 			});
 		}
 		return pattern;
+	}
+
+	$.getDate = function() {
+		return _date(undefined, "yyyy-MM-dd");
 	}
 
 	function _currency(val, symbol) {
@@ -532,34 +536,18 @@ pReact && ((function($) {
 			var parent = null;
 			if (this.length > 0) {
 				var elem = this[0];
-				parent = elem.parentElement;
-				if (elem.path) {
-					if (id) {
-						$.each(elem.path, function(i, item) {
-							if (/^#/.test(id) && item.id && item.id == id.replace("#", "")) {
-								parent = item;
-								return false;
-							} else if (/^\./.test(id) && (new RegExp(id.replace(".", ""))).test(item.className)) {
-								parent = item;
-								return false;
-							}
-						});
-					} else {
-						parent = elem.path;
-					}
-				} else {
-					parent = dir(elem, "parentNode");
-					if (id) {
-						$.each(parent, function(i, item) {
-							if (/^#/.test(id) && item.id && item.id == id.replace("#", "")) {
-								parent = item;
-								return false;
-							} else if (/^\./.test(id) && (new RegExp(id.replace(".", ""))).test(item.className)) {
-								parent = item;
-								return false;
-							}
-						});
-					}
+				parent = dir(elem, "parentNode");
+				if (id) {
+					$.each(parent, function(i, item) {
+						if (/^#/.test(id) && item.id && item.id == id.replace("#", "")) {
+							parent = item;
+							return false;
+						}
+						if (/^\./.test(id) && pReact.jq(item).hasClass(id.replace(".", ""))) {
+							parent = item;
+							return false;
+						}
+					});
 				}
 			}
 			return parent;
