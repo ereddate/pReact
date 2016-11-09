@@ -30,6 +30,13 @@
 		<script src="../preact-extend.js"></script>
 		<script>
 			pReact.ready(function(){
+				window.pReact_web_config = {
+					isIndex:false, //是首页还是其他，true首页false其他
+					sectionTitle:"home", //导航栏title
+					homeSrc: "", //gohome按钮返回首页地址
+					mainTitle: "输入当日价格", //当前页面主内容title
+					mainDesc:"..." //当前页面主内容简介
+				};
 				this({
 					path:"./",
 					ext: ".pjs",
