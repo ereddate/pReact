@@ -34,13 +34,13 @@
 					isIndex:false, //是首页还是其他，true首页false其他
 					sectionTitle:"home", //导航栏title
 					homeSrc: "", //gohome按钮返回首页地址
-					mainTitle: "输入当日价格", //当前页面主内容title
+					mainTitle: "填写当日价格", //当前页面主内容title
 					mainDesc:"..." //当前页面主内容简介
 				};
 				this({
 					path:"./",
 					ext: ".pjs",
-					files:["header", "pages","main","app","footer"],
+					files:["header", "pages","main","footer","footer-nav","app"],
 					debug: true
 				}).done();
 				this.toHTML5().toMobile(16);

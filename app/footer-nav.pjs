@@ -1,0 +1,56 @@
+var footerNav = pReact.createClass({
+	bottomButtonClick: function(e){
+		e.preventDefault();
+		var a = pReact.jq(".footer_nav a"),
+			index = a.index(this.elem),
+			title = pReact.jq(".header h1");
+		a.removeClass("on").eq(index).addClass("on");
+		pReact.jq(".pages").find("ul").css({
+			left: (index > 0 ? -screen.width : 0)+"px"
+		});
+		title.html(index > 0 ? "商品价格走势" : "填写当日价格");
+	},
+	render:function(){
+		return (
+			<style>
+				.footer_nav{
+					position:fixed;
+					bottom:0;
+					left:0;
+					right:0;
+					height:1.7002rem;
+					line-height:1.7002rem;
+					background:rgba(220,220,220,1);
+					z-index:9999;
+					text-align:center;
+				}
+				.footer_nav a{
+					height:1.7002rem;
+					display:inline-block;
+					font-size:0.7728rem;
+					text-decoration:none;
+					color:rgba(0,0,0,1);
+				}
+				.footer_nav a.on{
+					background:rgba(255,215,0,1);
+					color:rgba(0,0,0,1);
+				}
+				.footer_nav .button{
+					padding: 0 0.3864rem;
+					border-right:0.0386rem solid rgba(179,179,179,1);
+				}
+				.footer_nav .noline{
+					border-right:0;
+				}
+			</style>
+			<div class="footer_nav">
+				<a href="" class="button on" onClick="{{ this.bottomButtonClick }}">录入</a>
+				<a href="" class="button noline" onClick="{{ this.bottomButtonClick }}">走势</a>
+			</div>
+		);
+	}
+});
+pReact.renderDom(
+	<footerNav />,
+	document.getElementById("footer")
+);

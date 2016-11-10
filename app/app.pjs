@@ -161,7 +161,8 @@ pReact.renderDom(
 	<inputPrice />,
 	document.getElementById("inputprice"),
 	function(){
-		var title = pReact.jq(".header h1");
+		var title = pReact.jq(".header h1"),
+			bottomButton = pReact.jq(".footer_nav a");
 		pReact.jq(".pages").swipe({
 			callback:function(e, dir){
 				console.log(dir);
@@ -169,12 +170,14 @@ pReact.renderDom(
 					pReact.jq(".pages").find("ul").css({
 						left: -screen.width+"px"
 					});
-					title.html("page2");
+					title.html("商品价格走势");
+					bottomButton.removeClass("on").eq(1).addClass("on");
 				}else if (dir == "right"){
 					pReact.jq(".pages").find("ul").css({
 						left: 0
 					});
-					title.html("page1");
+					title.html("填写当日价格");
+					bottomButton.removeClass("on").eq(0).addClass("on");
 				}
 			}
 		})

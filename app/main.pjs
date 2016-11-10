@@ -40,12 +40,13 @@ pReact.renderDom(
 );
 var mainView_two = pReact.createClass({
 	render:function(){
-		return (
-			<span>2</span>
-		);
+		return mainView_one.render();
 	}
 });
 pReact.renderDom(
-	<mainView_two />,
+	<mainView_two pReact.extend(window.pReact_web_config, {
+		mainTitle:"商品价格走势",
+		mainDesc:"..."
+	})/>,
 	document.getElementById("page_two")
 );
