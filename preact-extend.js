@@ -509,39 +509,6 @@ pReact && ((function($) {
 			return -1;
 		};
 	$.jq && $.jq.extend($.jq.fn, {
-		css: function() {
-			if (this.length > 0) {
-				var args = arguments,
-					len = args.length,
-					keys, cssText;
-				$.each(this, function(i, elem) {
-					if (len === 1) {
-						if (/\:/.test(args[0]) && $.is("string", args[0])) {
-							cssText = args[0];
-							elem.style.cssText = elem.style.cssText.replace(cssText, "");
-							elem.style.cssText += cssText;
-						} else if ($.is("string", args[0])) {
-							keys = args[0];
-							var val = [];
-							$.each(keys.split(' '), function(x, key) {
-								val.push(elem.style[key] || window.getComputedStyle(elem)[key]);
-							});
-							return val;
-						} else if ($.is("object", args[0])) {
-							cssText = args[0];
-							var cls = "";
-							pReact.each(cssText, function(name, val) {
-								cls += name + ":" + val + ";";
-							});
-							elem.style.cssText += cls;
-						}
-					} else if (len === 2) {
-						elem.style[args[0]] = args[1];
-					}
-				});
-			}
-			return this;
-		},
 		index: function(elem) {
 			if (!elem) {
 				return (this[0] && this[0].parentNode) ? this.first().prevAll().length : -1;
