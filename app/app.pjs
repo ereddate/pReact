@@ -15,6 +15,9 @@ var priceinfo = pReact.createClass({
 		return (
 			<div class="main_item_card">
 				<style>
+					.main_item_card{
+						z-index:99998;
+					}
 					.main_item_bcontent{
 						position:fixed;
 						top:0;
@@ -22,6 +25,7 @@ var priceinfo = pReact.createClass({
 						right:0;
 						bottom:0;
 						background-color:rgba(0,0,0,.2);
+						z-index:99998;
 					}
 					.main_item_card_content{
 						border:0.0625rem solid rgb(0,0,0);
@@ -105,7 +109,7 @@ var inputPrice = pReact.createClass({
 		priceinfo.data = doms;
 		pReact.renderDom(
 			<priceinfo doms/>,
-			document.getElementById("main")
+			document.body
 		);
 	},
 	dateChange: function(e){
@@ -115,7 +119,7 @@ var inputPrice = pReact.createClass({
 		return (
 			<style>
 				.main_item{
-					margin:1rem;
+					margin:0 1rem;
 				}
 				.main_item .inputpriceform span,.main_item .inputpriceform select{
 					display:block;
@@ -155,5 +159,24 @@ var inputPrice = pReact.createClass({
 });
 pReact.renderDom(
 	<inputPrice />,
-	document.getElementById("inputprice")
+	document.getElementById("inputprice"),
+	function(){
+		var title = pReact.jq(".header h1");
+		pReact.jq(".pages").swipe({
+			callback:function(e, dir){
+				console.log(dir);
+				if (dir == "left"){
+					pReact.jq(".pages").find("ul").css({
+						left: -screen.width+"px"
+					});
+					title.html("page2");
+				}else if (dir == "right"){
+					pReact.jq(".pages").find("ul").css({
+						left: 0
+					});
+					title.html("page1");
+				}
+			}
+		})
+	}
 );

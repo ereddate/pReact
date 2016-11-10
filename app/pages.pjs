@@ -1,0 +1,45 @@
+var pageView = pReact.createClass({
+	render:function(){
+		var width = screen.width,
+			allWidth = width*2;
+		return (
+			<style>
+				.pages{
+					margin:1.7002rem 0 0;
+					position:relative;
+					overflow: hidden;
+					min-height:24.0479rem;
+				}
+				.pages ul{
+					display:block;
+					background-color:rgba(105,105,105,1);
+					position:absolute;
+					top:0;
+					left:0;
+				}
+				.pages ul li{
+					list-style:none inside;
+					float:left;
+				}
+				.pages .pages_item{
+					background:rgba(255,255,255,1);
+					min-height:24.0479rem;
+				}
+			</style>
+			<section class="pages" style="width:{{ $width }}px;">
+				<ul style="width:{{ $allWidth }}px;">
+					<li>
+						<div class="pages_item" id="page_one" style="width:{{ $width }}px;"></div>
+					</li>
+					<li>
+						<div class="pages_item" id="page_two" style="width:{{ $width }}px;"></div>
+					</li>
+				</ul>
+			</section>
+		);
+	}
+});
+pReact.renderDom(
+	<pageView />,
+	document.getElementById("main")
+);

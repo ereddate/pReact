@@ -7,7 +7,7 @@ var footerView = pReact.createClass({
 					text-align:center;
 					font-size: 0.7728rem;
 					line-height: 0.7728rem;
-					padding-bottom:1.1592rem;
+					padding:1.1592rem 0;
 				}
 				.footer a{
 					color:rgba(0,0,0,1);
