@@ -489,25 +489,25 @@ pReact && ((function($) {
 		}
 	});
 	var dir = function(elem, dir) {
-		var matched = [];
+			var matched = [];
 
-		while ((elem = elem[dir]) && elem.nodeType !== 9) {
-			if (elem.nodeType === 1) {
-				matched.push(elem);
+			while ((elem = elem[dir]) && elem.nodeType !== 9) {
+				if (elem.nodeType === 1) {
+					matched.push(elem);
+				}
 			}
-		}
-		return matched;
-	};
-	var indexOf = function(list, elem) {
-		var i = 0,
-			len = list.length;
-		for (; i < len; i++) {
-			if (list[i] === elem) {
-				return i;
+			return matched;
+		},
+		indexOf = function(list, elem) {
+			var i = 0,
+				len = list.length;
+			for (; i < len; i++) {
+				if (list[i] === elem) {
+					return i;
+				}
 			}
-		}
-		return -1;
-	};
+			return -1;
+		};
 	$.jq && $.jq.extend($.jq.fn, {
 		css: function() {
 			if (this.length > 0) {
@@ -543,19 +543,13 @@ pReact && ((function($) {
 			return this;
 		},
 		index: function(elem) {
-			// No argument, return index in parent
 			if (!elem) {
 				return (this[0] && this[0].parentNode) ? this.first().prevAll().length : -1;
 			}
-
-			// Index in selector
 			if (typeof elem === "string") {
 				return indexOf(pReact.jq(elem), this[0]);
 			}
-			// Locate the position of the desired element
 			return indexOf(this,
-
-				// If it receives a jQuery object, the first element is used
 				elem.jquery ? elem[0] : elem
 			);
 		},
