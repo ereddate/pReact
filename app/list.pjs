@@ -139,12 +139,14 @@ var listMain = pReact.createClass({
 					display:block;
 				}
 				.pricelist_content{
-					padding:0 0 1.7002rem 0;
+					height:13.5240rem;
+					overflow:auto;
+					overflow-x:hidden;
 				}
 			</style>
 			<div class="pricelist">
 				<div class="pricelist_header"><span class="name">商品名称</span><span class="price">价格</span><span class="rate">涨跌幅</span><span class="lasttime last">更新日期</span></div>
-				<div id="pricelist_content"></div>
+				<div id="pricelist_content" class="pricelist_content"></div>
 				<button class="more" onClick="{{ this.moreClick }}">加载更多</button>
 			</div>
 		);
