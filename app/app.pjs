@@ -119,7 +119,7 @@ var inputPrice = pReact.createClass({
 		return (
 			<style>
 				.main_item{
-					margin:0 1rem;
+					margin:0 .5rem;
 				}
 				.main_item .inputpriceform span,.main_item .inputpriceform select{
 					display:block;

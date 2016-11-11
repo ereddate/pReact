@@ -1,0 +1,160 @@
+var listItem = pReact.createClass({
+	getInitData:function(success, error){
+		success([{
+				url: "url",
+				title: "萝卜",
+				price: 10.2,
+				rate: 20,
+				lasttime: "11-11"
+			},{
+				url: "url",
+				title: "白菜",
+				price: 110.2,
+				rate: -20,
+				lasttime: "11-11"
+			},{
+				url: "url",
+				title: "紫橄榄",
+				price: 10.2,
+				rate: 20.6,
+				lasttime: "11-11"
+			},{
+				url: "url",
+				title: "商品名称",
+				price: 110.2,
+				rate: -20,
+				lasttime: "11-11"
+			},{
+				url: "url",
+				title: "商品名称",
+				price: 110.2,
+				rate: 20,
+				lasttime: "11-11"
+			},{
+				url: "url",
+				title: "商品名称",
+				price: 110.2,
+				rate: -20,
+				lasttime: "11-11"
+			},{
+				url: "url",
+				title: "商品名称",
+				price: 110.2,
+				rate: 20,
+				lasttime: "11-11"
+			},{
+				url: "url",
+				title: "商品名称",
+				price: 110.2,
+				rate: -20,
+				lasttime: "11-11"
+			},{
+				url: "url",
+				title: "商品名称",
+				price: 110.2,
+				rate: 20,
+				lasttime: "11-11"
+			},{
+				url: "url",
+				title: "商品名称",
+				price: 110.2,
+				rate: -20,
+				lasttime: "11-11"
+			}]);
+	},
+	render:function(){
+		return (
+			<style>
+				.pricelist_items li{
+					display:block;
+					border-bottom:0.0386rem solid rgba(220,220,220,1);
+					padding:0.1932rem 0;
+				}
+				.name,.price,.rate,.lasttime{
+					display:inline-block;
+					font-size: 0.7728rem;
+					text-decoration: none;
+					width: 25%;
+					text-align:center;
+					margin:0 0.0773rem 0 0;
+				}
+				.pricelist_items li a{
+					color:rgba(0,0,0,1);
+				}
+				.last{
+					margin:0;
+				}
+				.price{
+					width:25%;
+					padding:0 0.0773rem 0 0;
+					text-align:right;
+				}
+				.rate{
+					width:21%;
+					padding:0 0.0773rem 0 0;
+				}
+				.rise{
+					color:rgba(255,0,0,1);
+				}
+				.rise_back{
+					background-color:rgba(255,0,0,1);
+					color:rgba(255,255,255,1);
+				}
+				.fall{
+					color:rgba(0,128,0,1);
+				}
+				.fall_back{
+					background-color:rgba(0,128,0,1);
+					color:rgba(255,255,255,1);
+				}
+			</style>
+			<ul class="pricelist_items">
+				{{ for (i=0;i<data.length;i++) }}
+					<li class="{{ if ({{ rate }} > 0) }}rise{{ else }}fall{{ end if }}"><a href="{{ url }}" class="name title">{{ title }}</a><span class="price">￥{{ price }}</span><span class="rate{{ if ({{ rate }} > 0) }} rise_back{{ else }} fall_back{{ end if }}">{{ if ({{ rate }} > 0) }}+{{ end if }}{{ rate }}%</span><span class="lasttime">{{ lasttime }}</span></li>
+				{{ end for }}
+			</ul>
+		);
+	}
+});
+var listMain = pReact.createClass({
+	moreClick: function(e){
+		pReact.renderDom(
+			<listItem />,
+			document.getElementById("pricelist_content")
+		);
+	},
+	render: function(){
+		return (
+			<style>
+				.pricelist{
+					margin:0.7728rem 0 0;
+				}	
+				.pricelist_header span{
+					background-color:rgba(220,220,220,1);
+				}
+				.pricelist .more{
+					width:100%;
+					font-size:0.7728rem;
+					margin:0.7728rem 0 0;
+					display:block;
+				}
+				.pricelist_content{
+					padding:0 0 1.7002rem 0;
+				}
+			</style>
+			<div class="pricelist">
+				<div class="pricelist_header"><span class="name">商品名称</span><span class="price">价格</span><span class="rate">涨跌幅</span><span class="lasttime last">更新日期</span></div>
+				<div id="pricelist_content"></div>
+				<button class="more" onClick="{{ this.moreClick }}">加载更多</button>
+			</div>
+		);
+	}
+});
+pReact.renderDom(
+	<listMain />,
+	document.getElementById("pricelist")
+);
+pReact.renderDom(
+	<listItem />,
+	document.getElementById("pricelist_content")
+);

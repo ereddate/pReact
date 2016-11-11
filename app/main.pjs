@@ -21,7 +21,8 @@ var mainView_one = pReact.createClass({
 					text-indent:0.3864rem;
 				}
 				.main_content .main_item{
-					padding:1rem 0;
+					background:rgba(255,255,255,1);
+					height:100%;
 				}
 			</style>
 			<article class="main_content">
@@ -40,7 +41,10 @@ pReact.renderDom(
 );
 var mainView_two = pReact.createClass({
 	render:function(){
-		return mainView_one.render();
+		var html = mainView_one.render();
+		return (
+			<div class="">{{ $html }}</div>
+		);
 	}
 });
 pReact.renderDom(
@@ -48,5 +52,8 @@ pReact.renderDom(
 		mainTitle:"商品价格走势",
 		mainDesc:"..."
 	})/>,
-	document.getElementById("page_two")
+	document.getElementById("page_two"),
+	function(){
+		pReact.jq("#page_two").find(".main_item").attr("id", "pricelist");
+	}
 );

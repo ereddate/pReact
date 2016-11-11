@@ -1,37 +1,39 @@
 var pageView = pReact.createClass({
 	render:function(){
 		var width = screen.width,
+			height = screen.height - 44,
 			allWidth = width*2;
 		return (
 			<style>
 				.pages{
-					margin:1.7002rem 0 0;
-					position:relative;
-					overflow: hidden;
-					min-height:24.0479rem;
+					padding:0 0 1.7002rem 0;
+					position:absolute;
+					top:1.7002rem;
+					left:0;
+					right:0;
+					bottom:1.7002rem;
+					overflow:auto;
+					overflow-x:hidden;
 				}
-				.pages ul{
+				.pages ul.pagelist{
 					display:block;
-					background-color:rgba(105,105,105,1);
 					position:absolute;
 					top:0;
 					left:0;
 				}
-				.pages ul li{
+				.pages ul.pagelist li.page{
 					list-style:none inside;
 					float:left;
-				}
-				.pages .pages_item{
+					padding:0 0 1rem 0;
 					background:rgba(255,255,255,1);
-					min-height:24.0479rem;
 				}
 			</style>
-			<section class="pages" style="width:{{ $width }}px;">
-				<ul style="width:{{ $allWidth }}px;">
-					<li>
+			<section class="pages" id="pages" style="width:{{ $width }}px;">
+				<ul class="pagelist" style="width:{{ $allWidth }}px;">
+					<li class="page">
 						<div class="pages_item" id="page_one" style="width:{{ $width }}px;"></div>
 					</li>
-					<li>
+					<li class="page">
 						<div class="pages_item" id="page_two" style="width:{{ $width }}px;"></div>
 					</li>
 				</ul>
