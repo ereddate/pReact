@@ -3,8 +3,8 @@
 
   if (typeof pReact === 'function') {
     pReact.jq = jqlite;
-    if (typeof define === 'function') {
-      define('pReact.jqlite', function() {
+    if (typeof define === 'function' && define.amd) {
+      define('pReact.jq', function() {
         return pReact.jq;
       });
     }
@@ -1528,7 +1528,7 @@
 
   // shorthands
 
-  ['mouseenter', 'mouseleave'].forEach(function(eventName) {
+  /*['mouseenter', 'mouseleave'].forEach(function(eventName) {
     ListDOM.prototype[eventName] = function(handler) {
       this.on(eventName, handler);
       return this;
@@ -1537,7 +1537,7 @@
 
   ListDOM.prototype.hover = function(mouseIn, mouseOut) {
     return this.mouseenter(mouseIn).mouseleave(mouseOut);
-  };
+  };*/
 
   // finally
 

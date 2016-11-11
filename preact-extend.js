@@ -28,7 +28,7 @@ pReact && ((function($) {
 
 	$.getDate = function() {
 		return _date(undefined, "yyyy-MM-dd");
-	}
+	};
 
 	function _currency(val, symbol) {
 		var places, thousand, decimal;
@@ -508,7 +508,7 @@ pReact && ((function($) {
 			}
 			return -1;
 		};
-	$.jq && $.jq.extend($.jq.fn, {
+	$.jq && ($.jq.extend($.jq.fn, {
 		index: function(elem) {
 			if (!elem) {
 				return (this[0] && this[0].parentNode) ? this.first().prevAll().length : -1;
@@ -540,5 +540,5 @@ pReact && ((function($) {
 			}
 			return parent;
 		}
-	});
+	}));
 })(pReact, this));
