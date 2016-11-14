@@ -78,7 +78,7 @@ var priceinfo = pReact.createClass({
 });
 var inputPrice = pReact.createClass({
 	getInitData: function(success, error){
-		success({date:pReact.getDate()});
+		success({date:pReact.getDate(), passcard: "8888888888888888888"});
 	},
 	"type_change": function(e){
 		console.log(e.target.value)
@@ -135,6 +135,7 @@ var inputPrice = pReact.createClass({
 				}
 			</style>
 			<form action="" class="inputpriceform" onSubmit="{{ this['submit_click'] }}">
+				<label><span>卡号：</span>{{ passcard | passcard : 4 }}<input type="hidden" name="card" value="{{ passcard }}" /></label>
 				<label><span>日期：</span><input name="date" type="date" value="{{ date }}" placeholder="请选择..." onChange="{{ this.dateChange }}"/></label>
 				<label><span>商家：</span><select name="business" onChange="{{ this['business_change'] }}">
 					<option value="0" selected>请选择...</option>

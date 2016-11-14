@@ -206,7 +206,9 @@ pReact && ((function($) {
 				return (typeof val == "string" && $.trim(val) == "" || val == null || typeof val == "undefined" || $.is("object", val) && map.isEmptyObject(val) || $.is("array", val) && val.length == 0) && filterCondition;
 			},
 			passcard: function(val, filterCondition) {
-				var regex = /(\d{4})(\d{4})(\d{4})(\d{4})(\d{0,})/igm.exec(val);
+				var num = filterCondition || 4,
+					exp = new RegExp("(\\d{" + num + "})(\\d{" + num + "})(\\d{" + num + "})(\\d{" + num + "})(\\d{0,})"),
+					regex = exp.exec(val);
 				return regex && regex.splice(1, regex.length - 1).join(' ') || val;
 			},
 			encodeURI: function(val, filterCondition) {
@@ -519,10 +521,10 @@ pReact && ((function($) {
 			return this;
 		},
 		scrollTo: function(val) {
-			pReact.each(this, function(i, elem){
+			pReact.each(this, function(i, elem) {
 				if ($.jq.isWindow(elem)) {
 					window.scrollTo(val || elem.pageXOffset, val || elem.pageYOffset);
-				}else{
+				} else {
 					elem["scrollTop"] = val || 1;
 				}
 			});

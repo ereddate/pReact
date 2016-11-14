@@ -121,7 +121,7 @@
 					if ((new RegExp("{{\\s+(" + name + ")\\s+([^<>,]+\\s+)*}}")).test(a)) {
 						a = a.replace(new RegExp("{{\\s+(" + name + ")\\s+([^<>,}]+\\s+)*}}"), function(a, b, c) {
 							if (c) {
-								var result = c.split('|')[0].split(' : ');
+								var result = c.split('|')[1].split(' : ');
 								a = a.replace(a, map.tmplFilter[$.trim(result[0])](val, result[1] && $.trim(result[1]).replace(/[\'\"]/gim, "") || 0));
 							} else {
 								a = a.replace(new RegExp("{{\\s+" + name + "\\s+}}", "gim"), val);
@@ -423,7 +423,7 @@
 				cArr[cArr.length - 1] = "';";
 				html = html.replace(arr.join(''), cArr.join(''));
 			});
-			html = html.replace(/\s{2,}/gi, "").replace(/[\r|\n|\r\n]*/gi, "").replace(_.renderDomExp, function(a, b) {
+			html = html.replace(/\s{2,}/gi, "").replace(/[\r\n]*/gi, "").replace(_.renderDomExp, function(a, b) {
 				if (b) {
 					var k = b.split(' ');
 					var c = b.replace(k[0] + " ", "").replace(/\/\>/, "");
