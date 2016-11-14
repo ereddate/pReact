@@ -523,7 +523,7 @@ pReact && ((function($) {
 				if ($.jq.isWindow(elem)) {
 					window.scrollTo(val || elem.pageXOffset, val || elem.pageYOffset);
 				}else{
-					elem["scrollTop"] = val;
+					elem["scrollTop"] = val || 1;
 				}
 			});
 			return this;
