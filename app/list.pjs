@@ -60,6 +60,66 @@ var listItem = pReact.createClass({
 				price: 110.2,
 				rate: -20,
 				lasttime: "11-11"
+			},{
+				url: "url",
+				title: "商品名称",
+				price: 110.2,
+				rate: -20,
+				lasttime: "11-11"
+			},{
+				url: "url",
+				title: "商品名称",
+				price: 110.2,
+				rate: -20,
+				lasttime: "11-11"
+			},{
+				url: "url",
+				title: "商品名称",
+				price: 110.2,
+				rate: -20,
+				lasttime: "11-11"
+			},{
+				url: "url",
+				title: "商品名称",
+				price: 110.2,
+				rate: -20,
+				lasttime: "11-11"
+			},{
+				url: "url",
+				title: "商品名称",
+				price: 110.2,
+				rate: -20,
+				lasttime: "11-11"
+			},{
+				url: "url",
+				title: "商品名称",
+				price: 110.2,
+				rate: -20,
+				lasttime: "11-11"
+			},{
+				url: "url",
+				title: "商品名称",
+				price: 110.2,
+				rate: -20,
+				lasttime: "11-11"
+			},{
+				url: "url",
+				title: "商品名称",
+				price: 110.2,
+				rate: -20,
+				lasttime: "11-11"
+			},{
+				url: "url",
+				title: "商品名称",
+				price: 110.2,
+				rate: -20,
+				lasttime: "11-11"
+			},{
+				url: "url",
+				title: "商品名称",
+				price: 110.2,
+				rate: -20,
+				lasttime: "11-11"
 			}]);
 	},
 	render:function(){
@@ -68,7 +128,6 @@ var listItem = pReact.createClass({
 				.pricelist_items li{
 					display:block;
 					border-bottom:0.0386rem solid rgba(220,220,220,1);
-					padding:0.1932rem 0;
 				}
 				.name,.price,.rate,.lasttime{
 					display:inline-block;
@@ -90,8 +149,8 @@ var listItem = pReact.createClass({
 					text-align:right;
 				}
 				.rate{
-					width:21%;
-					padding:0 0.0773rem 0 0;
+					width:21.6%;
+					padding:0 0.0773rem;
 				}
 				.rise{
 					color:rgba(255,0,0,1);
@@ -127,7 +186,7 @@ var listMain = pReact.createClass({
 		return (
 			<style>
 				.pricelist{
-					margin:0.7728rem 0 0;
+					width:100%;
 				}	
 				.pricelist_header span{
 					background-color:rgba(220,220,220,1);
@@ -135,13 +194,7 @@ var listMain = pReact.createClass({
 				.pricelist .more{
 					width:100%;
 					font-size:0.7728rem;
-					margin:0.7728rem 0 0;
 					display:block;
-				}
-				.pricelist_content{
-					height:13.5240rem;
-					overflow:auto;
-					overflow-x:hidden;
 				}
 			</style>
 			<div class="pricelist">

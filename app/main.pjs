@@ -4,9 +4,8 @@ var mainView_one = pReact.createClass({
 			<style>
 				.main_content{
 					display:block;
-				}
-				.main_content .priceinfo{
-					position:relative;
+					margin:1.7002rem 0 0;
+					padding:0 0 1.7002rem 0;
 				}
 				.main_content .main_header{
 					background:rgba(128,128,128,1);
@@ -22,7 +21,6 @@ var mainView_one = pReact.createClass({
 				}
 				.main_content .main_item{
 					background:rgba(255,255,255,1);
-					height:100%;
 				}
 			</style>
 			<article class="main_content">

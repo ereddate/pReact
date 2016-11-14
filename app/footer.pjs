@@ -3,6 +3,7 @@ var footerView = pReact.createClass({
 		return (
 			<style>
 				.footer{
+					color:rgba(220,220,220,1);
 					display:block;
 					text-align:center;
 					font-size: 0.7728rem;
@@ -10,7 +11,7 @@ var footerView = pReact.createClass({
 					padding:0 0 2.8594rem 0;
 				}
 				.footer a{
-					color:rgba(0,0,0,1);
+					color:rgba(220,220,220,1);
 				}
 			</style>
 			<span class="footer">&copy;copyright <a href="https://github.com/ereddate/pReact" target="_blank">pReact</a>. 2016.</span>

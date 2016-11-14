@@ -507,8 +507,17 @@ pReact && ((function($) {
 				}
 			}
 			return -1;
-		};
+		},
+		endEventNames = 'webkitAnimationEnd oAnimationEnd MSAnimationEnd animationend';
+
 	$.jq && ($.jq.extend($.jq.fn, {
+		onAnimationEnd: function(callback){
+			$.jq(this).on(endEventNames, function(e){
+				$.jq(this).off(endEventNames);
+				callback && callback.call(this, e);
+			});
+			return this;
+		},
 		index: function(elem) {
 			if (!elem) {
 				return (this[0] && this[0].parentNode) ? this.first().prevAll().length : -1;

@@ -118,19 +118,19 @@ var inputPrice = pReact.createClass({
 	render: function(){
 		return (
 			<style>
-				.main_item{
-					margin:0 .5rem;
+				.inputpriceform{
+					margin:0 1rem;
 				}
-				.main_item .inputpriceform span,.main_item .inputpriceform select{
+				.inputpriceform span, .inputpriceform select{
 					display:block;
 					vertical-align:middle;
 				}
-				.main_item .inputpriceform label{
+				.inputpriceform label{
 					display:block;
 					padding:0.3125rem 0;
 					font-size:0.7728rem;
 				}
-				.main_item .inputpriceform input, .main_item .inputpriceform select, .main_item .inputpriceform button{
+				.inputpriceform input, .inputpriceform select, .inputpriceform button{
 					font-size:0.7728rem;
 				}
 			</style>
@@ -162,19 +162,22 @@ pReact.renderDom(
 	document.getElementById("inputprice"),
 	function(){
 		var title = pReact.jq(".header h1"),
-			bottomButton = pReact.jq(".footer_nav a");
+			bottomButton = pReact.jq(".footer_nav a"),
+			page = pReact.jq(".pages").find(".pages_item");
 		pReact.jq(".pages").swipe({
 			callback:function(e, dir){
 				console.log(dir);
 				if (dir == "left"){
-					pReact.jq(".pages").find("ul").css({
-						left: -screen.width+"px"
+					page.eq(0).removeClass("pt-page-current pt-page-moveFromLeft").addClass("pt-page-current pt-page-moveToLeft").onAnimationEnd(function(e){
+					});
+					page.eq(1).removeClass("pt-page-current pt-page-moveToRight").addClass("pt-page-current pt-page-moveFromRight").onAnimationEnd(function(e){
 					});
 					title.html("商品价格走势");
 					bottomButton.removeClass("on").eq(1).addClass("on");
 				}else if (dir == "right"){
-					pReact.jq(".pages").find("ul").css({
-						left: 0
+					page.eq(0).removeClass("pt-page-current pt-page-moveToLeft").addClass("pt-page-current pt-page-moveFromLeft").onAnimationEnd(function(e){
+					});
+					page.eq(1).removeClass("pt-page-current pt-page-moveFromRight").addClass("pt-page-current pt-page-moveToRight").onAnimationEnd(function(e){
 					});
 					title.html("填写当日价格");
 					bottomButton.removeClass("on").eq(0).addClass("on");

@@ -3,11 +3,20 @@ var footerNav = pReact.createClass({
 		e.preventDefault();
 		var a = pReact.jq(".footer_nav a"),
 			index = a.index(this.elem),
+			page = pReact.jq(".pages").find(".pages_item"),
 			title = pReact.jq(".header h1");
 		a.removeClass("on").eq(index).addClass("on");
-		pReact.jq(".pages").find("ul").css({
-			left: (index > 0 ? -screen.width : 0)+"px"
-		});
+		if (index<=0){
+			page.eq(0).removeClass("pt-page-current pt-page-moveToLeft").addClass("pt-page-current pt-page-moveFromLeft").onAnimationEnd(function(e){
+			});
+			page.eq(1).removeClass("pt-page-current pt-page-moveFromRight").addClass("pt-page-current pt-page-moveToRight").onAnimationEnd(function(e){
+			});
+		}else{
+			page.eq(0).removeClass("pt-page-current pt-page-moveFromLeft").addClass("pt-page-current pt-page-moveToLeft").onAnimationEnd(function(e){
+			});
+			page.eq(1).removeClass("pt-page-current pt-page-moveToRight").addClass("pt-page-current pt-page-moveFromRight").onAnimationEnd(function(e){
+			});
+		}
 		title.html(index > 0 ? "商品价格走势" : "填写当日价格");
 	},
 	render:function(){
@@ -44,7 +53,7 @@ var footerNav = pReact.createClass({
 				}
 			</style>
 			<div class="footer_nav">
-				<a href="" class="button on" onClick="{{ this.bottomButtonClick }}">录入</a>
+				<a href="" class="button" onClick="{{ this.bottomButtonClick }}">录入</a>
 				<a href="" class="button noline" onClick="{{ this.bottomButtonClick }}">走势</a>
 			</div>
 		);
@@ -52,5 +61,8 @@ var footerNav = pReact.createClass({
 });
 pReact.renderDom(
 	<footerNav />,
-	document.getElementById("footer")
+	document.getElementById("footer"),
+	function(){
+		pReact.jq(".footer_nav").find(".button").eq(0).trigger("click");
+	}
 );
