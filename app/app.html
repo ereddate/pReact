@@ -28,61 +28,6 @@
 			.main{
 				height:100%;
 			}
-			.pt-page-current {
-			    visibility: visible;
-			    z-index: 1;
-			}
-			.pt-page-moveToLeft {
-				-webkit-animation: moveToLeft .6s ease both;
-				animation: moveToLeft .6s ease both;
-			}
-
-			.pt-page-moveFromLeft {
-				-webkit-animation: moveFromLeft .6s ease both;
-				animation: moveFromLeft .6s ease both;
-			}
-
-			.pt-page-moveToRight {
-				-webkit-animation: moveToRight .6s ease both;
-				animation: moveToRight .6s ease both;
-			}
-
-			.pt-page-moveFromRight {
-				-webkit-animation: moveFromRight .6s ease both;
-				animation: moveFromRight .6s ease both;
-			}
-
-			@-webkit-keyframes moveToLeft {
-				from { }
-				to { -webkit-transform: translateX(-100%); }
-			}
-			@keyframes moveToLeft {
-				from { }
-				to { -webkit-transform: translateX(-100%); transform: translateX(-100%); }
-			}
-
-			@-webkit-keyframes moveFromLeft {
-				from { -webkit-transform: translateX(-100%); }
-			}
-			@keyframes moveFromLeft {
-				from { -webkit-transform: translateX(-100%); transform: translateX(-100%); }
-			}
-
-			@-webkit-keyframes moveToRight { 
-				from { }
-				to { -webkit-transform: translateX(100%); }
-			}
-			@keyframes moveToRight { 
-				from { }
-				to { -webkit-transform: translateX(100%); transform: translateX(100%); }
-			}
-
-			@-webkit-keyframes moveFromRight {
-				from { -webkit-transform: translateX(100%); }
-			}
-			@keyframes moveFromRight {
-				from { -webkit-transform: translateX(100%); transform: translateX(100%); }
-			}
 		</style>
 	</head>
 	<body>
