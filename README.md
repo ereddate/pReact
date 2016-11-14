@@ -151,7 +151,7 @@ pjs模板, 数据过滤写法如下：
 {{ capitalize | capitalize : 2 }}
 {{ capitalize | capitalize : 0 }}
 {{ 1000 | currency : '$' }}
-{{ 100000000000 | passcard }}
+{{ 8888888888888888888 | passcard : 4 }} 后面的4不输入的话，默认为4
 {{ usname | empty : null }}
 ```
 pjs模板，数据过滤扩展写法如下：
