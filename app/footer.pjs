@@ -14,7 +14,7 @@ var footerView = pReact.createClass({
 					color:rgba(220,220,220,1);
 				}
 			</style>
-			<span class="footer">&copy;copyright <a href="https://github.com/ereddate/pReact" target="_blank">pReact</a>. 2016.</span>
+			<span class="footer">github.com/ereddate/<a href="https://github.com/ereddate/pReact" target="_blank">pReact</a></span>
 		);
 	}
 });
