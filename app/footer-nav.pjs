@@ -18,6 +18,7 @@ var footerNav = pReact.createClass({
 			});
 		}
 		title.html(index > 0 ? "商品价格走势" : "填写当日价格");
+		pReact.jq("#pages").find(".pages_item").scrollTo(1);
 	},
 	render:function(){
 		return (

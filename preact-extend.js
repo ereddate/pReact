@@ -511,10 +511,20 @@ pReact && ((function($) {
 		endEventNames = 'webkitAnimationEnd oAnimationEnd MSAnimationEnd animationend';
 
 	$.jq && ($.jq.extend($.jq.fn, {
-		onAnimationEnd: function(callback){
-			$.jq(this).on(endEventNames, function(e){
+		onAnimationEnd: function(callback) {
+			$.jq(this).on(endEventNames, function(e) {
 				$.jq(this).off(endEventNames);
 				callback && callback.call(this, e);
+			});
+			return this;
+		},
+		scrollTo: function(val) {
+			pReact.each(this, function(i, elem){
+				if ($.jq.isWindow(elem)) {
+					window.scrollTo(val || elem.pageXOffset, val || elem.pageYOffset);
+				}else{
+					elem["scrollTop"] = val;
+				}
 			});
 			return this;
 		},
@@ -548,6 +558,10 @@ pReact && ((function($) {
 				}
 			}
 			return parent;
+		}
+	}), $.jq.extend($.jq, {
+		isWindow: function(obj) {
+			return obj != null && obj === obj.window;
 		}
 	}));
 })(pReact, this));

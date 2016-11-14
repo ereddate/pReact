@@ -1,0 +1,37 @@
+var goTop = pReact.createClass({
+	goTopClick: function(e){
+		e.preventDefault();
+		console.log("gotop");
+		pReact.jq("#pages").find(".pages_item").scrollTo(1);
+	},
+	render: function(){
+		return (
+			<style>
+				.hide{
+					display:none;
+				}
+				.goTop{
+					position:fixed;
+					bottom:2.473rem;
+					right:0.7728rem;
+					width:1.5456rem;
+					height:1.5456rem;
+					display:block;
+					z-index:9999;
+					overflow:hidden;
+				}
+				.goTop img{
+					width:100%;
+					opacity: .5;
+				}
+			</style>
+			<a href="javascript:;" class="goTop{{ if ({{ isShow }} == false) }} hide{{ end if }}{{ ico }}" onClick="{{ this.goTopClick }}">
+				<img src="img/top.png" />
+			</a>
+		);
+	}
+});
+pReact.renderDom(
+	<goTop {isShow:true, ico:""}/>,
+	document.getElementById("main")
+);
