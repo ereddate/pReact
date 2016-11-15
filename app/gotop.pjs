@@ -35,9 +35,10 @@ pReact.renderDom(
 	<goTop {isShow:true, ico:""}/>,
 	document.getElementById("main"),
 	function(){
-		console.log(screen.height);
-		pReact.jq(window).on("scroll", function(e){
-
-		});
+		var a = pReact.jq(".pages").find(".pages_item");
+		a.on("scroll", function(e){
+			var b = pReact.jq(this).scrollTop();
+			pReact.jq(".goTop")[b>=100?"show":"hide"]();
+		}).trigger("scroll");
 	}
 );
