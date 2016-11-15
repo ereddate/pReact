@@ -190,10 +190,10 @@ pReact.renderDom(
 				}
 			}
 		});
-		pages.pinched(function(e){
+		/*pages.pinched(function(e){
 			alert("zoomIn")
 		}, function(e){
 			alert("zoomOut")
-		});
+		});*/
 	}
 );
