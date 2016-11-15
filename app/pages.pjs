@@ -22,7 +22,7 @@ var pageView = pReact.createClass({
 					left:0;
 					overflow:auto;
 					overflow-x:hidden;
-					visibility: hidden;
+					visibility: visible;
 					-webkit-backface-visibility: hidden;
 					-moz-backface-visibility: hidden;
 					backface-visibility: hidden;

@@ -2,7 +2,7 @@ var headerView = pReact.createClass({
 	menuButtonClick: function(e){
 		var a = pReact.jq(this.elem).parent();
 		a.hasClass("open") ? a.removeClass("open") : a.removeClass("open").addClass("open");
-		a.find("span").scrollTo();
+		a.find("span").scrollTo(1);
 	},
 	menuButtonGohomeClick: function(e){
 		var val = pReact.jq(this.elem).attr("gohome");

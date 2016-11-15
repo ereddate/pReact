@@ -795,7 +795,7 @@
       }
     },
     classListRemove = classListEnabled ? function(el, className) {
-      el.classList.remove(className);
+      el.classList && el.classList.remove(className);
     } : function(el, className) {
       if (!REclassListFallback.rm[className]) {
         REclassListFallback.rm[className] = new RegExp('\\s*' + className + '\\s*', 'g');
@@ -827,7 +827,6 @@
 
   ListDOM.prototype.removeClass = function(className) {
     var i, n;
-
     if (className instanceof Function) {
       for (i = 0, n = this.length; i < n; i++) {
         classListRemove(this[i], className.call(this[i], i, this[i].className));

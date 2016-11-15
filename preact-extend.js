@@ -514,19 +514,16 @@ pReact && ((function($) {
 
 	$.jq && ($.jq.extend($.jq.fn, {
 		onAnimationEnd: function(callback) {
-			$.jq(this).on(endEventNames, function(e) {
-				$.jq(this).off(endEventNames);
+			var fn = function(e) {
+				$.jq(this).off(endEventNames, fn);
 				callback && callback.call(this, e);
-			});
+			};
+			$.jq(this).once(endEventNames, fn);
 			return this;
 		},
 		scrollTo: function(val) {
 			pReact.each(this, function(i, elem) {
-				if ($.jq.isWindow(elem)) {
-					window.scrollTo(val || elem.pageXOffset, val || elem.pageYOffset);
-				} else {
-					elem["scrollTop"] = val || 1;
-				}
+				$.jq(elem).scrollTop(val || 1);
 			});
 			return this;
 		},
@@ -565,5 +562,22 @@ pReact && ((function($) {
 		isWindow: function(obj) {
 			return obj != null && obj === obj.window;
 		}
+	}), pReact.each({
+		scrollLeft: "pageXOffset",
+		scrollTop: "pageYOffset"
+	}, function(method, prop) {
+		pReact.jq.fn[method] = function(val) {
+			var elem = this[0];
+
+			if (val === undefined) {
+				return pReact.jq.isWindow(elem) ? elem[prop] : elem[method];
+			}
+
+			if (pReact.jq.isWindow(elem)) {
+				elem.scrollTo(val || elem.pageXOffset, val || elem.pageYOffset);
+			} else {
+				elem[method] = val || 1;
+			}
+		};
 	}));
 })(pReact, this));

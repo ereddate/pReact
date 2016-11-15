@@ -169,21 +169,23 @@ pReact.renderDom(
 			callback:function(e, dir){
 				console.log(dir);
 				if (dir == "left"){
-					page.eq(0).removeClass("pt-page-current pt-page-moveFromLeft").addClass("pt-page-current pt-page-moveToLeft").onAnimationEnd(function(e){
-					});
-					page.eq(1).removeClass("pt-page-current pt-page-moveToRight").addClass("pt-page-current pt-page-moveFromRight").onAnimationEnd(function(e){
-					});
 					title.html("商品价格走势");
 					bottomButton.removeClass("on").eq(1).addClass("on");
-					pReact.jq("#pages").find(".pages_item").scrollTo(1);
+					page.eq(0).removeClass("pt-page-moveFromLeft").addClass("pt-page-moveToLeft").onAnimationEnd(function(){
+						console.log(0);
+						pReact.jq(this).removeClass("pt-page-current");
+					});
+					page.eq(1).removeClass("pt-page-moveToRight").addClass("pt-page-current pt-page-moveFromRight");
+					pReact.jq("#pages").find(".pt-page-current").scrollTo(1);
 				}else if (dir == "right"){
-					page.eq(0).removeClass("pt-page-current pt-page-moveToLeft").addClass("pt-page-current pt-page-moveFromLeft").onAnimationEnd(function(e){
-					});
-					page.eq(1).removeClass("pt-page-current pt-page-moveFromRight").addClass("pt-page-current pt-page-moveToRight").onAnimationEnd(function(e){
-					});
 					title.html("填写当日价格");
 					bottomButton.removeClass("on").eq(0).addClass("on");
-					pReact.jq("#pages").find(".pages_item").scrollTo(1);
+					page.eq(0).removeClass("pt-page-moveToLeft").addClass("pt-page-current pt-page-moveFromLeft");
+					page.eq(1).removeClass("pt-page-moveFromRight").addClass("pt-page-moveToRight").onAnimationEnd(function(){
+						console.log(1);
+						pReact.jq(this).removeClass("pt-page-current");
+					});
+					pReact.jq("#pages").find(".pt-page-current").scrollTo(1);
 				}
 			}
 		})

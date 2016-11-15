@@ -6,19 +6,22 @@ var footerNav = pReact.createClass({
 			page = pReact.jq(".pages").find(".pages_item"),
 			title = pReact.jq(".header h1");
 		a.removeClass("on").eq(index).addClass("on");
-		if (index<=0){
-			page.eq(0).removeClass("pt-page-current pt-page-moveToLeft").addClass("pt-page-current pt-page-moveFromLeft").onAnimationEnd(function(e){
-			});
-			page.eq(1).removeClass("pt-page-current pt-page-moveFromRight").addClass("pt-page-current pt-page-moveToRight").onAnimationEnd(function(e){
+		title.html(index > 0 ? "商品价格走势" : "填写当日价格");
+
+		if (index===0){
+			page.eq(0).removeClass("pt-page-moveToLeft").addClass("pt-page-current pt-page-moveFromLeft");
+			page.eq(1).removeClass("pt-page-moveFromRight").addClass("pt-page-moveToRight").onAnimationEnd(function(){
+				console.log(1);
+				pReact.jq(this).removeClass("pt-page-current");
 			});
 		}else{
-			page.eq(0).removeClass("pt-page-current pt-page-moveFromLeft").addClass("pt-page-current pt-page-moveToLeft").onAnimationEnd(function(e){
+			page.eq(0).removeClass("pt-page-moveFromLeft").addClass("pt-page-moveToLeft").onAnimationEnd(function(){
+				console.log(0);
+				pReact.jq(this).removeClass("pt-page-current");
 			});
-			page.eq(1).removeClass("pt-page-current pt-page-moveToRight").addClass("pt-page-current pt-page-moveFromRight").onAnimationEnd(function(e){
-			});
+			page.eq(1).removeClass("pt-page-moveToRight").addClass("pt-page-current pt-page-moveFromRight");
 		}
-		title.html(index > 0 ? "商品价格走势" : "填写当日价格");
-		pReact.jq("#pages").find(".pages_item").scrollTo(1);
+		pReact.jq("#pages").find(".pt-page-current").scrollTo(1);
 	},
 	render:function(){
 		return (

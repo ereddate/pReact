@@ -2,7 +2,7 @@ var goTop = pReact.createClass({
 	goTopClick: function(e){
 		e.preventDefault();
 		console.log("gotop");
-		pReact.jq("#pages").find(".pages_item").scrollTo(1);
+		pReact.jq("#pages").find(".pt-page-current").scrollTo(1);
 	},
 	render: function(){
 		return (
@@ -33,5 +33,11 @@ var goTop = pReact.createClass({
 });
 pReact.renderDom(
 	<goTop {isShow:true, ico:""}/>,
-	document.getElementById("main")
+	document.getElementById("main"),
+	function(){
+		console.log(screen.height);
+		pReact.jq(window).on("scroll", function(e){
+
+		});
+	}
 );
