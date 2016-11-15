@@ -546,17 +546,23 @@ pReact && ((function($) {
 				if (id) {
 					$.each(parent, function(i, item) {
 						if (/^#/.test(id) && item.id && item.id == id.replace("#", "")) {
-							parent = item;
+							parent = [item];
 							return false;
 						}
 						if (/^\./.test(id) && pReact.jq(item).hasClass(id.replace(".", ""))) {
-							parent = item;
+							parent = [item];
 							return false;
 						}
 					});
 				}
 			}
-			return parent;
+			if (parent && id && parent.length === 1) {
+				this[0] = parent[0];
+				this.length = 1;
+			}else{
+				this.length = 0;
+			}
+			return this;
 		}
 	}), $.jq.extend($.jq, {
 		isWindow: function(obj) {

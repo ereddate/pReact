@@ -1,7 +1,11 @@
 var headerView = pReact.createClass({
 	menuButtonClick: function(e){
 		var a = pReact.jq(this.elem).parent();
-		a.hasClass("open") ? a.removeClass("open") : a.removeClass("open").addClass("open");
+		a.hasClass("open") ? a.removeClass("open") : (a.removeClass("open").addClass("open"), pReact.jq(document).on("click", function(e){
+			if (pReact.jq(e.target).parents(".header").length != 1){
+				a.removeClass("open");
+			}
+		}));
 		a.find("span").scrollTo(1);
 	},
 	menuButtonGohomeClick: function(e){
