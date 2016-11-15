@@ -164,8 +164,9 @@ pReact.renderDom(
 	function(){
 		var title = pReact.jq(".header h1"),
 			bottomButton = pReact.jq(".footer_nav a"),
-			page = pReact.jq(".pages").find(".pages_item");
-		pReact.jq(".pages").swipe({
+			pages = pReact.jq(".pages"),
+			page = pages.find(".pages_item");
+		pages.swipe({
 			callback:function(e, dir){
 				console.log(dir);
 				if (dir == "left"){
@@ -188,6 +189,11 @@ pReact.renderDom(
 					pReact.jq("#pages").find(".pt-page-current").scrollTo(1);
 				}
 			}
-		})
+		});
+		pages.pinched(function(e){
+			alert("zoomIn")
+		}, function(e){
+			alert("zoomOut")
+		});
 	}
 );
