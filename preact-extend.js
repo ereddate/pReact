@@ -1,4 +1,10 @@
-pReact && ((function($) {
+/*!
+ * pReact & pjs template v1.0.0
+ * @author yandong
+ *
+ * https://github.com/ereddate/pReact
+ */
+ pReact && ((function($) {
 
 	function _capitalize(val) {
 		return val[0].toUpperCase() + val.substr(1);

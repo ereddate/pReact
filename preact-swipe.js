@@ -1,4 +1,10 @@
-pReact && pReact.extend(pReact.jq.fn, {
+/*!
+ * pReact & pjs template v1.0.0
+ * @author yandong
+ *
+ * https://github.com/ereddate/pReact
+ */
+ pReact && pReact.extend(pReact.jq.fn, {
   swipe: function(options) {
     var browser = {
       addEventListener: !!window.addEventListener,

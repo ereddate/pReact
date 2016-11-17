@@ -1,3 +1,9 @@
+/*!
+ * pReact & pjs template v1.0.0
+ * @author yandong
+ *
+ * https://github.com/ereddate/pReact
+ */
 (function(win, map, $) {
 	$.extend(Array.prototype, {
 		del: function(num) {

@@ -1,4 +1,10 @@
-pReact && pReact.jq && pReact.extend(pReact.jq.fn, {
+/*!
+ * pReact & pjs template v1.0.0
+ * @author yandong
+ *
+ * https://github.com/ereddate/pReact
+ */
+ pReact && pReact.jq && pReact.extend(pReact.jq.fn, {
 	pinched: function(zoomIn, zoomOut) {
 		function getDistance(p1, p2) {
 			var x = p2[0] - p1[0],
