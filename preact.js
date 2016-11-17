@@ -294,22 +294,33 @@
 		}
 	});
 })(this, {
+		createDom: function(a, url, done) {
+			var map = this;
+			var doc = document,
+				type = /\.js$/.test(url) ? "script" : "link",
+				item = doc.createElement(type);
+			if (type == "script") {
+				item.src = url;
+			} else {
+				item.rel = "stylesheet";
+				item.href = url;
+			}
+			item.callback = a.callback;
+			item.onload = item.onerror = function() {
+				type == "script" && doc.body.removeChild(this), this.callback && this.callback(), map && map.obj.emi && map.obj.emi.del(a.index), done && done(0, map.obj.emi);
+			};
+			type == "script" ? doc.body.appendChild(item) : doc.getElementsByTagName("head")[0].appendChild(item);
+		},
 		emiTypeFn: {
 			load: function(a, map, done) {
-				var doc = document,
-					type = /\.js$/.test(a.url) ? "script" : "link",
-					item = doc.createElement(type);
-				if (type == "script") {
-					item.src = a.url;
-				} else {
-					item.rel = "stylesheet";
-					item.href = a.url;
+				var urls = typeof a.url == "string" ? a.url.split(' ') : a.url && "length" in a.url && a.url;
+				if (urls.length === 1) {
+					map.createDom(a, urls[0], done);
+				} else if (urls.length > 1) {
+					map.each(urls, function(i, url) {
+						map.createDom.call(map, a, url, done);
+					});
 				}
-				item.callback = a.callback;
-				item.onload = item.onerror = function() {
-					type == "script" && doc.body.removeChild(this), this.callback && this.callback(), map && map.obj.emi && map.obj.emi.del(a.index), done && done(0, map.obj.emi);
-				};
-				type == "script" ? doc.body.appendChild(item) : doc.getElementsByTagName("head")[0].appendChild(item);
 			},
 			done: function(a, map, done) {
 				var doc = document;
