@@ -83,6 +83,26 @@ pReact，仅支持ios和android设备。模板文件扩展名为*.pjs。
 		}).done();
 	});
 ```
+如果想将pReact.createClass存储并再次使用的话，可以用以下方法：
+```
+	//定义
+	var a = pReact.createClass("a", {
+		render: function(){
+			return (
+				...
+			)
+		}
+	});
+
+	...
+
+	//再次引用
+	pReact.Class["a"] && pReact.renderDom(
+		<pReact.Class["a"] />,
+		document.getElementById("main")
+	);
+
+```
 pjs模板，数据赋值方法如下：
 ```
 正常情况：

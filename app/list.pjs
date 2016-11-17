@@ -211,5 +211,14 @@ pReact.renderDom(
 );
 pReact.renderDom(
 	<listItem />,
-	document.getElementById("pricelist_content")
+	document.getElementById("pricelist_content"),
+	function(){
+		var data = {};
+		data["priceview"] = false;
+		data["message"] = "alert test!";
+		pReact.Class["priceinfo"] && pReact.renderDom(
+			<pReact.Class["priceinfo"] data/>,
+			document.body
+		);
+	}
 );

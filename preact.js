@@ -214,7 +214,7 @@
 		createClass: function() {
 			var args = arguments,
 				len = args.length;
-			return len > 0 && $.extend({}, args[0]);
+			return len === 1 ? $.extend({}, args[0]) : len > 1 && (!this.Class && (this.Class = {}), (this.Class[args[0]] = $.extend({}, args[1])));
 		},
 		renderDom: function(html, data, parent, callback) {
 			var obj = typeof html == "function" ? (new html()) : html;
@@ -427,7 +427,7 @@
 				if (b) {
 					var k = b.split(' ');
 					var c = b.replace(k[0] + " ", "").replace(/\/\>/, "");
-					a = a.replace(b, k[0] + "," + (c == "" ? "undefined" : c)).replace(/\<|\/\>/gi, "");
+					a = a.replace(b, "lookName(pReact.extend((!pReact.Class['" + k[0] + "'] && (pReact.Class['" + k[0] + "']={}) || pReact.Class['" + k[0] + "']), " + k[0] + "), " + k[0] + ")," + (c == "" ? "undefined" : c)).replace(/\<|\/\>/gi, "");
 				}
 				return a;
 			}).replace(_.renderObjExp, function(a, b) {
@@ -437,7 +437,8 @@
 		},
 		render: function(html, dom) {
 			var _ = this;
-			html = _.evalHtml(html);
+			!pReact.Class && (pReact.Class = {});
+			html = "function lookName(obj, name){return name;}" + (_.evalHtml(html));
 			_.ceval(html);
 		},
 		each: function(obj, callback) {
