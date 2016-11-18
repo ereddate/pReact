@@ -39,6 +39,16 @@
 		<script src="../preact-touchs.js"></script>
 		<script src="../preact-extend.js"></script>
 		<script>
+			var item = [{
+				a:1,
+				b:2
+			},{
+				a:2,
+				b:3
+			}],a =3;
+			console.log(pReact.tmpl('{{ for (i=0;i<item.length;i++) }}<div>{{ item.a }} {{ item.b }} {{ $a }}</div>{{ end for }}', item));
+		</script>
+		<script>
 			pReact.ready(function(){
 				window.pReact_web_config = {
 					isIndex:false, //是首页还是其他，true首页false其他

@@ -105,12 +105,20 @@
 				$.each(result, function(i, str) {
 					if (/{{\s+end\s+for\s+}}/.test(str)) {
 						var o = "{{ for " + str.split(/{{\s+end\s+for\s+}}/)[0] + "{{ end for }}",
-							t = o;
+							t = o,
+							name = "data";
 						str = t.replace(/{{\s+[^}]+\s+}}/gi, function(a, b) {
 							if (/{{\s+for\s+/.test(a)) {
-								a = a.replace("{{ for ", "var data = result, arr = [];for ").replace(" }}", "{arr.push(pReact.tmpl(_###_");
+								var c = /\(\s*.+\s*=\s*([^\.]+)\.*[a-zA-Z]*;\s*.+[<>\!]+([^\.]+)\.*[a-zA-Z]*;/.exec(a);
+								if (c) {
+									if (c[1] && !/[0-9]/.test(c[1])) name = c[1];
+									else if (c[2] && !/[0-9]/.test(c[2])) name = c[2];
+								}
+							}
+							if (/{{\s+for\s+/.test(a)) {
+								a = a.replace("{{ for ", "var " + name + " = result, arr = [];for ").replace(" }}", "{arr.push(pReact.tmpl(_###_");
 							} else if (/{{\s+end\s+for\s+}}/.test(a)) {
-								a = a.replace(/{{\s+end\s+for\s+}}/, "_###_, data[i]));}return arr.join(_###__###_);");
+								a = a.replace(/{{\s+end\s+for\s+}}/, "_###_, " + name + "[i]));}return arr.join(_###__###_);");
 							}
 							return a;
 						}).replace(/\'/gi, "\\\'").replace(/\"/gi, "\\\"").replace(/_###_/gi, "'");
@@ -123,7 +131,7 @@
 		tmpl: function(html, data) {
 			if (map.isEmptyObject(data)) return html;
 			map.each(data, function(name, val) {
-				html = html.replace(/{{\s+[^<>,]+\s+}}/gim, function(a) {
+				html = html.replace(/{{\s+[^<>}{,]+\s+}}/gim, function(a) {
 					if ((new RegExp("{{\\s+(" + name + ")\\s+([^<>,]+\\s+)*}}")).test(a)) {
 						a = a.replace(new RegExp("{{\\s+(" + name + ")\\s+([^<>,}]+\\s+)*}}"), function(a, b, c) {
 							if (c) {
@@ -134,6 +142,19 @@
 							}
 							return a;
 						});
+					} else if (/[a-zA-Z0-9_]+\.[a-zA-Z0-9_]+/.test(a) && !/this\.|this\[/.test(a) && !/{{\s+\$/.test(a)) {
+						var x = /([a-zA-Z0-9_]+)\.([a-zA-Z0-9_]+)/.exec(a);
+						if (x) {
+							a = a.replace(new RegExp("{{\\s+(" + x[1] + "\\." + name + ")\\s+([^<>,}]+\\s+)*}}"), function(a, b, c) {
+								if (c) {
+									var result = c.split('|')[1].split(' : ');
+									a = a.replace(a, map.tmplFilter[$.trim(data[name])](val, result[1] && $.trim(result[1]).replace(/[\'\"]/gim, "") || 0));
+								} else {
+									a = a.replace(new RegExp("{{\\s+" + x[1] + "\\." + name + "\\s+}}", "gim"), val);
+								}
+								return a;
+							});
+						}
 					}
 					return a;
 				});

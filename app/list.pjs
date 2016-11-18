@@ -168,8 +168,8 @@ var listItem = pReact.createClass({
 				}
 			</style>
 			<ul class="pricelist_items">
-				{{ for (i=0;i<data.length;i++) }}
-					<li class="{{ if ({{ rate }} > 0) }}rise{{ else }}fall{{ end if }}"><a href="{{ url }}" class="name title">{{ title }}</a><span class="price">￥{{ price }}</span><span class="rate{{ if ({{ rate }} > 0) }} rise_back{{ else }} fall_back{{ end if }}">{{ if ({{ rate }} > 0) }}+{{ end if }}{{ rate }}%</span><span class="lasttime">{{ lasttime }}</span></li>
+				{{ for (i=0;i<items.length;i++) }}
+					<li class="{{ if ({{ items.rate }} > 0) }}rise{{ else }}fall{{ end if }}"><a href="{{ items.url }}" class="name title">{{ items.title }}</a><span class="price">￥{{ items.price }}</span><span class="rate{{ if ({{ items.rate }} > 0) }} rise_back{{ else }} fall_back{{ end if }}">{{ if ({{ items.rate }} > 0) }}+{{ end if }}{{ items.rate }}%</span><span class="lasttime">{{ items.lasttime }}</span></li>
 				{{ end for }}
 			</ul>
 		);
