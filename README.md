@@ -270,3 +270,9 @@ pReact.tmplControlExtend({
 	}, document.body);
 
 ```
+增加define模块开发：
+```
+define("name", ["pReact"], function(){
+	pReact && pReact...;
+});
+```
