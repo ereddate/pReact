@@ -5,8 +5,8 @@
  * https://github.com/ereddate/pReact
  */
 (function(win, $, define) {
-	define = define();
 	$ = $();
+	define = define($);
 
 	define("pReact", [], function() {
 		return $;
@@ -33,7 +33,57 @@
 			return c;
 		};
 		a.fn.init.prototype = a.fn;
-
+		var rtrim = /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g;
+		a.extend(a, {
+			isEmpty: function(v) {
+				var a = function(e) {
+					var t;
+					for (t in e) return !1;
+					return !0
+				};
+				return typeof v == "undefined" || v == null || typeof v == "string" && trim(v) == "" || isArray(v) && v.length == 0 || typeof v == "object" && a(v) ? true : false;
+			},
+			trim: function(text) {
+				return text == null ?
+					"" :
+					(text + "").replace(rtrim, "");
+			},
+			each: function(a, b, c) {
+				var d, e = 0,
+					f = a.length,
+					g = this.isArray(a);
+				if (c) {
+					if (g) {
+						for (; f > e; e++)
+							if (d = b.apply(a[e], c), d === !1) break
+					} else
+						for (e in a)
+							if (d = b.apply(a[e], c), d === !1) break
+				} else if (g) {
+					for (; f > e; e++)
+						if (d = b.call(a[e], e, a[e]), d === !1) break
+				} else
+					for (e in a)
+						if (d = b.call(a[e], e, a[e]), d === !1) break;
+				return a
+			},
+			isArray: function(a) {
+				if (!a) return false;
+				var b = "length" in a && a.length,
+					c = (typeof a).toLowerCase();
+				return "array" === c || 0 === b || "number" == typeof b && b > 0 && b - 1 in a
+			},
+			isEmptyObject: function(obj) {
+				var name;
+				for (name in obj) {
+					return false;
+				}
+				return true;
+			},
+			isElement: function(obj) {
+				return !!obj && obj.nodeType === 1;
+			}
+		});
 		/*var args = arguments,
 			len = args.length,
 			i;
@@ -41,84 +91,23 @@
 
 		return a;
 	},
-	function() {
-		var rtrim = /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g,
-			define = function() {
-				var args = arguments,
-					len = args.length,
-					name, dependencies, factory;
-				if (len == 1) {
-					factory = args[0];
-				} else if (len == 2) {
-					name = args[0], factory = args[1];
-				} else if (len == 3) {
-					name = args[0], dependencies = args[1], factory = args[2];
-				}
-
-				_analyDefine((!name && ("model_" + Math.random()) || name), dependencies, factory);
-				return this;
-			};
-		define.amd = {};
-
-		function isArray(a) {
-			if (!a) return false;
-			var b = "length" in a && a.length,
-				c = (typeof a).toLowerCase();
-			return "array" === c || 0 === b || "number" == typeof b && b > 0 && b - 1 in a
-		}
-
-		function each(a, b, c) {
-			var d, e = 0,
-				f = a.length,
-				g = isArray(a);
-			if (c) {
-				if (g) {
-					for (; f > e; e++)
-						if (d = b.apply(a[e], c), d === !1) break
-				} else
-					for (e in a)
-						if (d = b.apply(a[e], c), d === !1) break
-			} else if (g) {
-				for (; f > e; e++)
-					if (d = b.call(a[e], e, a[e]), d === !1) break
-			} else
-				for (e in a)
-					if (d = b.call(a[e], e, a[e]), d === !1) break;
-			return a
-		};
-
-		function trim(text) {
-			return text == null ?
-				"" :
-				(text + "").replace(rtrim, "");
-		}
-
-		function extend(target, args, filter) {
-			if (typeof args == "array" && !!args.length && args.length > 0) {
-				target = target || [];
-				var i, len;
-				for (i = 0; i < (len = args.length); i++) {
-					if (args[i] != filter)
-						target.push(args[i]);
-				}
-			} else {
-				target = target || {};
-				for (name in args) {
-					if (name != filter)
-						target[name] = args[name];
-				}
+	function($) {
+		var define = function() {
+			var args = arguments,
+				len = args.length,
+				name, dependencies, factory;
+			if (len == 1) {
+				factory = args[0];
+			} else if (len == 2) {
+				name = args[0], factory = args[1];
+			} else if (len == 3) {
+				name = args[0], dependencies = args[1], factory = args[2];
 			}
-			return target;
-		};
 
-		function isEmpty(v) {
-			var a = function(e) {
-				var t;
-				for (t in e) return !1;
-				return !0
-			};
-			return typeof v == "undefined" || v == null || typeof v == "string" && trim(v) == "" || isArray(v) && v.length == 0 || typeof v == "object" && a(v) ? true : false;
-		}
+			_analyDefine((!name && ("model_" + Math.random()) || name), dependencies, factory);
+			return this;
+		};
+		define.amd = {};
 
 		var model = function() {
 			return new model.fn.init();
@@ -154,7 +143,7 @@
 				if (isArray(name) || typeof name == "string" && name.split(' ').length > 1) {
 					result = {};
 					if (typeof name == "string") name = name.split(' ');
-					each(name, function(i, str) {
+					$.each(name, function(i, str) {
 						if (name in define.amd)(result[str] = _require(str), complete && complete(result));
 						else {
 							createElement(str, function(elem) {
@@ -183,7 +172,7 @@
 
 		function _analyRequire(func) {
 			var funContext = func.toString(),
-				fixContext = trim(funContext.replace(/(\r|\n)/gi, ""));
+				fixContext = $.trim(funContext.replace(/(\r|\n)/gi, ""));
 			var require = []
 			fixContext.replace(/\s*require\s*\(\s*[\"|\'](.+?)[\"|\']\s*\)\s*/gi, function(a, b) {
 				require.push(b);
@@ -214,7 +203,7 @@
 				},
 				than, result;
 			if (options.status == 2) {
-				each(options.dependencies, function(i, name) {
+				$.each(options.dependencies, function(i, name) {
 					_require(name);
 				});
 			}
@@ -243,10 +232,10 @@
 				dependencies: dependencies,
 				factory: factory,
 				exports: {},
-				status: isArray(dependencies) || typeof dependencies != "undefined" ? STATUS.readed : STATUS.loaded
+				status: $.isArray(dependencies) || typeof dependencies != "undefined" ? STATUS.readed : STATUS.loaded
 			};
 			var ops = _analyRequire(factory);
-			options = extend(options, ops);
+			options = $.extend(options, ops);
 
 			define.amd[options.name] = options;
 
@@ -314,14 +303,7 @@ pReact && define && (define("promise", ["pReact"], function() {
 		}
 	};
 	promise.fn.init.prototype = promise.fn;
-	promise.extend = function(target, args) {
-		target = target || {};
-		for (name in args) {
-			target[name] = args[name];
-		}
-		return target;
-	};
-	promise.extend(promise.fn, {
+	pReact.extend(promise.fn, {
 		wait: function(ms) {
 			this.emi.push({
 				callback: function(callback) {
@@ -401,7 +383,7 @@ pReact && define && (define("promise", ["pReact"], function() {
 			return this;
 		}
 	};
-	promise.extend(when.fn, {
+	pReact.extend(when.fn, {
 		done: function(callback) {
 			this.emi.then = callback;
 			whenEmi.call(this, "then");
@@ -661,7 +643,7 @@ pReact && define && (define("promise", ["pReact"], function() {
 		serialize(params, obj, traditional)
 		return params.join('&').replace(/%20/g, '+')
 	}
-}), define("map", function(){
+}), define("map", function() {
 	return {
 		createDom: function(a, url, done) {
 			var map = this;
@@ -686,7 +668,7 @@ pReact && define && (define("promise", ["pReact"], function() {
 				if (urls.length === 1) {
 					map.createDom(a, urls[0], done);
 				} else if (urls.length > 1) {
-					map.each(urls, function(i, url) {
+					pReact.each(urls, function(i, url) {
 						map.createDom.call(map, a, url, done);
 					});
 				}
@@ -709,7 +691,7 @@ pReact && define && (define("promise", ["pReact"], function() {
 							var b = doc.getElementsByTagName('script'),
 								i;
 							b = pReact.jsonToArray(b, function(obj) {
-								return map.isElement(obj) ? obj : false;
+								return pReact.isElement(obj) ? obj : false;
 							});
 							for (i = 0; i <= b.length; i++) {
 								var elem = b[i];
@@ -751,15 +733,15 @@ pReact && define && (define("promise", ["pReact"], function() {
 		findDom: function(a, obj) {
 			var _ = this;
 			if (a.children.length > 0) {
-				_.each(_.binds, function(name, fn) {
+				pReact.each(_.binds, function(name, fn) {
 					typeof fn == "function" && fn(a, obj);
-					_.each(a.children, function(i, elem) {
+					pReact.each(a.children, function(i, elem) {
 						_.findDom(elem, obj);
 					});
 				});
 			} else {
 				//console.log(a)
-				_.each(_.binds, function(name, fn) {
+				pReact.each(_.binds, function(name, fn) {
 					typeof fn == "function" && fn(a, obj);
 				});
 			}
@@ -826,43 +808,9 @@ pReact && define && (define("promise", ["pReact"], function() {
 			!pReact.Class && (pReact.Class = {});
 			html = "function lookName(obj, name){return name;}" + (_.evalHtml(html));
 			_.ceval(html);
-		},
-		each: function(obj, callback) {
-			function r(a) {
-				var b = "length" in a && a.length,
-					c = (typeof a).toLowerCase();
-				return "array" === c || 0 === b || "number" == typeof b && b > 0 && b - 1 in a
-			}
-			if (r(obj)) {
-				var len = obj.length,
-					i;
-				for (i = 0; i < len; i++) {
-					var result = callback.call(obj[i], i, obj[i]);
-					if (result == false) {
-						break;
-					}
-				}
-			} else {
-				for (name in obj) {
-					var result = callback.call(obj[name], name, obj[name]);
-					if (result == false) {
-						break;
-					}
-				}
-			}
-		},
-		isEmptyObject: function(obj) {
-			var name;
-			for (name in obj) {
-				return false;
-			}
-			return true;
-		},
-		isElement: function(obj) {
-			return !!obj && obj.nodeType === 1;
 		}
 	};
-}), define(function(require, exports, module){
+}), define(function(require, exports, module) {
 	var map = require("map"),
 		$ = pReact = require("pReact"),
 		win = window;
@@ -994,8 +942,8 @@ pReact && define && (define("promise", ["pReact"], function() {
 			return html;
 		},
 		tmpl: function(html, data) {
-			if (map.isEmptyObject(data)) return html;
-			map.each(data, function(name, val) {
+			if (pReact.isEmptyObject(data)) return html;
+			pReact.each(data, function(name, val) {
 				html = html.replace(/{{\s+[^<>}{,]+\s+}}/gim, function(a) {
 					if ((new RegExp("{{\\s+(" + name + ")\\s+([^<>,]+\\s+)*}}")).test(a)) {
 						a = a.replace(new RegExp("{{\\s+(" + name + ")\\s+([^<>,}]+\\s+)*}}"), function(a, b, c) {
@@ -1024,7 +972,7 @@ pReact && define && (define("promise", ["pReact"], function() {
 					return a;
 				});
 			});
-			map.each(map.tmplLang, function(name, fn) {
+			pReact.each(map.tmplLang, function(name, fn) {
 				html = fn(html);
 			});
 			return html;
@@ -1136,15 +1084,11 @@ pReact && define && (define("promise", ["pReact"], function() {
 			});
 			return this;
 		},
-		each: function(obj, callback) {
-			map.each(obj, callback);
-			return this;
-		},
 		ready: function(callback) {
 			var a = doc.getElementsByTagName('script'),
 				i, html;
 			a = pReact.jsonToArray(a, function(obj) {
-				return map.isElement(obj) ? obj : false;
+				return pReact.isElement(obj) ? obj : false;
 			});
 			for (i = 0; i <= a.length; i++) {
 				var elem = a[i];

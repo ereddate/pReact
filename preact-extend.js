@@ -209,7 +209,7 @@
 				return _currency(val);
 			},
 			empty: function(val, filterCondition) {
-				return (typeof val == "string" && $.trim(val) == "" || val == null || typeof val == "undefined" || $.is("object", val) && map.isEmptyObject(val) || $.is("array", val) && val.length == 0) && filterCondition;
+				return (typeof val == "string" && $.trim(val) == "" || val == null || typeof val == "undefined" || $.is("object", val) && pReact.isEmptyObject(val) || $.is("array", val) && val.length == 0) && filterCondition;
 			},
 			passcard: function(val, filterCondition) {
 				var num = filterCondition || 4,
