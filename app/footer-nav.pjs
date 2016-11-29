@@ -14,7 +14,7 @@ var footerNav = pReact.createClass({
 		var currentPage = page.eq(index);
 		page.removeClass("pt-page-current");
 		currentPage.addClass("pt-page-current");
-		pReact.jq("#pages").find(".pt-page-current").scrollTo(1);
+		pReact.jq(window).scrollTo(1);
 		a.removeClass("on").eq(index).addClass("on");
 		b.removeClass("on").eq(index).addClass("on");
 		prvIndex = index;

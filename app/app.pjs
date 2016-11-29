@@ -177,7 +177,7 @@ pReact.renderDom(
 						pReact.jq(this).removeClass("pt-page-current");
 					});
 					page.eq(1).removeClass("pt-page-moveToRight").addClass("pt-page-current pt-page-moveFromRight");
-					pReact.jq("#pages").find(".pt-page-current").scrollTo(1);
+					pReact.jq(window).scrollTo(1);
 				}else if (dir == "right"){
 					title.html("填写当日价格");
 					bottomButton.removeClass("on").eq(0).addClass("on");
@@ -186,7 +186,7 @@ pReact.renderDom(
 						console.log(1);
 						pReact.jq(this).removeClass("pt-page-current");
 					});
-					pReact.jq("#pages").find(".pt-page-current").scrollTo(1);
+					pReact.jq(window).scrollTo(1);
 				}
 			}
 		});

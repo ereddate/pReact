@@ -2,7 +2,7 @@ var goTop = pReact.createClass({
 	goTopClick: function(e){
 		e.preventDefault();
 		console.log("gotop");
-		pReact.jq("#pages").find(".pt-page-current").scrollTo(1);
+		pReact.jq(window).scrollTo(1);
 	},
 	render: function(){
 		return (
@@ -35,7 +35,7 @@ pReact.renderDom(
 	<goTop {isShow:true, ico:""}/>,
 	document.getElementById("main"),
 	function(){
-		var a = pReact.jq(".pages").find(".pages_item");
+		var a = pReact.jq(window);
 		a.on("scroll", function(e){
 			var b = pReact.jq(this).scrollTop();
 			pReact.jq(".goTop")[b>=100?"show":"hide"]();
