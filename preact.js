@@ -911,36 +911,6 @@ pReact && define && (define("promise", ["pReact"], function() {
 		binds: {},
 		tmplLang: {},
 		tmplFilter: {},
-		repeatTmpl: function(html, data) {
-			var arr = [];
-			var result = html.split("{{ for ");
-			if (result.length >= 1) {
-				$.each(result, function(i, str) {
-					if (/{{\s+end\s+for\s+}}/.test(str)) {
-						var o = "{{ for " + str.split(/{{\s+end\s+for\s+}}/)[0] + "{{ end for }}",
-							t = o,
-							name = "data";
-						str = t.replace(/{{\s+[^}]+\s+}}/gi, function(a, b) {
-							if (/{{\s+for\s+/.test(a)) {
-								var c = /\(\s*.+\s*=\s*([^\.]+)\.*[a-zA-Z]*;\s*.+[<>\!]+([^\.]+)\.*[a-zA-Z]*;/.exec(a);
-								if (c) {
-									if (c[1] && !/[0-9]/.test(c[1])) name = c[1];
-									else if (c[2] && !/[0-9]/.test(c[2])) name = c[2];
-								}
-							}
-							if (/{{\s+for\s+/.test(a)) {
-								a = a.replace("{{ for ", "var " + name + " = result, arr = [];for ").replace(" }}", "{arr.push(pReact.tmpl(_###_");
-							} else if (/{{\s+end\s+for\s+}}/.test(a)) {
-								a = a.replace(/{{\s+end\s+for\s+}}/, "_###_, " + name + "[i]));}return arr.join(_###__###_);");
-							}
-							return a;
-						}).replace(/\'/gi, "\\\'").replace(/\"/gi, "\\\"").replace(/_###_/gi, "'");
-						html = html.replace(o, map.ceval("return function(result){" + str + "}")(data));
-					}
-				});
-			}
-			return html;
-		},
 		tmpl: function(html, data) {
 			if (pReact.isEmptyObject(data)) return html;
 			pReact.each(data, function(name, val) {
@@ -971,9 +941,6 @@ pReact && define && (define("promise", ["pReact"], function() {
 					}
 					return a;
 				});
-			});
-			pReact.each(map.tmplLang, function(name, fn) {
-				html = fn(html);
 			});
 			return html;
 		}
@@ -1041,11 +1008,10 @@ pReact && define && (define("promise", ["pReact"], function() {
 			return key === undefined || hasOwn.call(obj, key);
 		},
 		tmpl: function(html, data) {
-			if ($.is("array", data)) {
-				html = map.repeatTmpl(html, data);
-			} else if ($.is("object", data)) {
-				html = map.tmpl(html, data);
-			}
+			html = map.tmpl(html, data);
+			pReact.each(map.tmplLang, function(name, fn) {
+				html = fn(html, data);
+			});
 			return html;
 		},
 		sEval: function(s, ops) {

@@ -1,4 +1,15 @@
 var headerView = pReact.createClass({
+	getInitData: function(success, error){
+		success(pReact.extend(window.pReact_web_config, {
+			a: true
+		}));
+	},
+	menuItemClick: function(e){
+		e.preventDefault();
+		var a = pReact.jq(".header_nav_menu a"),
+			index = a.index(this.elem);
+		pReact.jq(".footer_nav").find(".button").eq(index).trigger("click");
+	},
 	menuButtonClick: function(e){
 		var a = pReact.jq(this.elem).parent();
 		a.hasClass("open") ? a.removeClass("open") : (a.removeClass("open").addClass("open"), pReact.jq(document).on("click", function(e){
@@ -7,10 +18,6 @@ var headerView = pReact.createClass({
 			}
 		}));
 		a.find("span").scrollTo(1);
-	},
-	menuButtonGohomeClick: function(e){
-		var val = pReact.jq(this.elem).attr("gohome");
-		location.href = val;
 	},
 	render:function(){
 		return (
@@ -53,7 +60,7 @@ var headerView = pReact.createClass({
 					top:1.7002rem;
 					left:0;
 					right:0;
-					background:rgba(105,105,105,.8);
+					background:rgba(105,105,105,1);
 					z-index:9999;
 				}
 				.header .header_nav.open span{
@@ -113,32 +120,33 @@ var headerView = pReact.createClass({
 					text-indent: 0.3864rem;
 				}
 			</style>
-			{{ if ({{ isIndex }} == true) }}
-				<header class="header">
-					<h1>logo</h1>
-			{{ else }}
-				<header class="header header_section">
-					<h1 class="section_title">{{ sectionTitle }}</h1>
-			{{ end if }}
+			<?pjs if ({{ a }} == true) ?>
+			<header class="header header_section">
+				<h1>旅游指南</h1>
+			<?pjs else ?>
+			<header class="header header_section">
+				<h1>pjs test</h1>
+			<?pjs end if ?>
 				<nav class="header_nav">
-					<span>
-						<a href="" class="on">home</a>
-						<a href="">menu</a>
-						<a href="">menu</a>
-						<a href="">menu</a>
-						<a href="">menu</a>
-						<a href="">menu</a>
-						<a href="">menu</a>
+					<span class="header_nav_menu">
+					<?pjs for (i=0;i<pages.length;i++) ?>
+						<?pjs if (i == 0) ?>
+							<a href="javascript:;" onClick="{{ this.menuItemClick }}">{{ pages[i].mainTitle }}</a>
+						<?pjs else if (i == 1) ?>
+							<a href="javascript:;" onClick="{{ this.menuItemClick }}">{{ pages[i].mainTitle }}</a>
+						<?pjs else ?>
+							<a href="javascript:;" onClick="{{ this.menuItemClick }}">{{ pages[i].mainTitle }}</a>
+						<?pjs end if ?>
+					<?pjs end for ?>
 					</span>
-					<i class="header_nav_close" onClick="{{ this.menuButtonClick }}">close</i>
-					<i class="header_nav_open" onClick="{{ this.menuButtonClick }}">menu</i>
-					<i class="header_nav_goback" gohome="{{ homeSrc }}" onClick="{{ this.menuButtonGohomeClick }}">gohome</i>
+					<i class="header_nav_close" onClick="{{ this.menuButtonClick }}">关闭</i>
+					<i class="header_nav_open" onClick="{{ this.menuButtonClick }}">菜单</i>
 				</nav>
 			</header>
 		);
 	}
 });
 pReact.renderDom(
-	<headerView window.pReact_web_config/>,
+	<headerView />,
 	document.getElementById("header")
 );

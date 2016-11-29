@@ -1,4 +1,7 @@
 var pageView = pReact.createClass({
+	getInitData: function(success, error){
+		success(window.pReact_web_config.pages)
+	},
 	render:function(){
 		return (
 			<style>
@@ -8,12 +11,6 @@ var pageView = pReact.createClass({
 					height:100%;
 					overflow:hidden;
 				}
-				.pages ul.pagelist{
-					display:block;
-				}
-				.pages ul.pagelist li.page{
-					list-style:none inside;
-				}
 				.pages .pages_item{
 					height:100%;
 					width:100%;
@@ -22,7 +19,7 @@ var pageView = pReact.createClass({
 					left:0;
 					overflow:auto;
 					overflow-x:hidden;
-					visibility: visible;
+					visibility: hidden;
 					-webkit-backface-visibility: hidden;
 					-moz-backface-visibility: hidden;
 					backface-visibility: hidden;
@@ -37,64 +34,11 @@ var pageView = pReact.createClass({
 				    visibility: visible;
 				    z-index: 1;
 				}
-				.pt-page-current {
-				    visibility: visible;
-				    z-index: 1;
-				}
-				.pt-page-moveToLeft {
-					-webkit-animation: moveToLeft .6s ease both;
-					animation: moveToLeft .6s ease both;
-				}
-				.pt-page-moveFromLeft {
-					-webkit-animation: moveFromLeft .6s ease both;
-					animation: moveFromLeft .6s ease both;
-				}
-				.pt-page-moveToRight {
-					-webkit-animation: moveToRight .6s ease both;
-					animation: moveToRight .6s ease both;
-				}
-				.pt-page-moveFromRight {
-					-webkit-animation: moveFromRight .6s ease both;
-					animation: moveFromRight .6s ease both;
-				}
-				@-webkit-keyframes moveToLeft {
-					from { }
-					to { -webkit-transform: translateX(-100%); }
-				}
-				@keyframes moveToLeft {
-					from { }
-					to { -webkit-transform: translateX(-100%); transform: translateX(-100%); }
-				}
-				@-webkit-keyframes moveFromLeft {
-					from { -webkit-transform: translateX(-100%); }
-				}
-				@keyframes moveFromLeft {
-					from { -webkit-transform: translateX(-100%); transform: translateX(-100%); }
-				}
-				@-webkit-keyframes moveToRight { 
-					from { }
-					to { -webkit-transform: translateX(100%); }
-				}
-				@keyframes moveToRight { 
-					from { }
-					to { -webkit-transform: translateX(100%); transform: translateX(100%); }
-				}
-				@-webkit-keyframes moveFromRight {
-					from { -webkit-transform: translateX(100%); }
-				}
-				@keyframes moveFromRight {
-					from { -webkit-transform: translateX(100%); transform: translateX(100%); }
-				}
 			</style>
 			<section class="pages" id="pages">
-				<ul class="pagelist">
-					<li class="page">
-						<div class="pages_item" id="page_one"></div>
-					</li>
-					<li class="page">
-						<div class="pages_item" id="page_two"></div>
-					</li>
-				</ul>
+				<?pjs for (i=0;i<data.length;i++) ?>
+					<div class="page pages_item" id="page_item{{ data[i].index }}"></div>
+				<?pjs end for ?>
 				<div id="footer"></div>
 			</section>
 		);

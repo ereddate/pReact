@@ -4,7 +4,7 @@
  *
  * https://github.com/ereddate/pReact
  */
- pReact && ((function($) {
+pReact && ((function($) {
 
 	function _capitalize(val) {
 		return val[0].toUpperCase() + val.substr(1);
@@ -392,22 +392,72 @@
 		}
 	}
 })), pReact.tmplLangExtend({
+	forend: function(html, data) {
+		var arr = [];
+		var result = html.split("<?pjs for ");
+		if (result.length >= 1) {
+			var dataTName = "data";
+			pReact.each(result, function(i, str) {
+				if (/<\?pjs\s+end\s+for\s+\?>/.test(str)) {
+					var o = "<?pjs for " + str.split(/<\?pjs\s+end\s+for\s+\?>/)[0] + "<?pjs end for ?>",
+						t = o;
+					str = t.replace(/<\?pjs\s+[^\?]+\s+\?>/gi, function(a, b) {
+						if (/<\?pjs\s+for\s+/.test(a)) {
+							var c = /\s*.+\s*[=><]+\s*([^\.0-9-\+\*\/=><]+)\.*[a-zA-Z0-9+-><=\*\/]*/.exec(a);
+							if (c) {
+								if (c[1] && !/[0-9]/.test(c[1])) dataTName = c[1];
+								else if (c[2] && !/[0-9]/.test(c[2])) dataTName = c[2];
+							}
+						}
+						if (/<\?pjs\s+for\s+/.test(a)) {
+							a = a.replace("<?pjs for ", dataTName != " " ? "var " + dataTName + " = result, arr = []; for " : "var arr = []; for ").replace(" ?>", dataTName != " " ? "{ arr.push(pReact.tmpl(_###_" : "{ arr.push(_###_");
+						}
+						if (/<\?pjs\s+end\s+for\s+\?>/.test(a)) {
+							a = a.replace("<?pjs end for ?>", dataTName != " " ? "_###_, " + dataTName + "[i])); }" : "_###_); }");
+						}
+						return a;
+					}).replace(/\'/gi, "\\\'").replace(/\"/gi, "\\\"").replace(/_###_/gi, "'");
+					var reg = new RegExp("{{ " + dataTName + "\\[[a-zA-Z0-9_]\\]\\.", "gim");
+					if (reg.test(str)) {
+						str = str.replace(reg, "{{ ");
+					}
+					html = html.replace(o, pReact.sEval("return function(result){" + str + "; return arr.join('');}")(dataTName == "data" ? data : data[dataTName]));
+					/*str = str.replace(/<\?pjs\s+[^\?]+\s+\?>/gi, function(a, b){
+						if (/<\?pjs\s+if\s+/.test(a)) {
+							a = a.replace("<?pjs if ", "_###_+function(){ return ").replace(" ?>", " ? _###_");
+						}
+						if (/<\?pjs\s+else\s+if\s+/.test(a)) {
+							a = a.replace("<?pjs else if ", "_###_ : ").replace(" ?>", " ? _###_");
+						}
+						if (/<\?pjs\s+else\s+\?>/.test(a)) {
+							a = a.replace("<?pjs else ?>", "_###_ : _###_");
+						}
+						if (/<\?pjs\s+end\s+if\s+\?>/.test(a)) {
+							a = a.replace("<?pjs end if ?>", "_###_ }()+_###_");
+						}
+						return a;
+					});*/
+				}
+			});
+		}
+		return html;
+	},
 	ifend: function(html) {
-		var a = html.split("{{ if ");
+		var a = html.split("<\?pjs if ");
 		if (a.length > 1) {
 			pReact.each(a, function(i, str) {
-				if (/{{\s+end\s+if\s+}}/.test(str)) {
-					var a = ("{{ if " + str).split("{{ end if }}"),
-						o = a[0] + "{{ end if }}",
+				if (/<\?pjs\s+end\s+if\s+\?>/.test(str)) {
+					var a = ("<\?pjs if " + str).split("<\?pjs end if \?>"),
+						o = a[0] + "<\?pjs end if \?>",
 						t = o;
-					a = t.replace(/{{\s+[^}]+\s+}}/gi, function(a, b) {
-						if (/{{\s+if\s+/.test(a)) {
-							a = a.replace("{{ ", "var _ifend = _###__###_;").replace(" }}", "{ _ifend = _###_").replace(/\'/gi, "_###_").replace(/\"/gi, "_###_");
-						} else if (/{{\s+else\s+if\s+/.test(a)) {
-							a = a.replace("{{ ", "_###_;}").replace(" }}", "{ _ifend = _###_").replace(/\'/gi, "_###_").replace(/\"/gi, "_###_");
-						} else if (/{{\s+else\s+}}/.test(a)) {
+					a = t.replace(/<\?pjs\s+[^\?]+\s+\?>/gi, function(a, b) {
+						if (/<\?pjs\s+if\s+/.test(a)) {
+							a = a.replace("<\?pjs ", "var _ifend = _###__###_;").replace(" \?>", "{ _ifend = _###_").replace(/\'/gi, "_###_").replace(/\"/gi, "_###_");
+						} else if (/<\?pjs\s+else\s+if\s+/.test(a)) {
+							a = a.replace("<\?pjs ", "_###_;}").replace(" \?>", "{ _ifend = _###_").replace(/\'/gi, "_###_").replace(/\"/gi, "_###_");
+						} else if (/<\?pjs\s+else\s+\?>/.test(a)) {
 							a = "_###_;}else{ _ifend = _###_";
-						} else if (/{{\s+end\s+if\s+}}/.test(a)) {
+						} else if (/<\?pjs\s+end\s+if\s+\?>/.test(a)) {
 							a = "_###_;}";
 						}
 						return a;
@@ -421,22 +471,22 @@
 		return html;
 	},
 	switchend: function(html) {
-		var a = html.split("{{ switch ");
+		var a = html.split("<\?pjs switch ");
 		if (a.length > 1) {
 			pReact.each(a, function(i, str) {
-				if (/{{\s+end\s+switch\s+}}/.test(str)) {
-					var a = ("{{ switch " + str).split("{{ end switch }}"),
-						o = a[0] + "{{ end switch }}",
+				if (/<\?pjs\s+end\s+switch\s+\?>/.test(str)) {
+					var a = ("<\?pjs switch " + str).split("<\?pjs end switch \?>"),
+						o = a[0] + "<\?pjs end switch \?>",
 						t = o;
-					a = t.replace(/{{\s+[^}]+\s+}}/gi, function(a, b) {
-						if (/{{\s+switch\s+/.test(a)) {
-							a = a.replace("{{ ", "var switchstr= _###__###_;").replace(" }}", "{").replace(/\'/gi, "_###_").replace(/\"/gi, "_###_");
-						} else if (/{{\s+end\s+switch\s+}}/.test(a)) {
+					a = t.replace(/<\?pjs\s+[^}]+\s+\?>/gi, function(a, b) {
+						if (/<\?pjs\s+switch\s+/.test(a)) {
+							a = a.replace("<\?pjs ", "var switchstr= _###__###_;").replace(" \?>", "{").replace(/\'/gi, "_###_").replace(/\"/gi, "_###_");
+						} else if (/<\?pjs\s+end\s+switch\s+\?>/.test(a)) {
 							a = "}";
-						} else if (/{{\s+case\s+/.test(a)) {
-							a = a.replace("{{ ", "").replace(" }}", " : switchstr = _###_").replace(/\'/gi, "_###_").replace(/\"/gi, "_###_");
-						} else if (/{{\s+end\s+case\s+}}/.test(a)) {
-							a = a.replace(/{{\s+end\s+case\s+}}/, "_###_;break;");
+						} else if (/<\?pjs\s+case\s+/.test(a)) {
+							a = a.replace("<\?pjs ", "").replace(" \?>", " : switchstr = _###_").replace(/\'/gi, "_###_").replace(/\"/gi, "_###_");
+						} else if (/<\?pjs\s+end\s+case\s+\?>/.test(a)) {
+							a = a.replace(/<\?pjs\s+end\s+case\s+\?>/, "_###_;break;");
 						}
 						return a;
 					}).replace(/_###_/gi, "'") + "return switchstr;";
@@ -565,7 +615,7 @@
 			if (parent && id && parent.length === 1) {
 				this[0] = parent[0];
 				this.length = 1;
-			}else{
+			} else {
 				this.length = 0;
 			}
 			return this;

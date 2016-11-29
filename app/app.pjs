@@ -54,8 +54,8 @@ var priceinfo = pReact.createClass("priceinfo", {
 						font-size:0.7728rem;
 					}
 				</style>
-				<div class="main_item_card_content {{ if ({{ priceview }} != true) }}alert{{ end if }}">
-				{{ if ({{ priceview }} == true) }}
+				<div class="main_item_card_content <?pjs if ({{ priceview }} != true) ?>alert<?pjs end if ?>">
+				<?pjs if ({{ priceview }} == true) ?>
 					<label>日期：<span id="card_date">{{ date | date : "yyyy年MM月dd日" }}</span></label>
 					<label>商家：<span id="card_business">{{ business }}</span></label>
 					<label>种类：<span id="card_type">{{ type }}</span></label>
@@ -64,12 +64,12 @@ var priceinfo = pReact.createClass("priceinfo", {
 					<div class="main_item_card_bottom">
 						<button onClick="{{ this['enter_click'] }}">确认并提交</button><button onClick="{{ this['cancel_click'] }}">取 消</button>
 					</div>
-				{{ else }}
+				<?pjs else ?>
 					<span>{{ message }}</span>
 					<div class="main_item_card_bottom">
 						<button onClick="{{ this['cancel_click'] }}">确 认</button>
 					</div>
-				{{ end if }}
+				<?pjs end if ?>
 				</div>
 				<div class="main_item_bcontent"></div>
 			</div>
@@ -160,9 +160,9 @@ var inputPrice = pReact.createClass({
 });
 pReact.renderDom(
 	<inputPrice />,
-	document.getElementById("inputprice"),
+	document.getElementById("inputprice4"),
 	function(){
-		var title = pReact.jq(".header h1"),
+		/*var title = pReact.jq(".header h1"),
 			bottomButton = pReact.jq(".footer_nav a"),
 			pages = pReact.jq(".pages"),
 			page = pages.find(".pages_item");
@@ -190,7 +190,7 @@ pReact.renderDom(
 				}
 			}
 		});
-		/*pages.pinched(function(e){
+		pages.pinched(function(e){
 			alert("zoomIn")
 		}, function(e){
 			alert("zoomOut")

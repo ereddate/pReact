@@ -25,7 +25,7 @@ var goTop = pReact.createClass({
 					opacity: .5;
 				}
 			</style>
-			<a href="javascript:;" class="goTop{{ if ({{ isShow }} == false) }} hide{{ end if }}{{ ico }}" onClick="{{ this.goTopClick }}">
+			<a href="javascript:;" class="goTop<?pjs if ({{ isShow }} == false) ?> hide<?pjs end if ?>{{ ico }}" onClick="{{ this.goTopClick }}">
 				<img src="img/top.png" />
 			</a>
 		);

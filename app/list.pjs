@@ -168,9 +168,9 @@ var listItem = pReact.createClass({
 				}
 			</style>
 			<ul class="pricelist_items">
-				{{ for (i=0;i<items.length;i++) }}
-					<li class="{{ if ({{ items.rate }} > 0) }}rise{{ else }}fall{{ end if }}"><a href="{{ items.url }}" class="name title">{{ items.title }}</a><span class="price">￥{{ items.price }}</span><span class="rate{{ if ({{ items.rate }} > 0) }} rise_back{{ else }} fall_back{{ end if }}">{{ if ({{ items.rate }} > 0) }}+{{ end if }}{{ items.rate }}%</span><span class="lasttime">{{ items.lasttime }}</span></li>
-				{{ end for }}
+				<?pjs for (i=0;i<data.length;i++) ?>
+					<li class="<?pjs if ({{ data[i].rate }} > 0) ?>rise<?pjs else ?>fall<?pjs end if ?>"><a href="{{ data[i].url }}" class="name title">{{ data[i].title }}</a><span class="price">￥{{ data[i].price }}</span><span class="rate<?pjs if ({{ data[i].rate }} > 0) ?> rise_back<?pjs else ?> fall_back<?pjs end if ?>"><?pjs if ({{ data[i].rate }} > 0) ?>+<?pjs end if ?>{{ data[i].rate }}%</span><span class="lasttime">{{ data[i].lasttime }}</span></li>
+				<?pjs end for ?>
 			</ul>
 		);
 	}
@@ -207,7 +207,7 @@ var listMain = pReact.createClass({
 });
 pReact.renderDom(
 	<listMain />,
-	document.getElementById("pricelist")
+	document.getElementById("inputprice1")
 );
 pReact.renderDom(
 	<listItem />,

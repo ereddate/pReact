@@ -1,27 +1,23 @@
+var prvIndex = 0;
 var footerNav = pReact.createClass({
+	getInitData: function(success, error){
+		success(pReact.extend(window.pReact_web_config, {
+			isShow: screen.width <= 414 ? false : true
+		}));
+	},
 	bottomButtonClick: function(e){
 		e.preventDefault();
 		var a = pReact.jq(".footer_nav a"),
+			b = pReact.jq(".header_nav_menu a"),
 			index = a.index(this.elem),
-			page = pReact.jq(".pages").find(".pages_item"),
-			title = pReact.jq(".header h1");
-		a.removeClass("on").eq(index).addClass("on");
-		title.html(index > 0 ? "商品价格走势" : "填写当日价格");
-
-		if (index===0){
-			page.eq(0).removeClass("pt-page-moveToLeft").addClass("pt-page-current pt-page-moveFromLeft");
-			page.eq(1).removeClass("pt-page-moveFromRight").addClass("pt-page-moveToRight").onAnimationEnd(function(){
-				console.log(1);
-				pReact.jq(this).removeClass("pt-page-current");
-			});
-		}else{
-			page.eq(0).removeClass("pt-page-moveFromLeft").addClass("pt-page-moveToLeft").onAnimationEnd(function(){
-				console.log(0);
-				pReact.jq(this).removeClass("pt-page-current");
-			});
-			page.eq(1).removeClass("pt-page-moveToRight").addClass("pt-page-current pt-page-moveFromRight");
-		}
+			page = pReact.jq(".pages").find(".pages_item");
+		var currentPage = page.eq(index);
+		page.removeClass("pt-page-current");
+		currentPage.addClass("pt-page-current");
 		pReact.jq("#pages").find(".pt-page-current").scrollTo(1);
+		a.removeClass("on").eq(index).addClass("on");
+		b.removeClass("on").eq(index).addClass("on");
+		prvIndex = index;
 	},
 	render:function(){
 		return (
@@ -56,9 +52,14 @@ var footerNav = pReact.createClass({
 					border-right:0;
 				}
 			</style>
-			<div class="footer_nav">
-				<a href="" class="button" onClick="{{ this.bottomButtonClick }}">录入</a>
-				<a href="" class="button noline" onClick="{{ this.bottomButtonClick }}">走势</a>
+			<div class="footer_nav"<?pjs if ({{ isShow }} === false) ?> style="display:none" <?pjs end if ?>>
+				<?pjs for (i = 0; i < pages.length; i++) ?>
+					<?pjs if ({{ index }} < 5) ?>
+						<a href="" class="button" onClick="{{ this.bottomButtonClick }}">{{ pages[i].buttonTitle }}</a>
+					<?pjs else ?>
+						<a href="" class="button noline" onClick="{{ this.bottomButtonClick }}">{{ pages[i].buttonTitle }}</a>
+					<?pjs end if ?>
+				<?pjs end for ?>
 			</div>
 		);
 	}
@@ -68,5 +69,21 @@ pReact.renderDom(
 	document.getElementById("footer"),
 	function(){
 		pReact.jq(".footer_nav").find(".button").eq(0).trigger("click");
+		var bottomButton = pReact.jq(".footer_nav a"),
+			pages = pReact.jq(".pages"),
+			page = pages.find(".pages_item");
+		pages.swipe({
+			callback:function(e, dir){
+				console.log(dir);
+				if (dir == "left"){
+					prvIndex++;
+					prvIndex >= page.length && (prvIndex=0);
+				}else if (dir == "right"){
+					prvIndex--;
+					prvIndex < 0 && (prvIndex=page.length-1);
+				}
+				bottomButton.removeClass("on").eq(prvIndex).trigger("click");
+			}
+		});
 	}
 );

@@ -1,4 +1,4 @@
-var mainView_one = pReact.createClass({
+var mainView_home = pReact.createClass({
 	render:function(){
 		return (
 			<style>
@@ -28,30 +28,72 @@ var mainView_one = pReact.createClass({
 					<h1>{{ mainTitle }}</h1>
 					<p>{{ mainDesc }}</p>
 				</header>
-				<div id="inputprice" class="main_item"></div>
+				<div id="inputprice{{ index }}" class="main_item"></div>
 			</article>
 		);
 	}
 });
 pReact.renderDom(
-	<mainView_one window.pReact_web_config/>,
-	document.getElementById("page_one")
+	<mainView_home (window.pReact_web_config.pages[0])/>,
+	document.getElementById("page_item0")
 );
-var mainView_two = pReact.createClass({
+var mainView_scenic = pReact.createClass({
 	render:function(){
-		var html = mainView_one.render();
+		var html = mainView_home.render();
 		return (
-			<div class="">{{ $html }}</div>
+			<div class="page_copy1">{{ $html }}</div>
 		);
 	}
 });
 pReact.renderDom(
-	<mainView_two pReact.extend(window.pReact_web_config, {
-		mainTitle:"商品价格走势",
-		mainDesc:"..."
-	})/>,
-	document.getElementById("page_two"),
-	function(){
-		pReact.jq("#page_two").find(".main_item").attr("id", "pricelist");
+	<mainView_scenic (window.pReact_web_config.pages[1])/>,
+	document.getElementById("page_item1")
+);
+var mainView_map = pReact.createClass({
+	render:function(){
+		var html = mainView_home.render();
+		return (
+			<div class="page_copy2">{{ $html }}</div>
+		);
 	}
+});
+pReact.renderDom(
+	<mainView_map (window.pReact_web_config.pages[2])/>,
+	document.getElementById("page_item2")
+);
+var mainView_service = pReact.createClass({
+	render:function(){
+		var html = mainView_home.render();
+		return (
+			<div class="page_copy3">{{ $html }}</div>
+		);
+	}
+});
+pReact.renderDom(
+	<mainView_service (window.pReact_web_config.pages[3])/>,
+	document.getElementById("page_item3")
+);
+var mainView_user = pReact.createClass({
+	render:function(){
+		var html = mainView_home.render();
+		return (
+			<div class="page_copy4">{{ $html }}</div>
+		);
+	}
+});
+pReact.renderDom(
+	<mainView_user (window.pReact_web_config.pages[5])/>,
+	document.getElementById("page_item5")
+);
+var mainView_search = pReact.createClass({
+	render:function(){
+		var html = mainView_home.render();
+		return (
+			<div class="page_copy4">{{ $html }}</div>
+		);
+	}
+});
+pReact.renderDom(
+	<mainView_search (window.pReact_web_config.pages[4])/>,
+	document.getElementById("page_item4")
 );

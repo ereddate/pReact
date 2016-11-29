@@ -183,37 +183,37 @@ pReact.tmplFilterExtend({
 	}
 });
 ```
-pjs模板，伪标签写法如下：
+pjs模板，伪标签写法<?pjs ... ?>，如下：
 ```
 //伪标签。for、if、switch语法不能同名嵌套使用，for可以套if\switch使用，反之不可。
-{{ for (var i=0;i<data.length;i++) }} 或 {{ for (var i=0;i<2;i++) }}
+<?pjs for (var i=0;i<data.length;i++) ?> 或 <?pjs for (var i=0;i<2;i++) ?>
 	<div>{{ id }}</div>
-	{{ if (a > b) }}
+	<?pjs if (a > b) ?>
 		<div>1</div>
-	{{ else if (a < b) }}
+	<?pjs else if (a < b) ?>
 		<div>2</div>
-	{{ else }}
+	<?pjs else ?>
 		<div>3</div>
-	{{ end if }}
-{{ end for }}
+	<?pjs end if ?>
+<?pjs end for ?>
 //switch和if可以嵌套使用。
-{{ switch ({{ index }}) }}
-	{{ case 0 }}
-		{{ if (a > b) }}
+<?pjs switch ({{ index }}) ?>
+	<?pjs case 0 ?>
+		<?pjs if (a > b) ?>
 			<div>1</div>
-		{{ else if (a < b) }}
+		<?pjs else if (a < b) ?>
 			<div>2</div>
-		{{ else }}
+		<?pjs else ?>
 			<div>3</div>
-		{{ end if }}
-	{{ end case }}
-	{{ case 1 }}
+		<?pjs end if ?>
+	<?pjs end case ?>
+	<?pjs case 1 ?>
 		<li id="{{ id }}">2</li>
-	{{ end case }}
-	{{ case 2 }}
+	<?pjs end case ?>
+	<?pjs case 2 ?>
 		<li id="{{ id }}">3</li>
-	{{ end case }}
-{{ end switch }}
+	<?pjs end case ?>
+<?pjs end switch ?>
 ```
 pjs模板，伪标签扩展写法如下：
 ```

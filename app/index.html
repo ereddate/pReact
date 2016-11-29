@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+		<style>
+			html, body{
+				height:100%;
+			}
+			body{
+				font-size:100%;
+				font-family: "Lucida Grande", "Lucida Sans Unicode", Helvetica, Arial, Verdana, sans-serif;
+			}
+			body,ul, ol, li, h1,h2,h3,h4,h5,h6,p{
+				padding:0;
+				margin:0;
+				font-weight:400;
+			}
+			label{
+				display:block;
+			}
+			*, *:after, *:before {
+				-webkit-box-sizing: border-box;
+				-moz-box-sizing: border-box;
+				box-sizing: border-box;
+			}
+			.main{
+				height:100%;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="header"></div>
+		<div id="main" class="main"></div>
+		<script src="../preact.js"></script>
+		<script src="../preact-jq.js"></script>
+		<script src="../preact-swipe.js"></script>
+		<script src="../preact-touchs.js"></script>
+		<script src="../preact-extend.js"></script>
+		<script>
+			window.pReact_web_config = {
+				isIndex:false,
+				currentpage: 0,
+				pages:[{
+					index:0,
+					mainTitle:"推荐",
+					mainDesc: "...",
+					buttonTitle: "推荐"
+				},{
+					index:1,
+					mainTitle:"景点",
+					mainDesc: "...",
+					buttonTitle: "景点"
+				},{
+					index:2,
+					mainTitle:"地图",
+					mainDesc: "...",
+					buttonTitle: "地图"
+				},{
+					index:3,
+					mainTitle:"服务",
+					mainDesc: "...",
+					buttonTitle: "服务"
+				},{
+					index:4,
+					mainTitle:"查询",
+					mainDesc: "...",
+					buttonTitle: "查询"
+				},{
+					index:5,
+					mainTitle:"关于",
+					mainDesc: "...",
+					buttonTitle: "关于"
+				}]
+			}
+			pReact.ready(function(){
+				this.toHTML5().toMobile(16);
+				this({
+					path:"./",
+					ext: ".pjs",
+					files:["header", "pages", "main", "footer", "footer-nav", "gotop", "app", "list"],
+					debug: true
+				}).done();
+			});
+		</script>
+	</body>
+</html>
