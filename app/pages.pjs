@@ -8,7 +8,6 @@ var pageView = pReact.createClass({
 				.pages{
 					position:relative;
 					width:100%;
-					height:100%;
 				}
 				.pages .pages_item{
 					width:100%;
