@@ -154,6 +154,7 @@ toString: 任务形式数据转换为字符串
 capitalize: 某位数的英文字母的大写转换
 toCNRMB: 转换为中文大写人民币
 toCNumber: 转换为中文大写数字
+base64: 转换为base64数据
 ```
 pjs模板, 数据过滤写法如下：
 ```
@@ -173,6 +174,7 @@ pjs模板, 数据过滤写法如下：
 {{ 1000 | currency : '$' }}
 {{ 8888888888888888888 | passcard : 4 }} 后面的4不输入的话，默认为4
 {{ usname | empty : null }}
+{{ text | base64 : "text" }} 或 {{ text | base64 : "html" }}
 ```
 pjs模板，数据过滤扩展写法如下：
 ```
