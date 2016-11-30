@@ -51,6 +51,19 @@ var footerNav = pReact.createClass({
 				.footer_nav .noline{
 					border-right:0;
 				}
+				.dtouch{
+					position:absolute;
+					top:0;
+					left:0;
+					width:200px;
+					height:100px;
+					background:#000;
+					display:none;
+					z-index:9999;
+				}
+				.showTouchMenu{
+					display:block;
+				}
 			</style>
 			<div class="footer_nav"<?pjs if ({{ isShow }} === false) ?> style="display:none" <?pjs end if ?>>
 				<?pjs for (i = 0; i < pages.length; i++) ?>
@@ -61,6 +74,7 @@ var footerNav = pReact.createClass({
 					<?pjs end if ?>
 				<?pjs end for ?>
 			</div>
+			<div class="dtouch" id="dtouch">dTouch test</div>
 		);
 	}
 });
@@ -84,6 +98,9 @@ pReact.renderDom(
 				}
 				bottomButton.removeClass("on").eq(prvIndex).trigger("click");
 			}
+		});
+		pages.tap(function(e, type, time){
+			alert(type+","+time);
 		});
 	}
 );
