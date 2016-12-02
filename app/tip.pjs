@@ -1,0 +1,52 @@
+var tip = pReact.createClass("tip", {
+	closeClick: function(e){
+		e.preventDefault();
+		pReact.jq("#tip").remove();
+	},
+	render: function(){
+		var dom = document.getElementById("tip");
+			dom && dom.parentNode.removeChild(dom);
+		return (
+			<article id="tip" class="tip {{ direction }}">
+				<style>
+					.tip{
+						position:fixed;
+						left:0;
+						right:0;
+						background:rgba(0,0,0,.8);
+						z-index:99997;
+						min-height:2.3957rem;
+						color:rgb(255,255,255);
+					}
+					.tip header h1, .tip header p{
+						font-size:.7728rem;
+						margin-left: 0.3864rem;
+						line-height:1.2rem;
+					}
+					.top{
+						top:1.7002rem;
+					}
+					.bottom{
+						bottom:0;
+					}
+					.tip_close{
+						position:absolute;
+						top:35%;
+						right:0.8887rem;
+						text-decoration:none;
+						font-size:.8rem;
+						color:rgb(255,255,255);
+					}
+				</style>
+				<header>
+					<h1>{{ title }}</h1>
+					<p>{{ desc | limitTo : 30 }}</p>
+					<a href="javascript:;" class="tip_close icon-close" onClick="{{ this.closeClick }}"></a>
+				</header>
+				<div class="tip_contents<?pjs if ({{ showContents }} != true) ?> hide<?pjs end if ?>">
+					{{ alldesc }}
+				</div>
+			</article>
+		);
+	}
+});

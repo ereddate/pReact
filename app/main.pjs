@@ -35,7 +35,16 @@ var mainView_home = pReact.createClass({
 });
 pReact.renderDom(
 	<mainView_home (window.pReact_web_config.pages[0])/>,
-	document.getElementById("page_item0")
+	document.getElementById("page_item0"),
+	function(){
+		pReact.Class["tip"].getInitData = function(success, error){
+			success({showContents: false, direction: "bottom", title:"pReact tip", desc:"github.com/ereddate/pReact"});
+		};
+		pReact.renderDom(
+			<pReact.Class["tip"] />,
+			document.body
+		);
+	}
 );
 var mainView_scenic = pReact.createClass({
 	render:function(){

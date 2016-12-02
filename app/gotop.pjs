@@ -12,8 +12,8 @@ var goTop = pReact.createClass({
 				}
 				.goTop{
 					position:fixed;
-					bottom:2.473rem;
-					right:0.7728rem;
+					bottom:3rem;
+					right:0.3864rem;
 					width:1.5456rem;
 					height:1.5456rem;
 					display:block;
