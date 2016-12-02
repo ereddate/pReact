@@ -139,8 +139,8 @@ var headerView = pReact.createClass({
 						<?pjs end if ?>
 					<?pjs end for ?>
 					</span>
-					<i class="header_nav_close" onClick="{{ this.menuButtonClick }}">关闭</i>
-					<i class="header_nav_open" onClick="{{ this.menuButtonClick }}">菜单</i>
+					<i class="header_nav_close icon-up" onClick="{{ this.menuButtonClick }}"></i>
+					<i class="header_nav_open icon-menu" onClick="{{ this.menuButtonClick }}"></i>
 				</nav>
 			</header>
 		);

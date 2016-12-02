@@ -25,7 +25,7 @@ var mainView_home = pReact.createClass({
 			</style>
 			<article class="main_content">
 				<header class="main_header">
-					<h1>{{ mainTitle | base64 : "text" }}</h1>
+					<h1>{{ mainTitle }}</h1>
 					<p>{{ mainDesc }}</p>
 				</header>
 				<div id="inputprice{{ index }}" class="main_item"></div>

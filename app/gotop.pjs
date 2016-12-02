@@ -19,15 +19,20 @@ var goTop = pReact.createClass({
 					display:block;
 					z-index:9999;
 					overflow:hidden;
+					text-decoration: none;
+				    border-radius: 1rem;
+				    text-align: center;
+				    line-height: 1.5456rem;
+					background:rgba(0,0,0,.5);
+					color:rgb(255,255,255);
+					padding:0 0.1932rem;
 				}
 				.goTop img{
 					width:100%;
 					opacity: .5;
 				}
 			</style>
-			<a href="javascript:;" class="goTop<?pjs if ({{ isShow }} == false) ?> hide<?pjs end if ?>{{ ico }}" onClick="{{ this.goTopClick }}">
-				<img src="img/top.png" />
-			</a>
+			<a href="javascript:;" class="icon-up goTop<?pjs if ({{ isShow }} == false) ?> hide<?pjs end if ?>{{ ico }}" onClick="{{ this.goTopClick }}"></a>
 		);
 	}
 });

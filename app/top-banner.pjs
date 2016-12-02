@@ -84,6 +84,7 @@ var scrollad = pReact.createClass({
                         display: none\9
                     }
                     .topbanner_dot li {
+                        border-radius: 0.1932rem;
                         float: left;
                         width: 6px;
                         height: 6px;
