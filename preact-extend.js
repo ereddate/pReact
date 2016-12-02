@@ -388,7 +388,90 @@ pReact && ((function($) {
 					};
 				});
 			}
+		},
+		topBanner: function(elem, obj) {
+			var len = obj.data.length,
+				time = parseInt(pReact.jq(elem).attr("p-speed")) || 1000,
+				aniTime = parseInt(pReact.jq(elem).attr("p-anispeed")) || 200,
+				fsize = parseFloat(pReact.jq("html").css("font-size")) || 0;
+			var scrollad = function() {
+				return new scrollad.fn.init();
+			};
+			scrollad.fn = scrollad.prototype = {
+				init: function() {
+					this.onPlay = true;
+					this.num = 0;
+					return this;
+				},
+				done: function() {
+					var self = this;
+					pReact.jq(elem).parent().swipe({
+						callback: function(e, dir) {
+							self.stop();
+							console.log(dir);
+							if (dir == "left") {
+								self.nextBanner();
+							} else if (dir == "right") {
+								self.prevBanner();
+							}
+						}
+					});
+					this.onPlay && this.play();
+					return this;
+				},
+				stop: function() {
+					this.onPlay = false;
+					return this;
+				},
+				prevBanner: function() {
+					this.num--;
+					if (this.num < 0) {
+						this.num = len-1;
+					}
+					pReact.jq(elem).css({
+						"transform": "translate3d(" + (this.num === 0 ? "" : "-") + (screen.width * this.num / fsize) + "rem, 0, 0)",
+						"transition": "transform " + aniTime + "ms"
+					});
+					pReact.jq(".topbanner_dot").find("li").removeClass('on').eq(this.num).addClass('on');
+					this.onPlay = true;
+					this.play();
+					return this;
+				},
+				nextBanner: function() {
+					this.num++;
+					if (this.num >= len) {
+						this.num = 0;
+					}
+					pReact.jq(elem).css({
+						"transform": "translate3d(" + (this.num === 0 ? "" : "-") + (screen.width * this.num / fsize) + "rem, 0, 0)",
+						"transition": "transform " + aniTime + "ms"
+					});
+					pReact.jq(".topbanner_dot").find("li").removeClass('on').eq(this.num).addClass('on');
+					this.onPlay = true;
+					this.play();
+					return this;
+				},
+				play: function() {
+					this.topBannerInterval && clearInterval(this.topBannerInterval);
+					if (!this.onPlay) {
+						return this;
+					}
+					var self = this;
+					this.topBannerInterval = setInterval(function() {
+						self.nextBanner();
+						pReact.jq(elem).onAnimationEnd(function() {
+							pReact.jq(elem).css({
+								"transition": "transform 0ms"
+							})
+						});
+						!self.onPlay && clearInterval(self.topBannerInterval);
+					}, time);
+					return this;
+				}
+			};
+			scrollad.fn.init.prototype = scrollad.fn;
 
+			scrollad().done();
 		}
 	}
 })), pReact.tmplLangExtend({

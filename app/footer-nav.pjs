@@ -86,7 +86,7 @@ pReact.renderDom(
 		var bottomButton = pReact.jq(".footer_nav a"),
 			pages = pReact.jq(".pages"),
 			page = pages.find(".pages_item");
-		pages.swipe({
+		/*pages.swipe({
 			callback:function(e, dir){
 				console.log(dir);
 				if (dir == "left"){
@@ -101,6 +101,6 @@ pReact.renderDom(
 		});
 		pages.tap(function(e, type, time){
 			alert(type+","+time);
-		});
+		});*/
 	}
 );

@@ -1029,7 +1029,7 @@ pReact && define && (define("promise", ["pReact"], function() {
 					var fn = (!data ? obj : data).getInitData,
 						fnStr = fn.toString();
 					try {
-						new Function("a", "b", "(" + fnStr + ")(a, b)")(resolve, reject);
+						new Function("a", "b", "c", "(" + fnStr + ").call(a, b, c)")(obj, resolve, reject);
 					} catch (e) {
 						new Function("a", "b", "(" + fnStr.replace(/getInitData\s*\(/gi, function(a, b) {
 							a = a.replace(a, "function(");

@@ -1,0 +1,121 @@
+var scrollad = pReact.createClass({
+    config:{
+        time: 2000,
+        anispeed: 200
+    },
+    getInitData: function(success, error){
+        this.data = [{
+            url: "",
+            imgurl: "http://inews.gtimg.com/newsapp_ls/0/861834001_640330/0",
+            title: "阿娇，你能不能换掉这双“驴蹄鞋”？"
+        },{
+            url: "",
+            imgurl: "http://inews.gtimg.com/newsapp_ls/0/861827633_640330/0",
+            title: "阿娇，你能不能换掉这双“驴蹄鞋”？"
+        },{
+            url: "",
+            imgurl: "http://inews.gtimg.com/newsapp_ls/0/861834001_640330/0",
+            title: "阿娇，你能不能换掉这双“驴蹄鞋”？"
+        },{
+            url: "",
+            imgurl: "http://inews.gtimg.com/newsapp_ls/0/861827633_640330/0",
+            title: "阿娇，你能不能换掉这双“驴蹄鞋”？"
+        }];
+        success(this.data);
+    },
+    render:function(){
+        var fsize = parseFloat(pReact.jq("html").css("font-size"))||0;
+        var allwidth = (screen.width*(this.data.length)/fsize).toFixed(4),
+            width = (screen.width/fsize).toFixed(4),
+            time = this.config.time,
+            anispeed = this.config.anispeed;
+        return (
+            <div class="topbanner" id="topbanner" style="overflow: hidden;" >
+                <style>
+                    .topbanner{
+                        width: 100%;
+                        position: relative;
+                        box-shadow: inset 0 1px 1px #000
+                    }
+                    .topbanner_inner{
+                        width: 100%;
+                        display: -webkit-box;
+                        display: -ms-flexbox
+                    }
+                    .topbanner_inner li {
+                        width: 100%;
+                        position: relative;
+                        float: left
+                    }
+                    .topbanner_inner li a {
+                        display: block;
+                        position: relative
+                    }
+                    .topbanner_dot,.topbanner_title {
+                        position: absolute;
+                        right: 0;
+                        bottom: 0
+                    }
+                    .topbanner_image {
+                        width: 100%;
+                        min-height: 165px
+                    }
+                    .topbanner_image img {
+                        max-width: 100%;
+                        margin: 0 auto
+                    }
+                    .topbanner_title {
+                        font-size: .5em;
+                        text-align:center;
+                        height: 32px;
+                        line-height: 32px;
+                        padding: 0 36px 0 0;
+                        color: #fafafa;
+                        left: 0;
+                        font-weight: 400;
+                        text-shadow: 1px 1px 1px #000;
+                        background: -moz-linear-gradient(top,rgba(0,0,0,0),rgba(0,0,0,.9));
+                        background: -webkit-gradient(linear,top,from(rgba(0,0,0,0)),to(rgba(0,0,0,.9)));
+                        background: -webkit-linear-gradient(top,rgba(0,0,0,0),rgba(0,0,0,.9));
+                        background: -o-linear-gradient(top,rgba(0,0,0,0),rgba(0,0,0,.9))
+                    }
+                    .topbanner_dot {
+                        padding: 12px 0;
+                        display: none\9
+                    }
+                    .topbanner_dot li {
+                        float: left;
+                        width: 6px;
+                        height: 6px;
+                        background: #aaa;
+                        margin-right: 7px
+                    }
+                    .topbanner_dot li.on {
+                        background: #4998e7
+                    }
+                </style>
+                <ul class="topbanner_inner" style="transform: translate3d(0px, 0px, 0px); transition: transform 0ms; width: {{ $allwidth }}rem;" p-controller="topBanner" p-speed="{{ $time }}" p-anispeed="{{ $anispeed }}">
+                    <?pjs for (i=0;i<data.length;i++) ?>
+                        <li class="panel" style="width: {{ $width }}rem;">
+                            <a href="{{ url }}">
+                                <div class="topbanner_image">
+                                    <img src="{{ imgurl }}" alt="{{ title }}">
+                                </div>
+                                <h2 class="topbanner_title">{{ title }}</h2>
+                            </a>
+                        </li>
+                    <?pjs end for ?>
+                </ul>
+                <ul class="topbanner_dot">
+                    <?pjs for (i=0;i<data.length;i++) ?>
+                        <li class=""></li>
+                    <?pjs end for ?>
+                </ul>
+            </div>
+        );
+    }
+});
+pReact.renderDom(
+    <scrollad />,
+    document.getElementById("inputprice0")
+);
