@@ -190,7 +190,7 @@ pReact && ((function($) {
 			uppercase: function(val, filterCondition) {
 				return val.toUpperCase();
 			},
-			toRem: function(val, filterCondition){
+			toRem: function(val, filterCondition) {
 				return (parseFloat(val) / parseFloat(filterCondition)).toFixed(4);
 			},
 			toCNRMB: function(val, filterCondition) {
@@ -429,7 +429,7 @@ pReact && ((function($) {
 				prevBanner: function() {
 					this.num--;
 					if (this.num < 0) {
-						this.num = len-1;
+						this.num = len - 1;
 					}
 					pReact.jq(elem).css({
 						"transform": "translate3d(" + (this.num === 0 ? "" : "-") + (screen.width * this.num / fsize) + "rem, 0, 0)",
@@ -478,11 +478,45 @@ pReact && ((function($) {
 		}
 	}
 })), pReact.tmplLangExtend({
-	toRem: function(html, data){
-		html = html.replace(/<\?pjs\s+toRem\(([0-9\.]*),\s+([a-zA-Z0-9\.]*)\)\s+\?>/gi, function(a, b, c){
-			if (b && c){
+	less: function(html, data) {
+		var isStyle = false,
+			style = [],
+			isLess = false,
+			lessPath;
+		var result = html.split(/<style\s+p-type=/);
+		if (result.length > 1) {
+			pReact.each(result, function(i, texts) {
+				//console.log(a);
+				if (/<\/style>/.test(texts)) {
+					var a = "<style p-type=" + texts.split(/<\/style>/)[0] + "</style>";
+					var b = a.replace(/<style\s*(p-type=['"]*([^'"]+)['"]*\s+p-path=['"]*([^'"]+)['"]*)*>/, function(a, b, c, d) {
+						if (c && c.toLowerCase() == "text/less") {
+							a = a.replace(b, 'rel="stylesheet/less" type="text/less"');
+							isLess = true;
+						}
+						if (d) {
+							lessPath = d;
+						}
+						return a;
+					});
+					html = html.replace(a, b);
+				}
+
+			});
+		}
+		if (isLess && lessPath && !document.getElementById("less")) {
+			var dom = document.createElement("script");
+			dom.src = lessPath;
+			dom.id = "less";
+			document.getElementsByTagName("head")[0].appendChild(dom);
+		}
+		return html;
+	},
+	toRem: function(html, data) {
+		html = html.replace(/<\?pjs\s+toRem\(([0-9\.]*),\s+([a-zA-Z0-9\.]*)\)\s+\?>/gi, function(a, b, c) {
+			if (b && c) {
 				b = parseFloat(b);
-				c = /fontSize/.test(c) && /\./.test(c) ? ((c= c.split('.')), parseFloat(pReact.jq(c[0]).css(c[1]))) : parseFloat(c);
+				c = /fontSize/.test(c) && /\./.test(c) ? ((c = c.split('.')), parseFloat(pReact.jq(c[0]).css(c[1]))) : parseFloat(c);
 				a = (b / c).toFixed(4) || 0;
 			}
 			return a;
