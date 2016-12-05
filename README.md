@@ -266,6 +266,31 @@ pReact.tmplControlExtend({
 	}
 });
 ```
+pjs模板，支持LESS写法如下：
+```
+...
+p-type是style标签的内容类型，p-path是less.js的文件全路径。
+render: function(){
+	return (
+		...
+		<style p-type="text/less" p-path="libs/less.js">
+			.a{
+				text-align:center;
+				p{
+					background:#000;
+					color:#fff;
+				}
+			}
+		</style>
+		<div class="a">
+			1
+			<p>2</p>
+		</div>
+		...
+	);
+}
+...
+```
 非pjs模板写法（app/nopjs.js）：
 ```
 	var nopjs = pReact.createClass("nopjs", {
