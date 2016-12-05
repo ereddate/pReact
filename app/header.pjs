@@ -21,6 +21,16 @@ var headerView = pReact.createClass({
 	},
 	render:function(){
 		return (
+			<style p-type="text/less" p-path="libs/less.js">
+				.a{
+					text-align:center;
+					p{
+						background:#000;
+						color:#fff;
+					}
+				}
+			</style>
+			<div class="a">1<p>2</p></div>
 			<style>
 				.header{
 					height:<?pjs toRem(44, html.fontSize) ?>rem;

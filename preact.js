@@ -769,8 +769,10 @@ pReact && define && (define("promise", ["pReact"], function() {
 				group = [],
 				style = [],
 				isIn = false,
-				isStyle = false;
-			html.replace(/.+[\s\r\n]*/gi, function(a, b) {
+				isStyle = false,
+				isLess = false,
+				lessPath;
+			html = html.replace(/.+[\s\r\n]*/gi, function(a, b) {
 				//console.log(a)
 				if (/return\s*\([\s\r\n]*/.test(a)) {
 					item.push(");");
@@ -781,7 +783,17 @@ pReact && define && (define("promise", ["pReact"], function() {
 					item = [];
 					isIn = false;
 				}
-				if (/<style>/.test(a)) {
+				if (/<style\s*.*>/.test(a)) {
+					a = a.replace(/<style\s*(p-type=['"]*([^'"]+)['"]*\s+p-path=['"]*([^'"]+)['"]*)*>/, function(a, b, c, d) {
+						if (c && c.toLowerCase() == "text/less") {
+							a = a.replace(b, 'rel="stylesheet/less" type="text/less"');
+							isLess = true;
+						}
+						if (d){
+							lessPath = d;
+						}
+						return a;
+					});
 					style.push(a);
 					isStyle = true;
 				} else if (/<\/style>/.test(a)) {
@@ -793,7 +805,14 @@ pReact && define && (define("promise", ["pReact"], function() {
 				if (isIn) {
 					item.push(a);
 				}
+				return a;
 			});
+			if (isLess && lessPath && !document.getElementById("less")) {
+				var dom = document.createElement("script");
+				dom.src = lessPath;
+				dom.id = "less";
+				document.getElementsByTagName("head")[0].appendChild(dom);
+			}
 			//console.log(style.join(''))
 			pReact.each(group, function(i, arr) {
 				arr = arr.del(0);
