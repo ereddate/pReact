@@ -35,7 +35,7 @@ var headerView = pReact.createClass({
 				.header h1{
 					padding:0;
 					margin:0;
-					font-size: 0.7728rem;
+					font-size: {{ 20 | toRem : 25.88 }}rem;
 					text-indent: 0.3864rem;
 					line-height:1.7002rem;
 					float:left;

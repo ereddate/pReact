@@ -781,13 +781,13 @@ pReact && define && (define("promise", ["pReact"], function() {
 					item = [];
 					isIn = false;
 				}
-				if(/<style>/.test(a)){
+				if (/<style>/.test(a)) {
 					style.push(a);
 					isStyle = true;
-				}else if(/<\/style>/.test(a)){
+				} else if (/<\/style>/.test(a)) {
 					style.push(a);
 					isStyle = false;
-				}else if(isStyle){
+				} else if (isStyle) {
 					style.push(a);
 				}
 				if (isIn) {
@@ -955,6 +955,16 @@ pReact && define && (define("promise", ["pReact"], function() {
 					}
 					return a;
 				});
+			});
+			html = html.replace(/{{\s+[^<>}{,]+\s+}}/gim, function(a) {
+				a = a.replace(new RegExp("{{\\s+(.+)\\s+([^<>,}]+\\s+)*}}"), function(a, b, c) {
+					if (b) {
+						b = b.split(' | ');
+						if (b.length > 1 && b[1].split(' : ').length > 1) a = a.replace(a, map.tmplFilter[b[1].split(' : ')[0]](b[0], b[1].split(' : ')[1]));
+					}
+					return a;
+				});
+				return a;
 			});
 			return html;
 		}

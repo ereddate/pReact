@@ -190,6 +190,9 @@ pReact && ((function($) {
 			uppercase: function(val, filterCondition) {
 				return val.toUpperCase();
 			},
+			toRem: function(val, filterCondition){
+				return (parseFloat(val) / parseFloat(filterCondition)).toFixed(4);
+			},
 			toCNRMB: function(val, filterCondition) {
 				return digitUppercase(parseFloat(val), true);
 			},
