@@ -177,7 +177,7 @@ pReact.renderDom(
 		var num = 0;
 		pReact.jq(window).on("scroll", function(){
 			var top = pReact.jq(this).scrollTop();
-			if (top+screen.height === pReact.jq(document.body)[0].scrollHeight){
+			if (num <2 && top+screen.height >= pReact.jq(document.body)[0].scrollHeight/2){
 				console.log(num);
 				if (num <= 1){
 					num++;

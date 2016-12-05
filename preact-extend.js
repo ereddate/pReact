@@ -475,6 +475,17 @@ pReact && ((function($) {
 		}
 	}
 })), pReact.tmplLangExtend({
+	toRem: function(html, data){
+		html = html.replace(/<\?pjs\s+toRem\(([0-9\.]*),\s+([a-zA-Z0-9\.]*)\)\s+\?>/gi, function(a, b, c){
+			if (b && c){
+				b = parseFloat(b);
+				c = /fontSize/.test(c) && /\./.test(c) ? ((c= c.split('.')), parseFloat(pReact.jq(c[0]).css(c[1]))) : parseFloat(c);
+				a = (b / c).toFixed(4) || 0;
+			}
+			return a;
+		});
+		return html;
+	},
 	forend: function(html, data) {
 		var arr = [];
 		var result = html.split("<?pjs for ");

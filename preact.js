@@ -767,8 +767,11 @@ pReact && define && (define("promise", ["pReact"], function() {
 			var _ = this,
 				item = [],
 				group = [],
-				isIn = false;
+				style = [],
+				isIn = false,
+				isStyle = false;
 			html.replace(/.+[\s\r\n]*/gi, function(a, b) {
+				//console.log(a)
 				if (/return\s*\([\s\r\n]*/.test(a)) {
 					item.push(");");
 					isIn = true;
@@ -778,10 +781,20 @@ pReact && define && (define("promise", ["pReact"], function() {
 					item = [];
 					isIn = false;
 				}
+				if(/<style>/.test(a)){
+					style.push(a);
+					isStyle = true;
+				}else if(/<\/style>/.test(a)){
+					style.push(a);
+					isStyle = false;
+				}else if(isStyle){
+					style.push(a);
+				}
 				if (isIn) {
 					item.push(a);
 				}
 			});
+			//console.log(style.join(''))
 			pReact.each(group, function(i, arr) {
 				arr = arr.del(0);
 				arr.push(");");
@@ -801,6 +814,7 @@ pReact && define && (define("promise", ["pReact"], function() {
 			}).replace(_.renderObjExp, function(a, b) {
 				return "\'+" + b + "+\'"
 			});
+			//console.log(html)
 			return html;
 		},
 		render: function(html, dom) {
