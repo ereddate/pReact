@@ -3,6 +3,8 @@ pReact，仅支持ios和android设备。模板文件扩展名为*.pjs。
 
 未对ES6做处理，仅依靠浏览器自身支持。
 
+样式支持less写法，需加插殊属性（具体请查看下面的说明）。
+
 引用：
 ```
 <script src="preact.js"></script>
