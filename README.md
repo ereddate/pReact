@@ -216,6 +216,10 @@ pjs模板，伪标签写法<?pjs ... ?>，如下：
 		<li id="{{ id }}">3</li>
 	<?pjs end case ?>
 <?pjs end switch ?>
+
+toRem 伪标签
+<?pjs toRem(px, font-size) ?>
+
 ```
 pjs模板，伪标签扩展写法如下：
 ```
