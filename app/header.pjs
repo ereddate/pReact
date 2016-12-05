@@ -1,7 +1,8 @@
 var headerView = pReact.createClass({
 	getInitData: function(success, error){
 		success(pReact.extend(window.pReact_web_config, {
-			a: true
+			a: true,
+			lesspath: "libs/less.js"
 		}));
 	},
 	menuItemClick: function(e){
@@ -21,7 +22,7 @@ var headerView = pReact.createClass({
 	},
 	render:function(){
 		return (
-			<style p-type="text/less" p-path="libs/less.js">
+			<style p-type="text/less" p-path="{{ lesspath }}">
 				.a{
 					text-align:center;
 					p{
