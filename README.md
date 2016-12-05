@@ -273,7 +273,7 @@ p-type是style标签的内容类型，p-path是less.js的文件全路径。
 render: function(){
 	return (
 		...
-		<style p-type="text/less" p-path="libs/less.js">
+		<style p-type="text/less" p-path="preact-less.js">
 			.a{
 				text-align:center;
 				p{
