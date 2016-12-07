@@ -948,7 +948,10 @@ pReact && define && (define("promise", ["pReact"], function() {
 				a = a.replace(new RegExp("{{\\s+(.+)\\s+([^<>,}]+\\s+)*}}"), function(a, b, c) {
 					if (b) {
 						b = b.split(' | ');
-						if (b.length > 1 && b[1].split(' : ').length > 1) a = a.replace(a, map.tmplFilter[b[1].split(' : ')[0]](b[0], b[1].split(' : ')[1]));
+						if (b.length > 1) {
+							var c = b[1].split(' : ');
+							a = a.replace(a, map.tmplFilter[c[0]](b[0], c[1]));
+						}
 					}
 					return a;
 				});

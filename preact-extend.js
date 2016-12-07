@@ -229,6 +229,73 @@ pReact && ((function($) {
 			toString: function(val, filterCondition) {
 				return $.stringify(val);
 			},
+			cssPrefix: function(val, filterCondition) {
+				val = val.replace(/["']*/gi, "");
+				var toAda = [];
+				var a = document.createElement("div").style;
+				pReact.each(["", "webkit", "o", "ms", "moz"], function(i, name) {
+					var valname = val.replace(/\s*/gi, "").split(':')[0];
+					valname = valname.split('-');
+					if (name != "" && (name + (valname.length > 1 ? _capitalize(valname[0]) + _capitalize(valname[1]) : _capitalize(valname[0])) in a)) {
+						toAda.push("-" + name + "-" + val);
+					} else if (name == "") {
+						toAda.push(val);
+					}
+				});
+				return toAda.join(';') + ";";
+			},
+			rgbToHex: function(val, filterCondition) {
+				var reg = /^#([0-9a-fA-f]{3}|[0-9a-fA-f]{6})$/,
+					that = val;
+				if (/^(rgb|RGB)/.test(that)) {
+					var aColor = that.replace(/(?:||rgb|RGB)*/g, "").replace(/\s*/gi, "").split(",");
+					var strHex = "#";
+					for (var i = 0; i < aColor.length; i++) {
+						var hex = Number(aColor[i]).toString(16);
+						if (hex === "0") {
+							hex += hex;
+						}
+						strHex += hex;
+					}
+					if (strHex.length !== 7) {
+						strHex = that;
+					}
+					return strHex;
+				} else if (reg.test(that)) {
+					var aNum = that.replace(/#/, "").split("");
+					if (aNum.length === 6) {
+						return that;
+					} else if (aNum.length === 3) {
+						var numHex = "#";
+						for (var i = 0; i < aNum.length; i += 1) {
+							numHex += (aNum[i] + aNum[i]);
+						}
+						return numHex;
+					}
+				} else {
+					return that;
+				}
+			},
+			hexToRgb: function(val, filterCondition) {
+				var reg = /^#([0-9a-fA-f]{3}|[0-9a-fA-f]{6})$/,
+					sColor = val.toLowerCase();
+				if (sColor && reg.test(sColor)) {
+					if (sColor.length === 4) {
+						var sColorNew = "#";
+						for (var i = 1; i < 4; i += 1) {
+							sColorNew += sColor.slice(i, i + 1).concat(sColor.slice(i, i + 1));
+						}
+						sColor = sColorNew;
+					}
+					var sColorChange = [];
+					for (var i = 1; i < 7; i += 2) {
+						sColorChange.push(parseInt("0x" + sColor.slice(i, i + 2)));
+					}
+					return sColorChange.join(",");
+				} else {
+					return sColor;
+				}
+			},
 			capitalize: function(val, filterCondition) {
 				switch (filterCondition) {
 					case 0:

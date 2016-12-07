@@ -31,7 +31,7 @@ var headerView = pReact.createClass({
 					}
 				}
 			</style>
-			<div class="a">1<p>2</p></div>
+			<div class="a" style="display:none">1<p>2</p></div>
 			<style p-type="text/less" p-path="libs/less.js">
 				.a{
 					text-align:center;
@@ -41,12 +41,12 @@ var headerView = pReact.createClass({
 					}
 				}
 			</style>
-			<div class="a">1<p>2</p></div>
+			<div class="a" style="display:none">1<p>2</p></div>
 			<style>
 				.header{
 					height:<?pjs toRem(44, html.fontSize) ?>rem;
 					line-height:<?pjs toRem(44, 25.88) ?>rem;
-					background:rgba(220,220,220,1);
+					background:rgba({{ #DCDCDC | hexToRgb }},1);
 					position:fixed;
 					top:0;
 					left:0;
