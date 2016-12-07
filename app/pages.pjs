@@ -14,7 +14,7 @@ var pageView = pReact.createClass({
 					position:absolute;
 					top:0;
 					left:0;
-					visibility: hidden;
+					{{ "visibility: hidden" | cssPrefix }}
 					{{ "backface-visibility:hidden" | cssPrefix }}
 				}
 				.pages .pages_item.pt-page-current {
