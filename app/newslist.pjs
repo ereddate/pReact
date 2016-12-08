@@ -96,14 +96,13 @@ var newsListTip = pReact.createClass({
 	},
 	render: function(){
 		return (
-			<style>
+			<div class="newslist_tip" id="newslist_tip"><style>
 				.newslist_tip{
 				    text-align: center;
 				    font-size: .5rem;
 				    color: rgb(120,120,120);
 				}
-			</style>
-			<div class="newslist_tip" id="newslist_tip">{{ message }}</div>
+			</style>{{ message }}</div>
 		);
 	}
 });
@@ -174,24 +173,29 @@ pReact.renderDom(
 	<newsList />,
 	document.getElementById("inputprice0"),
 	function(){
-		var num = 0;
+		var num = 0, isLoad = false;
 		pReact.jq(window).on("scroll", function(){
 			var top = pReact.jq(this).scrollTop();
-			if (num <2 && top+screen.height >= pReact.jq(document.body)[0].scrollHeight/2){
-				console.log(num);
-				if (num <= 1){
-					num++;
+			if (top+screen.height >= pReact.jq(document.body)[0].scrollHeight/2){
+				if (!isLoad){
+					isLoad = true;
 					newsListTip.remove();
-					var msg = num<2 ? "正在加载..." : "没有了...";
+					var msg = num >=2 ? "没有了..." : "正在加载...";
 					pReact.renderDom(
 						<newsListTip {message: msg}/>,
 						document.getElementById("newslist_contents_message")
 					);
-					pReact.renderDom(
-						<newsListItem />,
-						document.getElementById("newslist_contents_items")
-					);
-					num<2 && newsListTip.remove();
+					if (num <2){
+						setTimeout(function(){
+							pReact.renderDom(
+								<newsListItem />,
+								document.getElementById("newslist_contents_items")
+							);
+							newsListTip.remove();
+							isLoad = false;
+							num++;
+						},2000);
+					}
 				}
 			}
 		});
