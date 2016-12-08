@@ -4,7 +4,12 @@ var headerView = pReact.createClass({
 			a: true
 		}));
 	},
+	shareClick: function(e){
+		e.preventDefault();
+		pReact.jq(".share").removeClass("on").addClass("on");
+	},
 	gobackClick: function(e){
+		e.preventDefault();
 		history.back(-1);
 	},
 	render:function(){
@@ -45,7 +50,7 @@ var headerView = pReact.createClass({
 					text-align:center;
 					float:none;
 				}
-				.header_section .header_nav i.header_nav_open{
+				.header_section .header_nav i.header_nav_share{
 					position:absolute;
 					top:0;
 					right:0;
@@ -64,17 +69,79 @@ var headerView = pReact.createClass({
 					left:0;
 					text-indent: 0.3864rem;
 				}
+				.share{
+					width: 100%;
+					height: 100%;
+					position: fixed;
+					left: 0;
+					top: 0;
+					bottom: 0;
+					z-index: 999999;
+					background: rgba(0, 0, 0, 0.8);
+					display:none;
+				}
+				.share.on{
+					display:block;
+				}
+				.share_list{
+					width: 100%;
+					margin-top: 50%;
+					text-align: center;
+					font-size: 2.6rem;
+				}
+				.share .icon-close{
+					font-size: 1.1592rem;
+					padding:0.6182rem 0;
+					color: rgb(255,255,255);
+					width:100%;
+					text-align: center;
+				    display: block;
+				}
+				.share_list span{
+					width: 30%;
+					text-align: center;
+					color: #fff;
+					font-size: 0.6182rem;
+					display: inline-block;
+				}
+				.share_list span>i{
+				    font-style: normal;
+					line-height: 1rem;
+					font-size:0.6182rem;
+					display:block;
+				}
+				.share_list span img{
+					width:30%;
+					width: 2.4rem;
+				}
 			</style>
 			<header class="header header_section">
 				<h1 class="section_title">{{ title | limitTo : 8 }}...</h1>
 				<nav class="header_nav">
 					<i class="header_nav_goback icon-goback" onClick="{{ this.gobackClick }}"></i>
+					<i class="header_nav_share icon-share" onClick="{{ this.shareClick }}"></i>
 				</nav>
 			</header>
+			<div class="share">
+                <div class="share_list">
+                    <span class="wt page_share_ico" data-app="wechattimeline"><img src="img/shair1.png" alt=""><i>朋友圈</i></span>
+                    <span class="wf page_share_ico" data-app="wechatfriends"><img src="img/shair2.png" alt=""><i>微信好友</i></span>
+                    <span class="hexunwb page_share_ico" data-app="hexunwb"><img src="img/shair3.png" alt=""><i>和讯微博 </i></span>
+                    <span class="wb page_share_ico" data-app="sinaweibo"><img src="img/shair4.png" alt=""><i>新浪微博</i></span>
+                    <span class="wb page_share_ico" data-app="qq"><img src="img/shair7.png" alt=""><i>QQ</i></span>
+                </div>
+                <span class="icon-close share_close"></span>
+            </div>
 		);
 	}
 });
 pReact.renderDom(
 	<headerView />,
-	document.getElementById("header")
+	document.getElementById("header"),
+	function(){
+		pReact.jq(".share_close").on("click", function(e){
+			pReact.jq(this).parent().removeClass("on");
+		});
+		pReact.share && pReact.share(pReact.jq, ".share", window.pReact_web_config.share);
+	}
 );
