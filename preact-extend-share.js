@@ -21,7 +21,7 @@ pReact && (pReact.share = function($, selector, ops) {
 	device.browser.isSafari = device.os.isiOS && ua.indexOf("safari/") > -1 && !device.browser.isqqbrowser;
 	device.browser.isIApp = device.os.isiOS && !device.browser.isSafari && !device.browser.isqqbrowser && !device.browser.isUC && !device.browser.isWechat && !device.browser.isSamsung && !device.browser.isSogou && !device.browser.isPinganWifi;
 	var Base64 = {
-		_keyStr: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",
+		_keyStr: ops.key,
 		encode: function(a) {
 			var b, c, d, e, f, g, h, i = "",
 				j = 0;
