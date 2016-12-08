@@ -1,0 +1,80 @@
+var headerView = pReact.createClass({
+	getInitData: function(success, error){
+		success(pReact.extend(window.pReact_web_config, {
+			a: true
+		}));
+	},
+	gobackClick: function(e){
+		history.back(-1);
+	},
+	render:function(){
+		return (
+			<style>
+				.header{
+					height:<?pjs toRem(44, html.fontSize) ?>rem;
+					line-height:<?pjs toRem(44, 25.88) ?>rem;
+					background:rgba({{ #DCDCDC | hexToRgb }},1);
+					position:fixed;
+					top:0;
+					left:0;
+					right:0;
+					z-index:9999;
+				}
+				.header h1{
+					padding:0;
+					margin:0;
+					font-size: {{ 20 | toRem : 25.88 }}rem;
+					text-indent: 0.3864rem;
+					line-height:1.7002rem;
+					float:left;
+				}
+				.header .header_nav{
+					float:right;
+				}
+				.header .header_nav a{
+					display:none;
+				}
+				.header .header_nav i{
+					display:block;
+					font:inherit;
+					font-size:0.7728rem;
+					margin-right: 0.3864rem;
+				}
+				.header .section_title{
+					font-weight:700;
+					text-align:center;
+					float:none;
+				}
+				.header_section .header_nav i.header_nav_open{
+					position:absolute;
+					top:0;
+					right:0;
+				}
+				.header_section .header_nav i.header_nav_goback{
+					display:block;
+					position:absolute;
+					top:0;
+					left:0;
+					text-indent: 0.3864rem;
+				}
+				.header_section .header_nav.open i.header_nav_goback{
+					display:block;
+					position:absolute;
+					top:-1.7002rem;
+					left:0;
+					text-indent: 0.3864rem;
+				}
+			</style>
+			<header class="header header_section">
+				<h1 class="section_title">{{ title | limitTo : 8 }}...</h1>
+				<nav class="header_nav">
+					<i class="header_nav_goback icon-goback" onClick="{{ this.gobackClick }}"></i>
+				</nav>
+			</header>
+		);
+	}
+});
+pReact.renderDom(
+	<headerView />,
+	document.getElementById("header")
+);

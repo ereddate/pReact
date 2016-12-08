@@ -3,61 +3,61 @@ var newsListItem = pReact.createClass({
 		success([{
 				title: "阿娇，你能不能换掉这双“驴蹄鞋”？",
 				desc: "阿娇，你能不能换掉这双“驴蹄鞋”？",
-				url: "javascript:;",
+				url: "article.html",
 				imgurl: "http://img1.gtimg.com/rcdimg/20161202/08/10096787_230x170.jpg",
 				time: "2016-02-03"
 			},{
 				title: "阿娇，你能不能换掉这双“驴蹄鞋”？",
 				desc: "阿娇，你能不能换掉这双“驴蹄鞋”？",
-				url: "javascript:;",
+				url: "article.html",
 				imgurl: "http://img1.gtimg.com/rcdimg/20161202/08/10096787_230x170.jpg",
 				time: "2016-02-03"
 			},{
 				title: "阿娇，你能不能换掉这双“驴蹄鞋”？",
 				desc: "阿娇，你能不能换掉这双“驴蹄鞋”？",
-				url: "javascript:;",
+				url: "article.html",
 				imgurl: "http://img1.gtimg.com/rcdimg/20161202/08/10096787_230x170.jpg",
 				time: "2016-02-03"
 			},{
 				title: "阿娇，你能不能换掉这双“驴蹄鞋”？",
 				desc: "阿娇，你能不能换掉这双“驴蹄鞋”？",
-				url: "javascript:;",
+				url: "article.html",
 				imgurl: "http://img1.gtimg.com/rcdimg/20161202/08/10096787_230x170.jpg",
 				time: "2016-02-03"
 			},{
 				title: "阿娇，你能不能换掉这双“驴蹄鞋”？",
 				desc: "阿娇，你能不能换掉这双“驴蹄鞋”？",
-				url: "javascript:;",
+				url: "article.html",
 				imgurl: "http://img1.gtimg.com/rcdimg/20161202/08/10096787_230x170.jpg",
 				time: "2016-02-03"
 			},{
 				title: "阿娇，你能不能换掉这双“驴蹄鞋”？",
 				desc: "阿娇，你能不能换掉这双“驴蹄鞋”？",
-				url: "javascript:;",
+				url: "article.html",
 				imgurl: "http://img1.gtimg.com/rcdimg/20161202/08/10096787_230x170.jpg",
 				time: "2016-02-03"
 			},{
 				title: "阿娇，你能不能换掉这双“驴蹄鞋”？",
 				desc: "阿娇，你能不能换掉这双“驴蹄鞋”？",
-				url: "javascript:;",
+				url: "article.html",
 				imgurl: "http://img1.gtimg.com/rcdimg/20161202/08/10096787_230x170.jpg",
 				time: "2016-02-03"
 			},{
 				title: "阿娇，你能不能换掉这双“驴蹄鞋”？",
 				desc: "阿娇，你能不能换掉这双“驴蹄鞋”？",
-				url: "javascript:;",
+				url: "article.html",
 				imgurl: "http://img1.gtimg.com/rcdimg/20161202/08/10096787_230x170.jpg",
 				time: "2016-02-03"
 			},{
 				title: "阿娇，你能不能换掉这双“驴蹄鞋”？",
 				desc: "阿娇，你能不能换掉这双“驴蹄鞋”？",
-				url: "javascript:;",
+				url: "article.html",
 				imgurl: "http://img1.gtimg.com/rcdimg/20161202/08/10096787_230x170.jpg",
 				time: "2016-02-03"
 			},{
 				title: "阿娇，你能不能换掉这双“驴蹄鞋”？",
 				desc: "阿娇，你能不能换掉这双“驴蹄鞋”？",
-				url: "javascript:;",
+				url: "article.html",
 				imgurl: "http://img1.gtimg.com/rcdimg/20161202/08/10096787_230x170.jpg",
 				time: "2016-02-03"
 			}
@@ -80,7 +80,7 @@ var newsListItem = pReact.createClass({
 					</li>
 				<?pjs else ?>
 					<li>
-						<a href="javascript:;" class="newslist_ad">
+						<a href="article.html" class="newslist_ad">
 							<img src="http://inews.gtimg.com/newsapp_ls/0/863200648_640330/0" alt="AD" />
 						</a>
 					</li>

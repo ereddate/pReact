@@ -1,0 +1,51 @@
+var mainView_home = pReact.createClass({
+	render:function(){
+		return (
+			<style>
+				.main_content{
+					position:absolute;
+					top:1.7002rem;
+					left:0;
+					width:100%;
+					display:block;
+					padding:0 0 1.7002rem 0;
+				}
+				.main_content .main_header{
+					background:rgba(128,128,128,1);
+					color:rgba(255,255,255,1);
+					font-size:0.7728rem;
+				}
+				.main_content .main_header h1{
+					font-size:0.7728rem;
+					text-indent:0.3864rem;
+				}
+				.main_content .main_header p{
+					text-indent:0.3864rem;
+				}
+				.main_content .main_item{
+					background:rgba(255,255,255,1);
+					font-size:0.7728rem;
+					margin:0.3864rem;
+					text-align:left;
+				}
+				.main_content .main_item p{
+					padding:0.3864rem 0;
+				}
+			</style>
+			<div class="page_main">
+				<article class="main_content">
+					<header class="main_header">
+						<h1>{{ title | limitTo : 8 }}...</h1>
+						<p>{{ desc | limitTo : 16 }}...</p>
+					</header>
+					<div id="inputprice" class="main_item">{{ context }}</div>
+				</article>
+				<div id="footer"></div>
+			</div>
+		);
+	}
+});
+pReact.renderDom(
+	<mainView_home (window.pReact_web_config)/>,
+	document.getElementById("main")
+);
