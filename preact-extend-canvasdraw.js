@@ -1,3 +1,9 @@
+/*!
+ * pReact & pjs template v1.0.0
+ * @author yandong
+ *
+ * https://github.com/ereddate/pReact
+ */
 pReact && pReact.jq && (pReact.canvasDraw = function(select, ops) {
 	var doc = window.document;
 
@@ -144,9 +150,9 @@ pReact && pReact.jq && (pReact.canvasDraw = function(select, ops) {
 			ctx.lineWidth = width;
 			ctx.save();
 			if (typeof data == "function") {
-				self.drawDashLine(data(self.canvas, function(canvas) {
+				self.drawDashLine(style, width, data(canvas, function(canvas) {
 					self.canvas = canvas;
-				}), style, width);
+				}));
 			} else {
 				ctx.beginPath();
 				for (i = 0; i < len; i++) {
@@ -179,9 +185,9 @@ pReact && pReact.jq && (pReact.canvasDraw = function(select, ops) {
 			ctx.lineWidth = width;
 			ctx.save();
 			if (typeof data == "function") {
-				self.drawLine(data(canvas, function(rcanvas) {
+				self.drawLine(style, width, data(canvas, function(rcanvas) {
 					self.canvas = rcanvas;
-				}), style, width);
+				}));
 			} else {
 				for (i = 0; i < len; i++) {
 					if (data[i].from && data[i].to) {
@@ -215,8 +221,36 @@ pReact && pReact.jq && (pReact.canvasDraw = function(select, ops) {
 			}).draw(val, draw.color[style] || style, width).done();
 			return this;
 		},
-		drawARC: function(x, y, r, style){
+		drawARC: function(x, y, r, style) {
 			drawARC.drawARC(this.canvas.ctx, x, y, r, 0, Math.PI * 2, style);
+			return this;
+		},
+		drawCurve: function(style, width, data) {
+			var self = this;
+			data = data || self.canvas.baseData;
+			var canvas = self.canvas,
+				ctx = canvas.ctx,
+				i, len = data.length;
+			ctx.strokeStyle = draw.color[style] || style;
+			ctx.lineWidth = width;
+			ctx.save();
+			if (typeof data == "function") {
+				self.drawCurve(style, width, data(canvas, function(canvas) {
+					self.canvas = canvas;
+				}));
+			} else if (data[0]) {
+				ctx.beginPath();
+				for (i = 0; i < len; i++) {
+					if (i === 0) {
+						ctx.moveTo(data[i].from[0], data[i].from[1]);
+					} else {
+						ctx.lineTo(data[i].to[0], data[i].to[1]);
+					}
+				}
+				ctx.stroke();
+			}
+			ctx.closePath();
+			ctx.restore();
 			return this;
 		},
 		drawViewLine: function(style, width) {

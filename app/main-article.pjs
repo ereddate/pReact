@@ -71,6 +71,32 @@ pReact.renderDom(
 			return data;
 		}).drawLine("lightgrey", 1).drawViewLine("lightgrey", 1).setData(function(canvas){
 			return [];
-		}).drawLine("red", 1).drawString("pReact canvasDraw test", 10, 20, "left").drawArcLoad(60, 60, 100, "powder", 25).drawArcLoad(60, 120, 70, "green", 25).drawArcLoad(120, 120, 30, "blue", 25).drawARC(180, 60, 30, "blue");
+		}).drawLine("red", 1).drawString("pReact canvasDraw test", 10, 20, "left").drawArcLoad(60, 60, 100, "powder", 25).drawArcLoad(60, 120, 70, "green", 25).drawArcLoad(120, 120, 30, "blue", 25).drawARC(180, 60, 30, "blue").setData(function(canvas){
+			return [{
+				from: [58.054545454545455,15],
+				to: [66.49090909090907,15]
+			},{
+				from: [66.49090909090907,15],
+				to: [80.19999999999989,35]
+			},{
+				from: [80.19999999999989,35],
+				to: [99.18181818181795,65]
+			},{
+				from: [99.18181818181795,65],
+				to: [147.6909090909088,15]
+			},{
+				from: [147.6909090909088,15],
+				to: [181.43636363636358,25]
+			},{
+				from: [181.43636363636358,25],
+				to: [213.07272727272743,85]
+			},{
+				from: [213.07272727272743,85],
+				to: [224.6727272727275,15]
+			},{
+				from: [224.6727272727275,15],
+				to: [285.6727272727275,155]
+			}];
+		}).drawCurve("red", 3);
 	}
 );
