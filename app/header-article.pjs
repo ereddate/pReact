@@ -12,6 +12,10 @@ var headerView = pReact.createClass({
 		e.preventDefault();
 		history.back(-1);
 	},
+	refreshClick: function(e){
+		e.preventDefault();
+		location.href = location.href;
+	},
 	render:function(){
 		return (
 			<style>
@@ -54,6 +58,11 @@ var headerView = pReact.createClass({
 					position:absolute;
 					top:0;
 					right:0;
+				}
+				.header_section .header_nav i.header_nav_refresh{
+					position:absolute;
+					top:0;
+					right:1.1592rem;
 				}
 				.header_section .header_nav i.header_nav_goback{
 					display:block;
@@ -120,6 +129,7 @@ var headerView = pReact.createClass({
 				<nav class="header_nav">
 					<i class="header_nav_goback icon-goback" onClick="{{ this.gobackClick }}"></i>
 					<i class="header_nav_share icon-share" onClick="{{ this.shareClick }}"></i>
+					<i class="header_nav_refresh icon-refresh" onClick="{{ this.refreshClick }}"></i>
 				</nav>
 			</header>
 			<div class="share">

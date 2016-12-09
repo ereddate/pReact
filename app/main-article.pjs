@@ -38,7 +38,10 @@ var mainView_home = pReact.createClass({
 						<h1>{{ title | limitTo : 8 }}...</h1>
 						<p>{{ desc | limitTo : 16 }}...</p>
 					</header>
-					<div id="inputprice" class="main_item">{{ context }}</div>
+					<div id="inputprice" class="main_item">
+						<div id="canvasbox"></div>
+						{{ context }}
+					</div>
 				</article>
 				<div id="footer"></div>
 			</div>
@@ -47,5 +50,27 @@ var mainView_home = pReact.createClass({
 });
 pReact.renderDom(
 	<mainView_home (window.pReact_web_config)/>,
-	document.getElementById("main")
+	document.getElementById("main"),
+	function(){
+		pReact.canvasDraw("#canvasbox", {
+			width:screen.width - 20,
+			height:200
+		}).setData(function(canvas){
+			var i, len = 5, data = [];
+			for (i=0;i<len;i++) i>0 && data.push({
+				from: [0, canvas.height / len * i],
+				to: [canvas.width, canvas.height / len * i]
+			});
+			return data;
+		}).clearRect().drawDashLine("lightgrey", 1, "left").setData(function(canvas){
+			var i, len = 5, data = [];
+			for (i=0;i<len;i++) i>0 && i<len && data.push({
+				from: [canvas.width / len * i, 0],
+				to: [canvas.width / len * i, canvas.height]
+			});
+			return data;
+		}).drawLine("lightgrey", 1).drawViewLine("lightgrey", 1).setData(function(canvas){
+			return [];
+		}).drawLine("red", 1).drawString("pReact canvasDraw test", 10, 20, "left");
+	}
 );

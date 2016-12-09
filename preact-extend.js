@@ -718,18 +718,30 @@ pReact && ((function($) {
 		};
 	device.browser.isSafari = device.os.isiOS && ua.indexOf("safari/") > -1 && !device.browser.isqqbrowser;
 	device.browser.isIApp = device.os.isiOS && !device.browser.isSafari && !device.browser.isqqbrowser && !device.browser.isUC && !device.browser.isWechat && !device.browser.isSamsung && !device.browser.isSogou && !device.browser.isPinganWifi;
+	var support = {
+		touch: "ontouchstart" in doc ? true : false,
+		canvas: (function() {
+			var a;
+			doc.body.appendChild((a = doc.createElement("canvas")));
+			var bool = a.getContext ? true : false;
+			doc.body.removeChild(a);
+			return bool;
+		})()
+	};
+
 	$.extend($, {
 		ua: ua,
 		device: device,
+		support: support,
 		toHTML5: function() {
-			var head = document.getElementsByTagName("head")[0],
-				style = document.createElement("style");
+			var head = doc.getElementsByTagName("head")[0],
+				style = doc.createElement("style");
 			head.appendChild(style);
 			style.innerHTML = "abbr,article,aside,audio,canvas,datalist,details,dialog,eventsource,figure,footer,object,header,hgroup,mark,menu,meter,nav,output,progress,section,time,video{display:block}";
 			var e = "abbr,article,aside,audio,canvas,datalist,details,dialog,eventsource,figure,footer,object,header,hgroup,mark,menu,meter,nav,output,progress,section,time,video".split(',');
 			var i = e.length;
 			while (i--) {
-				document.createElement(e[i])
+				doc.createElement(e[i])
 			}
 			return this;
 		},
@@ -737,8 +749,8 @@ pReact && ((function($) {
 			num = num || 16;
 
 			function setFontSize() {
-				var iWidth = document.documentElement.clientWidth;
-				document.getElementsByTagName('html')[0].style.fontSize = (iWidth / num).toFixed(2) + 'px';
+				var iWidth = doc.documentElement.clientWidth;
+				doc.getElementsByTagName('html')[0].style.fontSize = (iWidth / num).toFixed(2) + 'px';
 			}
 			setFontSize();
 			window.addEventListener("onorientationchange" in window ? "orientationchange" : "resize", setFontSize, false);
