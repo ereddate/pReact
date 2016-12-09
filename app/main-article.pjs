@@ -71,6 +71,6 @@ pReact.renderDom(
 			return data;
 		}).drawLine("lightgrey", 1).drawViewLine("lightgrey", 1).setData(function(canvas){
 			return [];
-		}).drawLine("red", 1).drawString("pReact canvasDraw test", 10, 20, "left");
+		}).drawLine("red", 1).drawString("pReact canvasDraw test", 10, 20, "left").drawArcLoad(60, 60, 100, "powder", 25).drawArcLoad(60, 120, 70, "green", 25).drawArcLoad(120, 120, 30, "blue", 25).drawARC(180, 60, 30, "blue");
 	}
 );

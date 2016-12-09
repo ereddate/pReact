@@ -1,6 +1,101 @@
 pReact && pReact.jq && (pReact.canvasDraw = function(select, ops) {
 	var doc = window.document;
 
+	var drawARC = function(canvas, ops) {
+		return new drawARC.fn.init(canvas, ops);
+	};
+	Array.prototype.del = function(num) {
+		this.splice(num, 1);
+		return this;
+	};
+
+	function emiExec(emi) {
+		var len = emi.length,
+			i = 0,
+			self, val, style, r;
+
+		function b(i) {
+			if (emi[i]) {
+				self = emi[i].target;
+				val = emi[i].val;
+				style = emi[i].style;
+				r = emi[i].r;
+				a();
+			}
+		}
+
+		function a() {
+			setTimeout(function() {
+				drawARC.drawARC(self.ctx, self.x, self.y, r || self.r[0], self.sRage, Math.PI * 2 * (self.count / 360) + self.sRage, style || "rgba(0,0,255,1)", function() {
+					self.count++;
+					drawARC.drawARC(self.ctx, self.x, self.y, self.r[1], 0, Math.PI * 2, self.style[1]);
+					drawARC.drawString(self.ctx, ((1 - (360 - self.count) / 360) * 100).toFixed(0) + "%", self.x - 9, self.y + 5, "left", style || "rgba(0,0,255,1)");
+					if (self.count <= 360 / 100 * val) {
+						a();
+					} else {
+						emi.del(0);
+						self.count = 0;
+						b(0);
+					}
+				});
+			}, self.time);
+		}
+		b(0);
+	}
+	drawARC.fn = drawARC.prototype = {
+		init: function(canvas, ops) {
+			this.ctx = canvas.ctx;
+			this.sRage = -Math.PI * 0.5;
+			this.count = 0;
+			this.time = ops && ops.time || 10;
+			this.x = ops && ops.x || 0;
+			this.y = ops && ops.y || 0;
+			this.r = ops && ops.r || [0, 0];
+			this.emi = [];
+			this.value = ops && ops.val || 100;
+			this.style = ops && ops.style || ["rgba(192,192,192, 1)", "rgba(255,255,255,1)"];
+			drawARC.drawARC(this.ctx, this.x, this.y, this.r[0], 0, Math.PI * 2, this.style[0]);
+			drawARC.drawARC(this.ctx, this.x, this.y, this.r[1], 0, Math.PI * 2, this.style[1]);
+			return this;
+		},
+		draw: function(val, style, r) {
+			var self = this;
+			self.emi.push({
+				val: val || this.value,
+				style: style,
+				r: r,
+				target: self
+			});
+			return this;
+		},
+		done: function() {
+			emiExec(this.emi);
+		}
+	};
+	drawARC.fn.init.prototype = drawARC.fn;
+	drawARC.drawARC = function(ctx, x, y, width, start, end, style, callback) {
+		if (ctx) {
+			ctx.beginPath();
+			ctx.moveTo(x, y);
+			ctx.arc(x, y, width, start, end);
+			ctx.fillStyle = style;
+			ctx.closePath();
+			ctx.fill();
+			callback && callback();
+		}
+		return this;
+	};
+	drawARC.drawString = function(ctx, text, x, y, dir, style) {
+		if (ctx) {
+			ctx.save();
+			ctx.fillStyle = style || module.color.black;
+			ctx.textAlign = dir || "right";
+			ctx.fillText(text, x, y);
+			ctx.restore();
+		}
+		return this;
+	};
+
 	var draw = function(select, ops) {
 		return draw.fn.init(select, ops);
 	};
@@ -15,6 +110,8 @@ pReact && pReact.jq && (pReact.canvasDraw = function(select, ops) {
 				canvas.width = ops.width || screen.width;
 				canvas.height = ops.height || 200;
 				canvas.ctx = canvas.getContext("2d");
+				canvas.sRage = -Math.PI * 0.5;
+				canvas.start = 0;
 				parent.append(canvas);
 				pReact.extend(this, {
 					parent: parent,
@@ -110,20 +207,32 @@ pReact && pReact.jq && (pReact.canvasDraw = function(select, ops) {
 			ctx.restore();
 			return this;
 		},
-		drawViewLine: function(style, width){
+		drawArcLoad: function(x, y, val, style, width) {
+			drawARC(this.canvas, {
+				x: x,
+				y: y,
+				r: [0, 20]
+			}).draw(val, draw.color[style] || style, width).done();
+			return this;
+		},
+		drawARC: function(x, y, r, style){
+			drawARC.drawARC(this.canvas.ctx, x, y, r, 0, Math.PI * 2, style);
+			return this;
+		},
+		drawViewLine: function(style, width) {
 			var canvas = this.canvas;
 			this.drawLine(style, width, [{
-				from:[0, 0],
-				to:[canvas.width, 0]
-			},{
-				from:[canvas.width, 0],
-				to:[canvas.width, canvas.height]
-			},{
-				from:[canvas.width, canvas.height],
-				to:[0, canvas.height]
-			},{
-				from:[0, canvas.height],
-				to:[0, 0]
+				from: [0, 0],
+				to: [canvas.width, 0]
+			}, {
+				from: [canvas.width, 0],
+				to: [canvas.width, canvas.height]
+			}, {
+				from: [canvas.width, canvas.height],
+				to: [0, canvas.height]
+			}, {
+				from: [0, canvas.height],
+				to: [0, 0]
 			}]);
 			return this;
 		}
