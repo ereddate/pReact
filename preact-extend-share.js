@@ -1,25 +1,12 @@
-pReact && (pReact.share = function($, selector, ops) {
+/*!
+ * pReact & pjs template v1.0.0
+ * @author yandong
+ *
+ * https://github.com/ereddate/pReact
+ */
+ pReact && (pReact.share = function($, selector, ops) {
 	var win = window;
-	var ua = navigator.userAgent.toLowerCase(),
-		device = {
-			os: {
-				version: 0,
-				isiOS: ua.indexOf("iphone") > -1 || ua.indexOf("ipad") > -1 || ua.indexOf("ios") > -1,
-				isAndroid: ua.indexOf("android") > -1 || ua.indexOf("adr") > -1 || ua.indexOf("linux;") > -1
-			},
-			browser: {
-				version: 0,
-				isQQ: ua.indexOf("qq/") > -1,
-				isqqbrowser: ua.indexOf("mqqbrowser/") > -1,
-				isUC: ua.indexOf("ucbrowser/") > -1,
-				isWechat: ua.indexOf("micromessenger/") > -1,
-				isSamsung: ua.indexOf("samsungbrowser/") > -1,
-				isSogou: ua.indexOf("sogoumobilebrowser/") > -1,
-				isPinganWifi: ua.indexOf("pawifi") > -1
-			}
-		};
-	device.browser.isSafari = device.os.isiOS && ua.indexOf("safari/") > -1 && !device.browser.isqqbrowser;
-	device.browser.isIApp = device.os.isiOS && !device.browser.isSafari && !device.browser.isqqbrowser && !device.browser.isUC && !device.browser.isWechat && !device.browser.isSamsung && !device.browser.isSogou && !device.browser.isPinganWifi;
+	var device = pReact.device;
 	var Base64 = {
 		_keyStr: ops.key,
 		encode: function(a) {

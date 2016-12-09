@@ -1,4 +1,10 @@
-(function(root, factory) {
+/*!
+ * pReact & pjs template v1.0.0
+ * @author yandong
+ *
+ * https://github.com/ereddate/pReact
+ */
+ (function(root, factory) {
   var jqlite = factory(root);
 
   if (typeof pReact === 'function') {
