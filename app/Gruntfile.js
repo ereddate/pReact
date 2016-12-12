@@ -17,5 +17,16 @@ module.exports = function(grunt) {
       grunt.log.writeln('file ' + dest + ext + ' created.');
     });
   });
-  grunt.registerTask('default', 'pReact-pjs-concat');
+
+  grunt.initConfig({
+    watch: {
+      pjs: {
+        files: [pkg.path + "*.pjs"],
+        tasks: ["pReact-pjs-concat"]
+      }
+    }
+  });
+
+  grunt.loadNpmTasks("grunt-contrib-watch");
+  grunt.registerTask('default', 'watch');
 }

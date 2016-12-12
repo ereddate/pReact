@@ -13,7 +13,9 @@
 		"ereddate@gmail.com"
 	],
 	"devDependencies": {
+		"grunt-contrib-watch":"*"
 	},
+	"path": "./",
 	"configs": [{
 		"src": ["header-article", "main-article", "footer", "gotop"],
 		"dest": "dist/article/article"
