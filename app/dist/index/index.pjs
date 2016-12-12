@@ -1,0 +1,1294 @@
+var headerView = pReact.createClass({
+	getInitData: function(success, error){
+		success(pReact.extend(window.pReact_web_config, {
+			a: true,
+			lesspath: "libs/less.js"
+		}));
+	},
+	menuItemClick: function(e){
+		e.preventDefault();
+		var a = pReact.jq(".header_nav_menu a"),
+			index = a.index(this.elem);
+		pReact.jq(".footer_nav").find(".button").eq(index).trigger("click");
+	},
+	menuButtonClick: function(e){
+		var a = pReact.jq(this.elem).parent();
+		a.hasClass("open") ? a.removeClass("open") : (a.removeClass("open").addClass("open"), pReact.jq(document).on("click", function(e){
+			if (pReact.jq(e.target).parents(".header").length != 1){
+				a.removeClass("open");
+			}
+		}));
+		a.find("span").scrollTo(1);
+	},
+	render:function(){
+		return (
+			<style p-type="text/less" p-path="{{ lesspath }}">
+				.a{
+					text-align:center;
+					p{
+						background:#000;
+						color:#fff;
+					}
+				}
+			</style>
+			<div class="a" style="display:none">1<p>2</p></div>
+			<style p-type="text/less" p-path="libs/less.js">
+				.a{
+					text-align:center;
+					p{
+						background:#000;
+						color:#fff;
+					}
+				}
+			</style>
+			<div class="a" style="display:none">1<p>2</p></div>
+			<style>
+				.header{
+					height:<?pjs toRem(44, html.fontSize) ?>rem;
+					line-height:<?pjs toRem(44, 25.88) ?>rem;
+					background:rgba({{ #DCDCDC | hexToRgb }},1);
+					position:fixed;
+					top:0;
+					left:0;
+					right:0;
+					z-index:9999;
+				}
+				.header h1{
+					padding:0;
+					margin:0;
+					font-size: {{ 20 | toRem : 25.88 }}rem;
+					text-indent: 0.3864rem;
+					line-height:1.7002rem;
+					float:left;
+				}
+				.header .header_nav{
+					float:right;
+				}
+				.header .header_nav a{
+					display:none;
+				}
+				.header .header_nav i{
+					display:block;
+					font:inherit;
+					font-size:0.7728rem;
+					margin-right: 0.3864rem;
+				}
+				.header .header_nav i.header_nav_close{
+					display:none;
+				}
+				.header .header_nav.open{
+					position:absolute;
+					top:1.7002rem;
+					left:0;
+					right:0;
+					background:rgba(105,105,105,1);
+					z-index:9999;
+				}
+				.header .header_nav.open span{
+					display:block;
+					width:100%;
+					height:8.5008rem;
+					overflow:auto;
+					overflow-x:hidden;
+				}
+				.header .header_nav.open a{
+					display:block;
+					color:rgba(255,255,255,1);
+					text-decoration:none;
+					font-size: 0.7728rem;
+					text-indent: 0.3864rem;
+				}
+				.header .header_nav.open i.header_nav_close{
+					display:block;
+					color:rgba(0,0,0,1);
+					font-size: 0.7728rem;
+					position:absolute;
+					top:-1.7002rem;
+					right:0;
+				}
+				.header .header_nav.open i.header_nav_open{
+					display:none;
+				}
+				.header .header_nav i.header_nav_goback{
+					display:none;
+				}
+				.header .header_nav.open a.on{
+					background:rgba(255,215,0,1);
+					color:rgba(0,0,0,1);
+				}
+				.header .section_title{
+					font-weight:700;
+					text-align:center;
+					float:none;
+				}
+				.header_section .header_nav i.header_nav_open{
+					position:absolute;
+					top:0;
+					right:0;
+				}
+				.header_section .header_nav i.header_nav_goback{
+					display:block;
+					position:absolute;
+					top:0;
+					left:0;
+					text-indent: 0.3864rem;
+				}
+				.header_section .header_nav.open i.header_nav_goback{
+					display:block;
+					position:absolute;
+					top:-1.7002rem;
+					left:0;
+					text-indent: 0.3864rem;
+				}
+			</style>
+			<?pjs if ({{ a }} == true) ?>
+			<header class="header header_section">
+				<h1>旅游指南</h1>
+			<?pjs else ?>
+			<header class="header header_section">
+				<h1>pjs test</h1>
+			<?pjs end if ?>
+				<nav class="header_nav">
+					<span class="header_nav_menu">
+					<?pjs for (i=0;i<pages.length;i++) ?>
+						<?pjs if (i == 0) ?>
+							<a href="javascript:;" onClick="{{ this.menuItemClick }}">{{ pages[i].mainTitle }}</a>
+						<?pjs else if (i == 1) ?>
+							<a href="javascript:;" onClick="{{ this.menuItemClick }}">{{ pages[i].mainTitle }}</a>
+						<?pjs else ?>
+							<a href="javascript:;" onClick="{{ this.menuItemClick }}">{{ pages[i].mainTitle }}</a>
+						<?pjs end if ?>
+					<?pjs end for ?>
+					</span>
+					<i class="header_nav_close icon-up" onClick="{{ this.menuButtonClick }}"></i>
+					<i class="header_nav_open icon-menu" onClick="{{ this.menuButtonClick }}"></i>
+				</nav>
+			</header>
+		);
+	}
+});
+pReact.renderDom(
+	<headerView />,
+	document.getElementById("header")
+);
+var pageView = pReact.createClass({
+	getInitData: function(success, error){
+		success(window.pReact_web_config.pages)
+	},
+	render:function(){
+		return (
+			<style>
+				.pages{
+					position:relative;
+					width:100%;
+				}
+				.pages .pages_item{
+					width:100%;
+					position:absolute;
+					top:0;
+					left:0;
+					{{ "visibility: hidden" | cssPrefix }}
+					{{ "backface-visibility:hidden" | cssPrefix }}
+				}
+				.pages .pages_item.pt-page-current {
+					{{ "visibility: visible" | cssPrefix }}
+				    z-index: 1;
+				}
+			</style>
+			<section class="pages" id="pages">
+				<?pjs for (i=0;i<data.length;i++) ?>
+					<div class="page pages_item" id="page_item{{ data[i].index }}"></div>
+				<?pjs end for ?>
+				<div id="footer"></div>
+			</section>
+		);
+	}
+});
+pReact.renderDom(
+	<pageView />,
+	document.getElementById("main")
+);var tip = pReact.createClass("tip", {
+	closeClick: function(e){
+		e.preventDefault();
+		pReact.jq("#tip").remove();
+	},
+	render: function(){
+		var dom = document.getElementById("tip");
+			dom && dom.parentNode.removeChild(dom);
+		return (
+			<article id="tip" class="tip {{ direction }}">
+				<style>
+					.tip{
+						position:fixed;
+						left:0;
+						right:0;
+						background:rgba(0,0,0,.8);
+						z-index:99997;
+						min-height:2.3957rem;
+						color:rgb(255,255,255);
+					}
+					.tip header h1, .tip header p{
+						font-size:.7728rem;
+						margin-left: 0.3864rem;
+						line-height:1.2rem;
+					}
+					.top{
+						top:1.7002rem;
+					}
+					.bottom{
+						bottom:0;
+					}
+					.tip_close{
+						position:absolute;
+						top:35%;
+						right:0.8887rem;
+						text-decoration:none;
+						font-size:.8rem;
+						color:rgb(255,255,255);
+					}
+				</style>
+				<header>
+					<h1>{{ title }}</h1>
+					<p>{{ desc | limitTo : 30 }}</p>
+					<a href="javascript:;" class="tip_close icon-close" onClick="{{ this.closeClick }}"></a>
+				</header>
+				<div class="tip_contents<?pjs if ({{ showContents }} != true) ?> hide<?pjs end if ?>">
+					{{ alldesc }}
+				</div>
+			</article>
+		);
+	}
+});var mainView_home = pReact.createClass({
+	render:function(){
+		return (
+			<style>
+				.main_content{
+					display:block;
+					margin:1.7002rem 0 0;
+					padding:0 0 1.7002rem 0;
+				}
+				.main_content .main_header{
+					background:rgba(128,128,128,1);
+					color:rgba(255,255,255,1);
+					font-size:0.7728rem;
+				}
+				.main_content .main_header h1{
+					font-size:0.7728rem;
+					text-indent:0.3864rem;
+				}
+				.main_content .main_header p{
+					text-indent:0.3864rem;
+				}
+				.main_content .main_item{
+					background:rgba(255,255,255,1);
+				}
+			</style>
+			<article class="main_content">
+				<header class="main_header">
+					<h1>{{ mainTitle }}</h1>
+					<p>{{ mainDesc }}</p>
+				</header>
+				<div id="inputprice{{ index }}" class="main_item"></div>
+			</article>
+		);
+	}
+});
+pReact.renderDom(
+	<mainView_home (window.pReact_web_config.pages[0])/>,
+	document.getElementById("page_item0"),
+	function(){
+		pReact.Class["tip"].getInitData = function(success, error){
+			success({showContents: false, direction: "bottom", title:"pReact tip", desc:"github.com/ereddate/pReact"});
+		};
+		pReact.renderDom(
+			<pReact.Class["tip"] />,
+			document.body
+		);
+	}
+);
+var mainView_scenic = pReact.createClass({
+	render:function(){
+		var html = mainView_home.render();
+		return (
+			<div class="page_copy1">{{ $html }}</div>
+		);
+	}
+});
+pReact.renderDom(
+	<mainView_scenic (window.pReact_web_config.pages[1])/>,
+	document.getElementById("page_item1")
+);
+var mainView_map = pReact.createClass({
+	render:function(){
+		var html = mainView_home.render();
+		return (
+			<div class="page_copy2">{{ $html }}</div>
+		);
+	}
+});
+pReact.renderDom(
+	<mainView_map (window.pReact_web_config.pages[2])/>,
+	document.getElementById("page_item2")
+);
+var mainView_service = pReact.createClass({
+	render:function(){
+		var html = mainView_home.render();
+		return (
+			<div class="page_copy3">{{ $html }}</div>
+		);
+	}
+});
+pReact.renderDom(
+	<mainView_service (window.pReact_web_config.pages[3])/>,
+	document.getElementById("page_item3")
+);
+var mainView_user = pReact.createClass({
+	render:function(){
+		var html = mainView_home.render();
+		return (
+			<div class="page_copy4">{{ $html }}</div>
+		);
+	}
+});
+pReact.renderDom(
+	<mainView_user (window.pReact_web_config.pages[5])/>,
+	document.getElementById("page_item5")
+);
+var mainView_search = pReact.createClass({
+	render:function(){
+		var html = mainView_home.render();
+		return (
+			<div class="page_copy4">{{ $html }}</div>
+		);
+	}
+});
+pReact.renderDom(
+	<mainView_search (window.pReact_web_config.pages[4])/>,
+	document.getElementById("page_item4")
+);
+var footerView = pReact.createClass({
+	render: function(){
+		return (
+			<style>
+				.footer{
+					color:rgba(220,220,220,1);
+					display:block;
+					text-align:center;
+					font-size: 0.7728rem;
+					line-height: 0.7728rem;
+					padding:0 0 2.8594rem 0;
+				}
+				.footer a{
+					color:rgba(220,220,220,1);
+				}
+			</style>
+			<span class="footer">github.com/ereddate/<a href="https://github.com/ereddate/pReact" target="_blank">pReact</a></span>
+		);
+	}
+});
+pReact.renderDom(
+	<footerView />,
+	document.getElementById("footer")
+);var prvIndex = 0;
+var footerNav = pReact.createClass({
+	getInitData: function(success, error){
+		success(pReact.extend(window.pReact_web_config, {
+			isShow: screen.width <= 414 ? false : true
+		}));
+	},
+	bottomButtonClick: function(e){
+		e.preventDefault();
+		var a = pReact.jq(".footer_nav a"),
+			b = pReact.jq(".header_nav_menu a"),
+			index = a.index(this.elem),
+			page = pReact.jq(".pages").find(".pages_item");
+		var currentPage = page.eq(index);
+		page.removeClass("pt-page-current");
+		currentPage.addClass("pt-page-current");
+		pReact.jq(window).scrollTo(1);
+		a.removeClass("on").eq(index).addClass("on");
+		b.removeClass("on").eq(index).addClass("on");
+		prvIndex = index;
+	},
+	render:function(){
+		return (
+			<style>
+				.footer_nav{
+					position:fixed;
+					bottom:0;
+					left:0;
+					right:0;
+					height:1.7002rem;
+					line-height:1.7002rem;
+					background:rgba(220,220,220,1);
+					z-index:9999;
+					text-align:center;
+				}
+				.footer_nav a{
+					height:1.7002rem;
+					display:inline-block;
+					font-size:0.7728rem;
+					text-decoration:none;
+					color:rgba(0,0,0,1);
+				}
+				.footer_nav a.on{
+					background:rgba(255,215,0,1);
+					color:rgba(0,0,0,1);
+				}
+				.footer_nav .button{
+					padding: 0 0.3864rem;
+					border-right:0.0386rem solid rgba(179,179,179,1);
+				}
+				.footer_nav .noline{
+					border-right:0;
+				}
+				.dtouch{
+					position:absolute;
+					top:0;
+					left:0;
+					width:200px;
+					height:100px;
+					background:#000;
+					display:none;
+					z-index:9999;
+				}
+				.showTouchMenu{
+					display:block;
+				}
+			</style>
+			<div class="footer_nav"<?pjs if ({{ isShow }} === false) ?> style="display:none" <?pjs end if ?>>
+				<?pjs for (i = 0; i < pages.length; i++) ?>
+					<?pjs if ({{ index }} < 5) ?>
+						<a href="" class="button" onClick="{{ this.bottomButtonClick }}">{{ pages[i].buttonTitle }}</a>
+					<?pjs else ?>
+						<a href="" class="button noline" onClick="{{ this.bottomButtonClick }}">{{ pages[i].buttonTitle }}</a>
+					<?pjs end if ?>
+				<?pjs end for ?>
+			</div>
+			<div class="dtouch" id="dtouch">dTouch test</div>
+		);
+	}
+});
+pReact.renderDom(
+	<footerNav />,
+	document.getElementById("footer"),
+	function(){
+		pReact.jq(".footer_nav").find(".button").eq(0).trigger("click");
+		var bottomButton = pReact.jq(".footer_nav a"),
+			pages = pReact.jq(".pages"),
+			page = pages.find(".pages_item");
+		/*pages.swipe({
+			callback:function(e, dir){
+				console.log(dir);
+				if (dir == "left"){
+					prvIndex++;
+					prvIndex >= page.length && (prvIndex=0);
+				}else if (dir == "right"){
+					prvIndex--;
+					prvIndex < 0 && (prvIndex=page.length-1);
+				}
+				bottomButton.removeClass("on").eq(prvIndex).trigger("click");
+			}
+		});
+		pages.tap(function(e, type, time){
+			alert(type+","+time);
+		});*/
+	}
+);var goTop = pReact.createClass({
+	goTopClick: function(e){
+		e.preventDefault();
+		console.log("gotop");
+		pReact.jq(window).scrollTo(1);
+	},
+	render: function(){
+		return (
+			<style>
+				.hide{
+					display:none;
+				}
+				.goTop{
+					position:fixed;
+					bottom:3rem;
+					right:0.3864rem;
+					width:1.5456rem;
+					height:1.5456rem;
+					display:block;
+					z-index:9999;
+					overflow:hidden;
+					text-decoration: none;
+				    border-radius: 1rem;
+				    text-align: center;
+				    line-height: 1.5456rem;
+					background:rgba(0,0,0,.5);
+					color:rgb(255,255,255);
+					padding:0 0.1932rem;
+				}
+				.goTop img{
+					width:100%;
+					opacity: .5;
+				}
+			</style>
+			<a href="javascript:;" class="icon-up goTop<?pjs if ({{ isShow }} == false) ?> hide<?pjs end if ?>{{ ico }}" onClick="{{ this.goTopClick }}"></a>
+		);
+	}
+});
+pReact.renderDom(
+	<goTop {isShow:true, ico:""}/>,
+	document.getElementById("main"),
+	function(){
+		var a = pReact.jq(window);
+		a.on("scroll", function(e){
+			var b = pReact.jq(this).scrollTop();
+			pReact.jq(".goTop")[b>=100?"show":"hide"]();
+		}).trigger("scroll");
+	}
+);var scrollad = pReact.createClass({
+    config:{
+        time: 2000,
+        anispeed: 200
+    },
+    getInitData: function(success, error){
+        this.data = [{
+            url: "",
+            imgurl: "http://inews.gtimg.com/newsapp_ls/0/861834001_640330/0",
+            title: "阿娇，你能不能换掉这双“驴蹄鞋”？"
+        },{
+            url: "",
+            imgurl: "http://inews.gtimg.com/newsapp_ls/0/861827633_640330/0",
+            title: "阿娇，你能不能换掉这双“驴蹄鞋”？"
+        },{
+            url: "",
+            imgurl: "http://inews.gtimg.com/newsapp_ls/0/861834001_640330/0",
+            title: "阿娇，你能不能换掉这双“驴蹄鞋”？"
+        },{
+            url: "",
+            imgurl: "http://inews.gtimg.com/newsapp_ls/0/861827633_640330/0",
+            title: "阿娇，你能不能换掉这双“驴蹄鞋”？"
+        }];
+        success(this.data);
+    },
+    render:function(){
+        var fsize = parseFloat(pReact.jq("html").css("font-size"))||0;
+        var allwidth = (screen.width*(this.data.length)/fsize).toFixed(4),
+            width = (screen.width/fsize).toFixed(4),
+            time = this.config.time,
+            anispeed = this.config.anispeed;
+        return (
+            <div class="topbanner" id="topbanner" style="overflow: hidden;" >
+                <style>
+                    .topbanner{
+                        width: 100%;
+                        position: relative;
+                        box-shadow: inset 0 1px 1px #000
+                    }
+                    .topbanner_inner{
+                        width: 100%;
+                        display: -webkit-box;
+                        display: -ms-flexbox
+                    }
+                    .topbanner_inner li {
+                        width: 100%;
+                        position: relative;
+                        float: left
+                    }
+                    .topbanner_inner li a {
+                        display: block;
+                        position: relative
+                    }
+                    .topbanner_dot,.topbanner_title {
+                        position: absolute;
+                        right: 0;
+                        bottom: 0
+                    }
+                    .topbanner_image {
+                        width: 100%;
+                        min-height: 165px
+                    }
+                    .topbanner_image img {
+                        max-width: 100%;
+                        margin: 0 auto
+                    }
+                    .topbanner_title {
+                        font-size: .5em;
+                        text-align:center;
+                        height: 32px;
+                        line-height: 32px;
+                        padding: 0 36px 0 0;
+                        color: #fafafa;
+                        left: 0;
+                        font-weight: 400;
+                        text-shadow: 1px 1px 1px #000;
+                        background: -moz-linear-gradient(top,rgba(0,0,0,0),rgba(0,0,0,.9));
+                        background: -webkit-gradient(linear,top,from(rgba(0,0,0,0)),to(rgba(0,0,0,.9)));
+                        background: -webkit-linear-gradient(top,rgba(0,0,0,0),rgba(0,0,0,.9));
+                        background: -o-linear-gradient(top,rgba(0,0,0,0),rgba(0,0,0,.9))
+                    }
+                    .topbanner_dot {
+                        padding: 12px 0;
+                        display: none\9
+                    }
+                    .topbanner_dot li {
+                        border-radius: 0.1932rem;
+                        float: left;
+                        width: 6px;
+                        height: 6px;
+                        background: #aaa;
+                        margin-right: 7px
+                    }
+                    .topbanner_dot li.on {
+                        background: #4998e7
+                    }
+                </style>
+                <ul class="topbanner_inner" style="transform: translate3d(0px, 0px, 0px); transition: transform 0ms; width: {{ $allwidth }}rem;" p-controller="topBanner" p-speed="{{ $time }}" p-anispeed="{{ $anispeed }}">
+                    <?pjs for (i=0;i<data.length;i++) ?>
+                        <li class="panel" style="width: {{ $width }}rem;">
+                            <a href="{{ url }}">
+                                <div class="topbanner_image">
+                                    <img src="{{ imgurl }}" alt="{{ title }}">
+                                </div>
+                                <h2 class="topbanner_title">{{ title }}</h2>
+                            </a>
+                        </li>
+                    <?pjs end for ?>
+                </ul>
+                <ul class="topbanner_dot">
+                    <?pjs for (i=0;i<data.length;i++) ?>
+                        <li class=""></li>
+                    <?pjs end for ?>
+                </ul>
+            </div>
+        );
+    }
+});
+pReact.renderDom(
+    <scrollad />,
+    document.getElementById("inputprice0")
+);var newsListItem = pReact.createClass({
+	getInitData:function(success, error){
+		success([{
+				title: "阿娇，你能不能换掉这双“驴蹄鞋”？",
+				desc: "阿娇，你能不能换掉这双“驴蹄鞋”？",
+				url: "article.html",
+				imgurl: "http://img1.gtimg.com/rcdimg/20161202/08/10096787_230x170.jpg",
+				time: "2016-02-03"
+			},{
+				title: "阿娇，你能不能换掉这双“驴蹄鞋”？",
+				desc: "阿娇，你能不能换掉这双“驴蹄鞋”？",
+				url: "article.html",
+				imgurl: "http://img1.gtimg.com/rcdimg/20161202/08/10096787_230x170.jpg",
+				time: "2016-02-03"
+			},{
+				title: "阿娇，你能不能换掉这双“驴蹄鞋”？",
+				desc: "阿娇，你能不能换掉这双“驴蹄鞋”？",
+				url: "article.html",
+				imgurl: "http://img1.gtimg.com/rcdimg/20161202/08/10096787_230x170.jpg",
+				time: "2016-02-03"
+			},{
+				title: "阿娇，你能不能换掉这双“驴蹄鞋”？",
+				desc: "阿娇，你能不能换掉这双“驴蹄鞋”？",
+				url: "article.html",
+				imgurl: "http://img1.gtimg.com/rcdimg/20161202/08/10096787_230x170.jpg",
+				time: "2016-02-03"
+			},{
+				title: "阿娇，你能不能换掉这双“驴蹄鞋”？",
+				desc: "阿娇，你能不能换掉这双“驴蹄鞋”？",
+				url: "article.html",
+				imgurl: "http://img1.gtimg.com/rcdimg/20161202/08/10096787_230x170.jpg",
+				time: "2016-02-03"
+			},{
+				title: "阿娇，你能不能换掉这双“驴蹄鞋”？",
+				desc: "阿娇，你能不能换掉这双“驴蹄鞋”？",
+				url: "article.html",
+				imgurl: "http://img1.gtimg.com/rcdimg/20161202/08/10096787_230x170.jpg",
+				time: "2016-02-03"
+			},{
+				title: "阿娇，你能不能换掉这双“驴蹄鞋”？",
+				desc: "阿娇，你能不能换掉这双“驴蹄鞋”？",
+				url: "article.html",
+				imgurl: "http://img1.gtimg.com/rcdimg/20161202/08/10096787_230x170.jpg",
+				time: "2016-02-03"
+			},{
+				title: "阿娇，你能不能换掉这双“驴蹄鞋”？",
+				desc: "阿娇，你能不能换掉这双“驴蹄鞋”？",
+				url: "article.html",
+				imgurl: "http://img1.gtimg.com/rcdimg/20161202/08/10096787_230x170.jpg",
+				time: "2016-02-03"
+			},{
+				title: "阿娇，你能不能换掉这双“驴蹄鞋”？",
+				desc: "阿娇，你能不能换掉这双“驴蹄鞋”？",
+				url: "article.html",
+				imgurl: "http://img1.gtimg.com/rcdimg/20161202/08/10096787_230x170.jpg",
+				time: "2016-02-03"
+			},{
+				title: "阿娇，你能不能换掉这双“驴蹄鞋”？",
+				desc: "阿娇，你能不能换掉这双“驴蹄鞋”？",
+				url: "article.html",
+				imgurl: "http://img1.gtimg.com/rcdimg/20161202/08/10096787_230x170.jpg",
+				time: "2016-02-03"
+			}
+		]);
+	},
+	render: function(){
+		return (
+			<?pjs for (i=0;i<data.length;i++) ?>
+				<?pjs if (i < 9) ?>
+					<li>
+						<a href="{{ url }}">
+							<div class="ft newsitem_img">
+								<img src="{{ imgurl }}" alt="{{ title }}" />
+							</div>
+							<div class="ft newsitem_content">
+								<h2>{{ title }}</h2>
+								<p>{{ desc }}</p>
+							</div>
+						</a>
+					</li>
+				<?pjs else ?>
+					<li>
+						<a href="article.html" class="newslist_ad">
+							<img src="http://inews.gtimg.com/newsapp_ls/0/863200648_640330/0" alt="AD" />
+						</a>
+					</li>
+				<?pjs end if ?>
+			<?pjs end for ?>
+		);
+	}
+});
+var newsListTip = pReact.createClass({
+	remove: function(){
+		var dom = document.getElementById("newslist_tip");
+		dom && dom.parentNode.removeChild(dom);
+	},
+	render: function(){
+		return (
+			<div class="newslist_tip" id="newslist_tip"><style>
+				.newslist_tip{
+				    text-align: center;
+				    font-size: .5rem;
+				    color: rgb(120,120,120);
+				}
+			</style>{{ message }}</div>
+		);
+	}
+});
+var newsList = pReact.createClass({
+	render:function(){
+		return (
+			<div class="newslist">
+				<style>
+					.newslist_contents{
+						margin:0.3864rem 0.1932rem 0 0.1932rem;
+					}
+					.newslist_contents .ft{
+						float:left;
+					}
+					.newslist_contents ul li{
+						clear:both;
+					}
+					.newsitem_img{
+						width: 4.8299rem;
+					}
+					.newsitem_img img{
+						width:100%;
+					}
+					.newsitem_content{
+						width:10.2395rem;
+						color:rgb(0,0,0);
+						margin-left:0.3864rem;
+					}
+					.newsitem_content h2{
+						font-weight:700;
+						font-size:0.7728rem;
+					}
+					.newsitem_content p{
+						font-size:.6rem;
+						color:rgb(169,169,169);
+					}
+					.newslist_contents button.more{
+						width:100%;
+						padding:0.1932rem 0;
+						font-size:0.7728rem;
+					}
+					.newslist_ad{
+						width: 100%;
+					    display: block;
+					    height: 3.0912rem;
+					    overflow: hidden;
+					    margin: 10px 0;
+					}
+					.newslist_ad img{
+						width:100%;
+					}
+					@media screen and (max-width: 414px) {
+						.newsitem_content{
+							width:10.2395rem;
+						}
+					}
+				</style>
+				<section class="newslist_contents">
+					<ul id="newslist_contents_items">
+					</ul>
+					<div class="newslist_contents_message" id="newslist_contents_message"></div>
+				</section>
+			</div>
+		);
+	}
+});
+pReact.renderDom(
+	<newsList />,
+	document.getElementById("inputprice0"),
+	function(){
+		var num = 0, isLoad = false;
+		pReact.jq(window).on("scroll", function(){
+			var top = pReact.jq(this).scrollTop();
+			if (top+screen.height >= pReact.jq(document.body)[0].scrollHeight/2){
+				if (!isLoad){
+					isLoad = true;
+					newsListTip.remove();
+					var msg = num >=2 ? "没有了..." : "正在加载...";
+					pReact.renderDom(
+						<newsListTip {message: msg}/>,
+						document.getElementById("newslist_contents_message")
+					);
+					if (num <2){
+						setTimeout(function(){
+							pReact.renderDom(
+								<newsListItem />,
+								document.getElementById("newslist_contents_items")
+							);
+							newsListTip.remove();
+							isLoad = false;
+							num++;
+						},2000);
+					}
+				}
+			}
+		});
+	}
+);
+pReact.renderDom(
+	<newsListItem />,
+	document.getElementById("newslist_contents_items")
+);
+var priceinfo = pReact.createClass("priceinfo", {
+	num:0,
+	insertcard: function(){
+		
+	},
+	'cancel_click':function(e){
+		var parent = pReact.jq(this.elem).parents(".main_item_card");
+		pReact.jq(parent).remove();
+	},
+	'enter_click':function(e){
+		var parent = pReact.jq(this.elem).parents(".main_item_card");
+		pReact.jq(parent).remove();
+	},
+	render:function(){
+		return (
+			<div class="main_item_card">
+				<style>
+					.main_item_card{
+						z-index:99998;
+					}
+					.main_item_bcontent{
+						position:fixed;
+						top:0;
+						left:0;
+						right:0;
+						bottom:0;
+						background-color:rgba(0,0,0,.2);
+						z-index:99998;
+					}
+					.main_item_card_content{
+						border:0.0625rem solid rgb(0,0,0);
+						position:fixed;
+						top:30%;
+						left: 5%;
+						right: 5%;
+						background-color:rgba(0,0,0,.8);
+						padding:0.3125rem;
+						border-radius:0.3125rem;
+						color:rgb(255,255,255);
+						z-index:99999;
+					}
+					.alert{
+						top: 45%;
+					}
+					.main_item_card label{
+						padding:0.3125rem 0;
+						font-size:0.7728rem;
+					}
+					.main_item_card_bottom{
+						text-align:center;
+					}
+					.main_item_card_bottom button{
+						margin:0 0.3125rem;
+						font-size:0.7728rem;
+					}
+				</style>
+				<div class="main_item_card_content <?pjs if ({{ priceview }} != true) ?>alert<?pjs end if ?>">
+				<?pjs if ({{ priceview }} == true) ?>
+					<label>日期：<span id="card_date">{{ date | date : "yyyy年MM月dd日" }}</span></label>
+					<label>商家：<span id="card_business">{{ business }}</span></label>
+					<label>种类：<span id="card_type">{{ type }}</span></label>
+					<label>品名：<span id="card_name">{{ name }}</span></label>
+					<label>价格：<span id="card_price">{{ price }}</span>元/斤</label>
+					<div class="main_item_card_bottom">
+						<button onClick="{{ this['enter_click'] }}">确认并提交</button><button onClick="{{ this['cancel_click'] }}">取 消</button>
+					</div>
+				<?pjs else ?>
+					<span>{{ message }}</span>
+					<div class="main_item_card_bottom">
+						<button onClick="{{ this['cancel_click'] }}">确 认</button>
+					</div>
+				<?pjs end if ?>
+				</div>
+				<div class="main_item_bcontent"></div>
+			</div>
+		);
+	}
+});
+var inputPrice = pReact.createClass({
+	getInitData: function(success, error){
+		success({date:pReact.getDate(), passcard: "8888888888888888888"});
+	},
+	"type_change": function(e){
+		console.log(e.target.value)
+	},
+	"name_change": function(e){
+		console.log(e.target.value)
+	},
+	"business_change": function(e){
+		console.log(e.target.value)
+	},
+	"submit_click": function(e){
+		e.preventDefault();
+		var doms = {};
+		pReact.each(this.elem, function(i, elem){
+			var val = elem.value;
+			if(/select/.test(elem.tagName.toLowerCase())){
+				pReact.each(elem, function(i, item){
+					if (item.value === val){
+						val = item.innerHTML;
+						return false;
+					}
+				});
+			}
+			doms[elem.name] = val;
+		});
+		doms["priceview"] = false;
+		doms["message"] = "alert test!";
+		priceinfo.data = doms;
+		pReact.renderDom(
+			<priceinfo doms/>,
+			document.body
+		);
+	},
+	dateChange: function(e){
+		console.log(this.elem.value)
+	},
+	render: function(){
+		return (
+			<style>
+				.inputpriceform{
+					margin:0 1rem;
+				}
+				.inputpriceform span, .inputpriceform select{
+					display:block;
+					vertical-align:middle;
+				}
+				.inputpriceform label{
+					display:block;
+					padding:0.3125rem 0;
+					font-size:0.7728rem;
+				}
+				.inputpriceform input, .inputpriceform select, .inputpriceform button{
+					font-size:0.7728rem;
+				}
+			</style>
+			<form action="" class="inputpriceform" onSubmit="{{ this['submit_click'] }}">
+				<label><span>卡号：</span>{{ passcard | passcard : 4 }}<input type="hidden" name="card" value="{{ passcard }}" /></label>
+				<label><span>日期：</span><input name="date" type="date" value="{{ date }}" placeholder="请选择..." onChange="{{ this.dateChange }}"/></label>
+				<label><span>商家：</span><select name="business" onChange="{{ this['business_change'] }}">
+					<option value="0" selected>请选择...</option>
+					<option value="1">XXX市场</option>
+					<option value="2">XXX超市</option>
+				</select></label>
+				<label><span>种类：</span><select name="type" onChange="{{ this['type_change'] }}">
+					<option value="0" selected>请选择...</option>
+					<option value="1">鲜蔬</option>
+					<option value="2">水果</option>
+				</select></label>
+				<label><span>品名：</span><select name="name" onChange="{{ this['name_change'] }}">
+					<option value="0" selected>请选择...</option>
+					<option value="1">白菜</option>
+					<option value="2">萝卜</option>
+				</select></label>
+				<label><span>价格：</span><input type="number" name="price" value="" placeholder="0.00" />元/斤</label>
+				<button type="submit">保存价格</button>
+			</form>
+		);
+	}
+});
+pReact.renderDom(
+	<inputPrice />,
+	document.getElementById("inputprice4"),
+	function(){
+		/*var title = pReact.jq(".header h1"),
+			bottomButton = pReact.jq(".footer_nav a"),
+			pages = pReact.jq(".pages"),
+			page = pages.find(".pages_item");
+		pages.swipe({
+			callback:function(e, dir){
+				console.log(dir);
+				if (dir == "left"){
+					title.html("商品价格走势");
+					bottomButton.removeClass("on").eq(1).addClass("on");
+					page.eq(0).removeClass("pt-page-moveFromLeft").addClass("pt-page-moveToLeft").onAnimationEnd(function(){
+						console.log(0);
+						pReact.jq(this).removeClass("pt-page-current");
+					});
+					page.eq(1).removeClass("pt-page-moveToRight").addClass("pt-page-current pt-page-moveFromRight");
+					pReact.jq(window).scrollTo(1);
+				}else if (dir == "right"){
+					title.html("填写当日价格");
+					bottomButton.removeClass("on").eq(0).addClass("on");
+					page.eq(0).removeClass("pt-page-moveToLeft").addClass("pt-page-current pt-page-moveFromLeft");
+					page.eq(1).removeClass("pt-page-moveFromRight").addClass("pt-page-moveToRight").onAnimationEnd(function(){
+						console.log(1);
+						pReact.jq(this).removeClass("pt-page-current");
+					});
+					pReact.jq(window).scrollTo(1);
+				}
+			}
+		});
+		pages.pinched(function(e){
+			alert("zoomIn")
+		}, function(e){
+			alert("zoomOut")
+		});*/
+	}
+);var listItem = pReact.createClass({
+	getInitData:function(success, error){
+		success([{
+				url: "url",
+				title: "萝卜",
+				price: 10.2,
+				rate: 20,
+				lasttime: "11-11"
+			},{
+				url: "url",
+				title: "白菜",
+				price: 110.2,
+				rate: -20,
+				lasttime: "11-11"
+			},{
+				url: "url",
+				title: "紫橄榄",
+				price: 10.2,
+				rate: 20.6,
+				lasttime: "11-11"
+			},{
+				url: "url",
+				title: "商品名称",
+				price: 110.2,
+				rate: -20,
+				lasttime: "11-11"
+			},{
+				url: "url",
+				title: "商品名称",
+				price: 110.2,
+				rate: 20,
+				lasttime: "11-11"
+			},{
+				url: "url",
+				title: "商品名称",
+				price: 110.2,
+				rate: -20,
+				lasttime: "11-11"
+			},{
+				url: "url",
+				title: "商品名称",
+				price: 110.2,
+				rate: 20,
+				lasttime: "11-11"
+			},{
+				url: "url",
+				title: "商品名称",
+				price: 110.2,
+				rate: -20,
+				lasttime: "11-11"
+			},{
+				url: "url",
+				title: "商品名称",
+				price: 110.2,
+				rate: 20,
+				lasttime: "11-11"
+			},{
+				url: "url",
+				title: "商品名称",
+				price: 110.2,
+				rate: -20,
+				lasttime: "11-11"
+			},{
+				url: "url",
+				title: "商品名称",
+				price: 110.2,
+				rate: -20,
+				lasttime: "11-11"
+			},{
+				url: "url",
+				title: "商品名称",
+				price: 110.2,
+				rate: -20,
+				lasttime: "11-11"
+			},{
+				url: "url",
+				title: "商品名称",
+				price: 110.2,
+				rate: -20,
+				lasttime: "11-11"
+			},{
+				url: "url",
+				title: "商品名称",
+				price: 110.2,
+				rate: -20,
+				lasttime: "11-11"
+			},{
+				url: "url",
+				title: "商品名称",
+				price: 110.2,
+				rate: -20,
+				lasttime: "11-11"
+			},{
+				url: "url",
+				title: "商品名称",
+				price: 110.2,
+				rate: -20,
+				lasttime: "11-11"
+			},{
+				url: "url",
+				title: "商品名称",
+				price: 110.2,
+				rate: -20,
+				lasttime: "11-11"
+			},{
+				url: "url",
+				title: "商品名称",
+				price: 110.2,
+				rate: -20,
+				lasttime: "11-11"
+			},{
+				url: "url",
+				title: "商品名称",
+				price: 110.2,
+				rate: -20,
+				lasttime: "11-11"
+			},{
+				url: "url",
+				title: "商品名称",
+				price: 110.2,
+				rate: -20,
+				lasttime: "11-11"
+			}]);
+	},
+	render:function(){
+		return (
+			<style>
+				.pricelist_items li{
+					display:block;
+					border-bottom:0.0386rem solid rgba(220,220,220,1);
+				}
+				.name,.price,.rate,.lasttime{
+					display:inline-block;
+					font-size: 0.7728rem;
+					text-decoration: none;
+					width: 25%;
+					text-align:center;
+					margin:0 0.0773rem 0 0;
+				}
+				.pricelist_items li a{
+					color:rgba(0,0,0,1);
+				}
+				.last{
+					margin:0;
+				}
+				.price{
+					width:25%;
+					padding:0 0.0773rem 0 0;
+					text-align:right;
+				}
+				.rate{
+					width:21.6%;
+					padding:0 0.0773rem;
+				}
+				.rise{
+					color:rgba(255,0,0,1);
+				}
+				.rise_back{
+					background-color:rgba(255,0,0,1);
+					color:rgba(255,255,255,1);
+				}
+				.fall{
+					color:rgba(0,128,0,1);
+				}
+				.fall_back{
+					background-color:rgba(0,128,0,1);
+					color:rgba(255,255,255,1);
+				}
+			</style>
+			<ul class="pricelist_items">
+				<?pjs for (i=0;i<data.length;i++) ?>
+					<li class="<?pjs if ({{ data[i].rate }} > 0) ?>rise<?pjs else ?>fall<?pjs end if ?>"><a href="{{ data[i].url }}" class="name title">{{ data[i].title }}</a><span class="price">￥{{ data[i].price }}</span><span class="rate<?pjs if ({{ data[i].rate }} > 0) ?> rise_back<?pjs else ?> fall_back<?pjs end if ?>"><?pjs if ({{ data[i].rate }} > 0) ?>+<?pjs end if ?>{{ data[i].rate }}%</span><span class="lasttime">{{ data[i].lasttime }}</span></li>
+				<?pjs end for ?>
+			</ul>
+		);
+	}
+});
+var listMain = pReact.createClass({
+	moreClick: function(e){
+		pReact.renderDom(
+			<listItem />,
+			document.getElementById("pricelist_content")
+		);
+	},
+	render: function(){
+		return (
+			<style>
+				.pricelist{
+					width:100%;
+				}	
+				.pricelist_header span{
+					background-color:rgba(220,220,220,1);
+				}
+				.pricelist .more{
+					width:100%;
+					font-size:0.7728rem;
+					display:block;
+				}
+			</style>
+			<div class="pricelist">
+				<div class="pricelist_header"><span class="name">商品名称</span><span class="price">价格</span><span class="rate">涨跌幅</span><span class="lasttime last">更新日期</span></div>
+				<div id="pricelist_content" class="pricelist_content"></div>
+				<button class="more" onClick="{{ this.moreClick }}">加载更多</button>
+			</div>
+		);
+	}
+});
+pReact.renderDom(
+	<listMain />,
+	document.getElementById("inputprice1")
+);
+pReact.renderDom(
+	<listItem />,
+	document.getElementById("pricelist_content"),
+	function(){
+		var data = {};
+		data["priceview"] = false;
+		data["message"] = "alert test!";
+		pReact.Class["priceinfo"] && pReact.renderDom(
+			<pReact.Class["priceinfo"] data/>,
+			document.body
+		);
+	}
+);

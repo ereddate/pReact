@@ -1,0 +1,330 @@
+var headerView = pReact.createClass({
+	getInitData: function(success, error){
+		success(pReact.extend(window.pReact_web_config, {
+			a: true
+		}));
+	},
+	shareClick: function(e){
+		e.preventDefault();
+		pReact.jq(".share").removeClass("on").addClass("on");
+	},
+	gobackClick: function(e){
+		e.preventDefault();
+		history.back(-1);
+	},
+	refreshClick: function(e){
+		e.preventDefault();
+		location.href = location.href;
+	},
+	render:function(){
+		return (
+			<style>
+				.header{
+					height:<?pjs toRem(44, html.fontSize) ?>rem;
+					line-height:<?pjs toRem(44, 25.88) ?>rem;
+					background:rgba({{ #DCDCDC | hexToRgb }},1);
+					position:fixed;
+					top:0;
+					left:0;
+					right:0;
+					z-index:9999;
+				}
+				.header h1{
+					padding:0;
+					margin:0;
+					font-size: {{ 20 | toRem : 25.88 }}rem;
+					text-indent: 0.3864rem;
+					line-height:1.7002rem;
+					float:left;
+				}
+				.header .header_nav{
+					float:right;
+				}
+				.header .header_nav a{
+					display:none;
+				}
+				.header .header_nav i{
+					display:block;
+					font:inherit;
+					font-size:0.7728rem;
+					margin-right: 0.3864rem;
+				}
+				.header .section_title{
+					font-weight:700;
+					text-align:center;
+					float:none;
+				}
+				.header_section .header_nav i.header_nav_share{
+					position:absolute;
+					top:0;
+					right:0;
+				}
+				.header_section .header_nav i.header_nav_refresh{
+					position:absolute;
+					top:0;
+					right:1.1592rem;
+				}
+				.header_section .header_nav i.header_nav_goback{
+					display:block;
+					position:absolute;
+					top:0;
+					left:0;
+					text-indent: 0.3864rem;
+				}
+				.header_section .header_nav.open i.header_nav_goback{
+					display:block;
+					position:absolute;
+					top:-1.7002rem;
+					left:0;
+					text-indent: 0.3864rem;
+				}
+				.share{
+					width: 100%;
+					height: 100%;
+					position: fixed;
+					left: 0;
+					top: 0;
+					bottom: 0;
+					z-index: 999999;
+					background: rgba(0, 0, 0, 0.8);
+					display:none;
+				}
+				.share.on{
+					display:block;
+				}
+				.share_list{
+					width: 100%;
+					margin-top: 50%;
+					text-align: center;
+					font-size: 2.6rem;
+				}
+				.share .icon-close{
+					font-size: 1.1592rem;
+					padding:0.6182rem 0;
+					color: rgb(255,255,255);
+					width:100%;
+					text-align: center;
+				    display: block;
+				}
+				.share_list span{
+					width: 30%;
+					text-align: center;
+					color: #fff;
+					font-size: 0.6182rem;
+					display: inline-block;
+				}
+				.share_list span>i{
+				    font-style: normal;
+					line-height: 1rem;
+					font-size:0.6182rem;
+					display:block;
+				}
+				.share_list span img{
+					width:30%;
+					width: 2.4rem;
+				}
+			</style>
+			<header class="header header_section">
+				<h1 class="section_title">{{ title | limitTo : 8 }}...</h1>
+				<nav class="header_nav">
+					<i class="header_nav_goback icon-goback" onClick="{{ this.gobackClick }}"></i>
+					<i class="header_nav_share icon-share" onClick="{{ this.shareClick }}"></i>
+					<i class="header_nav_refresh icon-refresh" onClick="{{ this.refreshClick }}"></i>
+				</nav>
+			</header>
+			<div class="share">
+                <div class="share_list">
+                    <span class="wt page_share_ico" data-app="wechattimeline"><img src="img/shair1.png" alt=""><i>朋友圈</i></span>
+                    <span class="wf page_share_ico" data-app="wechatfriends"><img src="img/shair2.png" alt=""><i>微信好友</i></span>
+                    <span class="hexunwb page_share_ico" data-app="hexunwb"><img src="img/shair3.png" alt=""><i>和讯微博 </i></span>
+                    <span class="wb page_share_ico" data-app="sinaweibo"><img src="img/shair4.png" alt=""><i>新浪微博</i></span>
+                    <span class="wb page_share_ico" data-app="qq"><img src="img/shair7.png" alt=""><i>QQ</i></span>
+                </div>
+                <span class="icon-close share_close"></span>
+            </div>
+		);
+	}
+});
+pReact.renderDom(
+	<headerView />,
+	document.getElementById("header"),
+	function(){
+		pReact.jq(".share_close").on("click", function(e){
+			pReact.jq(this).parent().removeClass("on");
+		});
+		pReact.share && pReact.share(pReact.jq, ".share", window.pReact_web_config.share);
+	}
+);
+var mainView_home = pReact.createClass({
+	render:function(){
+		return (
+			<style>
+				.main_content{
+					position:absolute;
+					top:1.7002rem;
+					left:0;
+					width:100%;
+					display:block;
+					padding:0 0 1.7002rem 0;
+				}
+				.main_content .main_header{
+					background:rgba(128,128,128,1);
+					color:rgba(255,255,255,1);
+					font-size:0.7728rem;
+				}
+				.main_content .main_header h1{
+					font-size:0.7728rem;
+					text-indent:0.3864rem;
+				}
+				.main_content .main_header p{
+					text-indent:0.3864rem;
+				}
+				.main_content .main_item{
+					background:rgba(255,255,255,1);
+					font-size:0.7728rem;
+					margin:0.3864rem;
+					text-align:left;
+				}
+				.main_content .main_item p{
+					padding:0.3864rem 0;
+				}
+			</style>
+			<div class="page_main">
+				<article class="main_content">
+					<header class="main_header">
+						<h1>{{ title | limitTo : 8 }}...</h1>
+						<p>{{ desc | limitTo : 16 }}...</p>
+					</header>
+					<div id="inputprice" class="main_item">
+						<div id="canvasbox"></div>
+						{{ context }}
+					</div>
+				</article>
+				<div id="footer"></div>
+			</div>
+		);
+	}
+});
+pReact.renderDom(
+	<mainView_home (window.pReact_web_config)/>,
+	document.getElementById("main"),
+	function(){
+		pReact.canvasDraw("#canvasbox", {
+			width:screen.width - 20,
+			height:200
+		}).setData(function(canvas){
+			var i, len = 5, data = [];
+			for (i=0;i<len;i++) i>0 && data.push({
+				from: [0, canvas.height / len * i],
+				to: [canvas.width, canvas.height / len * i]
+			});
+			return data;
+		}).clearRect().drawDashLine("lightgrey", 1, "left").setData(function(canvas){
+			var i, len = 5, data = [];
+			for (i=0;i<len;i++) i>0 && i<len && data.push({
+				from: [canvas.width / len * i, 0],
+				to: [canvas.width / len * i, canvas.height]
+			});
+			return data;
+		}).drawLine("lightgrey", 1).drawViewLine("lightgrey", 1).setData(function(canvas){
+			return [];
+		}).drawLine("red", 1).drawString("pReact canvasDraw test", 10, 20, "left").drawArcLoad(60, 60, 100, "powder", 25).drawArcLoad(60, 120, 70, "green", 25).drawArcLoad(120, 120, 30, "blue", 25).drawARC(180, 60, 30, "blue").setData(function(canvas){
+			return [{
+				from: [58.054545454545455,15],
+				to: [66.49090909090907,15]
+			},{
+				from: [66.49090909090907,15],
+				to: [80.19999999999989,35]
+			},{
+				from: [80.19999999999989,35],
+				to: [99.18181818181795,65]
+			},{
+				from: [99.18181818181795,65],
+				to: [147.6909090909088,15]
+			},{
+				from: [147.6909090909088,15],
+				to: [181.43636363636358,25]
+			},{
+				from: [181.43636363636358,25],
+				to: [213.07272727272743,85]
+			},{
+				from: [213.07272727272743,85],
+				to: [224.6727272727275,15]
+			},{
+				from: [224.6727272727275,15],
+				to: [285.6727272727275,155]
+			}];
+		}).drawCurve("red", 3);
+	}
+);var footerView = pReact.createClass({
+	render: function(){
+		return (
+			<style>
+				.footer{
+					color:rgba(220,220,220,1);
+					display:block;
+					text-align:center;
+					font-size: 0.7728rem;
+					line-height: 0.7728rem;
+					padding:0 0 2.8594rem 0;
+				}
+				.footer a{
+					color:rgba(220,220,220,1);
+				}
+			</style>
+			<span class="footer">github.com/ereddate/<a href="https://github.com/ereddate/pReact" target="_blank">pReact</a></span>
+		);
+	}
+});
+pReact.renderDom(
+	<footerView />,
+	document.getElementById("footer")
+);var goTop = pReact.createClass({
+	goTopClick: function(e){
+		e.preventDefault();
+		console.log("gotop");
+		pReact.jq(window).scrollTo(1);
+	},
+	render: function(){
+		return (
+			<style>
+				.hide{
+					display:none;
+				}
+				.goTop{
+					position:fixed;
+					bottom:3rem;
+					right:0.3864rem;
+					width:1.5456rem;
+					height:1.5456rem;
+					display:block;
+					z-index:9999;
+					overflow:hidden;
+					text-decoration: none;
+				    border-radius: 1rem;
+				    text-align: center;
+				    line-height: 1.5456rem;
+					background:rgba(0,0,0,.5);
+					color:rgb(255,255,255);
+					padding:0 0.1932rem;
+				}
+				.goTop img{
+					width:100%;
+					opacity: .5;
+				}
+			</style>
+			<a href="javascript:;" class="icon-up goTop<?pjs if ({{ isShow }} == false) ?> hide<?pjs end if ?>{{ ico }}" onClick="{{ this.goTopClick }}"></a>
+		);
+	}
+});
+pReact.renderDom(
+	<goTop {isShow:true, ico:""}/>,
+	document.getElementById("main"),
+	function(){
+		var a = pReact.jq(window);
+		a.on("scroll", function(e){
+			var b = pReact.jq(this).scrollTop();
+			pReact.jq(".goTop")[b>=100?"show":"hide"]();
+		}).trigger("scroll");
+	}
+);

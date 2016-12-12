@@ -1,0 +1,24 @@
+{
+	"name": "pReact",
+	"version": "1.0.0",
+	"description": "pReact",
+	"author": "yandong",
+	"keywords": [
+		"pReact",
+		"ereddate",
+		"javascript"
+	],
+	"homepage": "http://github.com/ereddate/preact",
+	"contributors": [
+		"ereddate@gmail.com"
+	],
+	"devDependencies": {
+	},
+	"configs": [{
+		"src": ["header-article", "main-article", "footer", "gotop"],
+		"dest": "dist/article/article"
+	}, {
+		"src": ["header", "pages", "tip", "main", "footer", "footer-nav", "gotop", "top-banner", "newslist", "app", "list"],
+		"dest": "dist/index/index"
+	}]
+}
