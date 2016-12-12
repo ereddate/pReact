@@ -5,6 +5,8 @@ pReact，仅支持ios和android设备。模板文件扩展名为*.pjs。
 
 样式支持less写法，需加特殊属性（具体请查看下面的说明）。
 
+APP例子中提供了grunt的开发环境，并提供watch任务实时监控代码的变化。
+
 引用：
 ```
 <script src="preact.js"></script>
