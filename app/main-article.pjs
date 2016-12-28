@@ -40,7 +40,7 @@ var mainView_home = pReact.createClass({
 					</header>
 					<div id="inputprice" class="main_item">
 						<div id="canvasbox"></div>
-						{{ context }}
+						{{ context }} 
 					</div>
 				</article>
 				<div id="footer"></div>

@@ -729,11 +729,21 @@ pReact && ((function($) {
 		})()
 	};
 
+	function hasAttr(arr, type, val) {
+		var is = false;
+		pReact.each(arr, function() {
+			if (this[type] && this[type] == val) {
+				is = true;
+			}
+		});
+		return is;
+	}
+
 	$.extend($, {
 		ua: ua,
 		device: device,
 		support: support,
-		toHTML5: function() {
+		toMobile: function(num) {
 			var head = doc.getElementsByTagName("head")[0],
 				style = doc.createElement("style");
 			head.appendChild(style);
@@ -743,14 +753,21 @@ pReact && ((function($) {
 			while (i--) {
 				doc.createElement(e[i])
 			}
-			return this;
-		},
-		toMobile: function(num) {
+			var metas = head.getElementsByTagName("meta");
+			isVP = hasAttr(metas, "name", "viewport");
+			if (!isVP) {
+				var meta = doc.createElement("meta");
+				meta.name = "viewport";
+				meta.content = "width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0";
+				head.appendChild(meta);
+			}
 			num = num || 16;
 
 			function setFontSize() {
-				var iWidth = doc.documentElement.clientWidth;
-				doc.getElementsByTagName('html')[0].style.fontSize = (iWidth / num).toFixed(2) + 'px';
+				var iWidth = doc.documentElement.clientWidth,
+					iHeight = doc.documentElement.clientHeight,
+					fontSize = window.orientation && (window.orientation == 90 || window.orientation == -90) || iHeight < iWidth ? iHeight / num : iWidth / num;
+				doc.getElementsByTagName('html')[0].style.fontSize = fontSize.toFixed(2) + 'px';
 			}
 			setFontSize();
 			window.addEventListener("onorientationchange" in window ? "orientationchange" : "resize", setFontSize, false);
@@ -780,6 +797,9 @@ pReact && ((function($) {
 		endEventNames = 'webkitAnimationEnd oAnimationEnd MSAnimationEnd animationend';
 
 	$.jq && ($.jq.extend($.jq.fn, {
+		hasAttr: function(name, val){
+			return hasAttr(this, name, val);
+		},
 		onAnimationEnd: function(callback) {
 			var fn = function(e) {
 				$.jq(this).off(endEventNames, fn);
