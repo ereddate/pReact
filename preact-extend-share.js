@@ -158,9 +158,9 @@
 				break;
 			case "qq":
 				win.location.href = toStr("mqqapi://share/to_fri?src_type=web&version=1&file_type=news", {
-					share_id: "1101685683",
+					share_id: ops.id || "1101685683",
 					title: Base64.encode(title),
-					thirdAppDisplayName: Base64.encode("手机和讯"),
+					thirdAppDisplayName: Base64.encode(ops.name || "pReact"),
 					url: Base64.encode(url),
 					previewimageUrl: Base64.encode(img),
 					description: Base64.encode(desc)
