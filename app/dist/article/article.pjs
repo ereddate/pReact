@@ -188,6 +188,9 @@ var mainView_home = pReact.createClass({
 				.main_content .main_item p{
 					padding:0.3864rem 0;
 				}
+				.main_content .main_item .video{
+					margin:1rem 0;
+				}
 			</style>
 			<div class="page_main">
 				<article class="main_content">
@@ -197,6 +200,9 @@ var mainView_home = pReact.createClass({
 					</header>
 					<div id="inputprice" class="main_item">
 						<div id="canvasbox"></div>
+						<video class="video" poster="{{ videoPoster | empty : '' }}" autoplay="{{ videoAutoplay }}" preload="{{ videoPreload }}" loop="{{ videoLoop }}" controls="controls" width="{{ videoWidth }}" height="{{ videoHeight }}" >
+							<source src="{{ videoUrl }}" />
+						</video>
 						{{ context }} 
 					</div>
 				</article>
