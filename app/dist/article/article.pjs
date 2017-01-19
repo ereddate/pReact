@@ -200,9 +200,7 @@ var mainView_home = pReact.createClass({
 					</header>
 					<div id="inputprice" class="main_item">
 						<div id="canvasbox"></div>
-						<video class="video" poster="{{ videoPoster | empty : '' }}" autoplay="{{ videoAutoplay }}" preload="{{ videoPreload }}" loop="{{ videoLoop }}" controls="controls" width="{{ videoWidth }}" height="{{ videoHeight }}" >
-							<source src="{{ videoUrl }}" />
-						</video>
+						<video class="video" p-controller="videobox" src="{{ videoUrl }}"></video>
 						{{ context }} 
 					</div>
 				</article>

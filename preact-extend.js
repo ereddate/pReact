@@ -459,6 +459,22 @@ pReact && ((function($) {
 				});
 			}
 		},
+		videobox: function(elem, obj){
+			var dom = pReact.jq(elem),
+				src = dom.attr("src") || "",
+				width = dom.attr("width") || "100%",
+				height = dom.attr("height") || "240";
+			src = src.split(' ');
+			pReact.each(src, function(i, item){
+				dom.append('<source src="'+item+'" />');
+			});
+			dom.removeAttr('src');
+			dom.attr({
+				width: width,
+				height: height,
+				controls: "controls"
+			});
+		},
 		topBanner: function(elem, obj) {
 			var len = obj.data.length,
 				time = parseInt(pReact.jq(elem).attr("p-speed")) || 1000,

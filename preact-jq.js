@@ -4,7 +4,7 @@
  *
  * https://github.com/ereddate/pReact
  */
- (function(root, factory) {
+(function(root, factory) {
   var jqlite = factory(root);
 
   if (typeof pReact === 'function') {
@@ -713,17 +713,29 @@
   };
 
   ListDOM.prototype.attr = function(key, value) {
-    var i, len;
-    if (_isFunction(value)) {
-      for (i = 0, len = this.length; i < len; i++) {
-        this[i].setAttribute(key, value(i, this[i].getAttribute(key)));
+    var args = arguments,
+      argsLen = args.length;
+    if (argsLen > 1) {
+      var i, len;
+      if (_isFunction(value)) {
+        for (i = 0, len = this.length; i < len; i++) {
+          this[i].setAttribute(key, value(i, this[i].getAttribute(key)));
+        }
+      } else if (value !== undefined) {
+        for (i = 0, len = this.length; i < len; i++) {
+          this[i].setAttribute(key, value);
+        }
+      } else if (this[0]) {
+        return this[0].getAttribute(key);
       }
-    } else if (value !== undefined) {
-      for (i = 0, len = this.length; i < len; i++) {
-        this[i].setAttribute(key, value);
+    }else if (argsLen === 1 && _isObject(args[0])){
+      for (name in args[0]){
+        for (i = 0, len = this.length; i < len; i++) {
+          this[i].setAttribute(name, args[0][name]);
+        }
       }
-    } else if (this[0]) {
-      return this[0].getAttribute(key);
+    }else if (argsLen === 1 && typeof args[0] == "string"){
+      return this[0].getAttribute(args[0]);
     }
     return this;
   };
