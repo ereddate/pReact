@@ -1,4 +1,7 @@
-var headerView = pReact.createClass({
+var headerView = pReact.createClass("header", {
+	state:{
+		currentPageIndex:0
+	},
 	getInitData: function(success, error){
 		success(pReact.extend(window.pReact_web_config, {
 			a: true,
@@ -9,6 +12,9 @@ var headerView = pReact.createClass({
 		e.preventDefault();
 		var a = pReact.jq(".header_nav_menu a"),
 			index = a.index(this.elem);
+		this.setState({
+			currentPageIndex: index
+		});
 		pReact.jq(".footer_nav").find(".button").eq(index).trigger("click");
 	},
 	menuButtonClick: function(e){
@@ -168,6 +174,6 @@ var headerView = pReact.createClass({
 	}
 });
 pReact.renderDom(
-	<headerView />,
+	<headerView {test: 1} />,
 	document.getElementById("header")
 );

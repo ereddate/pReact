@@ -332,6 +332,9 @@ pReact && ((function($) {
 							var fn = pReact.sEval('return function(e, dir){' + result[1] + '(e, dir);}', "e", "dir"),
 								then = typeof obj == "function" ? (new obj) : obj;
 							then.elem = e && e.path && (this.path = e.path) && this || this;
+							then.setState = function(ops) {
+								pReact.extend(!then.state ? (then.state = {}) : then.state, ops);
+							}
 							fn.call(then, e, dir);
 						} catch (e) {
 							console.log(e);
@@ -342,6 +345,9 @@ pReact && ((function($) {
 						var fn = pReact.sEval('return function(e){' + result[1] + '(e);}', "e"),
 							then = typeof obj == "function" ? (new obj) : obj;
 						then.elem = e.path && (this.path = e.path) && this || this;
+						then.setState = function(ops) {
+							pReact.extend(!then.state ? (then.state = {}) : then.state, ops);
+						}
 						fn.call(then, pReact.extend(e, {
 							target: e.path && (e.target.path = e.path) && e.target || e.target
 						}));
@@ -459,14 +465,14 @@ pReact && ((function($) {
 				});
 			}
 		},
-		videobox: function(elem, obj){
+		videobox: function(elem, obj) {
 			var dom = pReact.jq(elem),
 				src = dom.attr("src") || "",
 				width = dom.attr("width") || "100%",
 				height = dom.attr("height") || "240";
 			src = src.split(' ');
-			pReact.each(src, function(i, item){
-				dom.append('<source src="'+item+'" />');
+			pReact.each(src, function(i, item) {
+				dom.append('<source src="' + item + '" />');
 			});
 			dom.removeAttr('src');
 			dom.attr({
@@ -813,7 +819,7 @@ pReact && ((function($) {
 		endEventNames = 'webkitAnimationEnd oAnimationEnd MSAnimationEnd animationend';
 
 	$.jq && ($.jq.extend($.jq.fn, {
-		hasAttr: function(name, val){
+		hasAttr: function(name, val) {
 			return hasAttr(this, name, val);
 		},
 		onAnimationEnd: function(callback) {

@@ -1,5 +1,5 @@
 var prvIndex = 0;
-var footerNav = pReact.createClass({
+var footerNav = pReact.createClass("footerNav",{
 	getInitData: function(success, error){
 		success(pReact.extend(window.pReact_web_config, {
 			isShow: screen.width <= 414 ? false : true

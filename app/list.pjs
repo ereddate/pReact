@@ -1,4 +1,4 @@
-var listItem = pReact.createClass({
+var listItem = pReact.createClass("listItem", {
 	getInitData:function(success, error){
 		success([{
 				url: "url",
@@ -175,7 +175,7 @@ var listItem = pReact.createClass({
 		);
 	}
 });
-var listMain = pReact.createClass({
+var listMain = pReact.createClass("listItems", {
 	moreClick: function(e){
 		pReact.renderDom(
 			<listItem />,

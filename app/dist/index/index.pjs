@@ -1,4 +1,7 @@
-var headerView = pReact.createClass({
+var headerView = pReact.createClass("header", {
+	state:{
+		currentPageIndex:0
+	},
 	getInitData: function(success, error){
 		success(pReact.extend(window.pReact_web_config, {
 			a: true,
@@ -9,6 +12,9 @@ var headerView = pReact.createClass({
 		e.preventDefault();
 		var a = pReact.jq(".header_nav_menu a"),
 			index = a.index(this.elem);
+		this.setState({
+			currentPageIndex: index
+		});
 		pReact.jq(".footer_nav").find(".button").eq(index).trigger("click");
 	},
 	menuButtonClick: function(e){
@@ -168,10 +174,10 @@ var headerView = pReact.createClass({
 	}
 });
 pReact.renderDom(
-	<headerView />,
+	<headerView {test: 1} />,
 	document.getElementById("header")
 );
-var pageView = pReact.createClass({
+var pageView = pReact.createClass("pageView", {
 	getInitData: function(success, error){
 		success(window.pReact_web_config.pages)
 	},
@@ -258,7 +264,7 @@ pReact.renderDom(
 			</article>
 		);
 	}
-});var mainView_home = pReact.createClass({
+});var mainView_home = pReact.createClass("mainViewHome", {
 	render:function(){
 		return (
 			<style>
@@ -366,7 +372,7 @@ pReact.renderDom(
 	<mainView_search (window.pReact_web_config.pages[4])/>,
 	document.getElementById("page_item4")
 );
-var footerView = pReact.createClass({
+var footerView = pReact.createClass("footView", {
 	render: function(){
 		return (
 			<style>
@@ -390,7 +396,7 @@ pReact.renderDom(
 	<footerView />,
 	document.getElementById("footer")
 );var prvIndex = 0;
-var footerNav = pReact.createClass({
+var footerNav = pReact.createClass("footerNav",{
 	getInitData: function(success, error){
 		success(pReact.extend(window.pReact_web_config, {
 			isShow: screen.width <= 414 ? false : true
@@ -494,7 +500,7 @@ pReact.renderDom(
 			alert(type+","+time);
 		});*/
 	}
-);var goTop = pReact.createClass({
+);var goTop = pReact.createClass("goTop",{
 	goTopClick: function(e){
 		e.preventDefault();
 		console.log("gotop");
@@ -542,7 +548,7 @@ pReact.renderDom(
 			pReact.jq(".goTop")[b>=100?"show":"hide"]();
 		}).trigger("scroll");
 	}
-);var scrollad = pReact.createClass({
+);var scrollad = pReact.createClass("topBanner", {
     config:{
         time: 2000,
         anispeed: 200
@@ -663,7 +669,7 @@ pReact.renderDom(
 pReact.renderDom(
     <scrollad />,
     document.getElementById("inputprice0")
-);var newsListItem = pReact.createClass({
+);var newsListItem = pReact.createClass("newsListItem",{
 	getInitData:function(success, error){
 		success([{
 				title: "阿娇，你能不能换掉这双“驴蹄鞋”？",
@@ -754,7 +760,7 @@ pReact.renderDom(
 		);
 	}
 });
-var newsListTip = pReact.createClass({
+var newsListTip = pReact.createClass("newsListTip",{
 	remove: function(){
 		var dom = document.getElementById("newslist_tip");
 		dom && dom.parentNode.removeChild(dom);
@@ -771,7 +777,7 @@ var newsListTip = pReact.createClass({
 		);
 	}
 });
-var newsList = pReact.createClass({
+var newsList = pReact.createClass("newsListItems",{
 	render:function(){
 		return (
 			<div class="newslist">
@@ -838,28 +844,31 @@ pReact.renderDom(
 	<newsList />,
 	document.getElementById("inputprice0"),
 	function(){
-		var num = 0, isLoad = false;
+		var num = 0, isLoad = false, pindex = 0;
 		pReact.jq(window).on("scroll", function(){
-			var top = pReact.jq(this).scrollTop();
-			if (top+screen.height >= pReact.jq(document.body)[0].scrollHeight/2){
-				if (!isLoad){
-					isLoad = true;
-					newsListTip.remove();
-					var msg = num >=2 ? "没有了..." : "正在加载...";
-					pReact.renderDom(
-						<newsListTip {message: msg}/>,
-						document.getElementById("newslist_contents_message")
-					);
-					if (num <2){
-						setTimeout(function(){
-							pReact.renderDom(
-								<newsListItem />,
-								document.getElementById("newslist_contents_items")
-							);
-							newsListTip.remove();
-							isLoad = false;
-							num++;
-						},2000);
+			var then = this, index = pReact.Class["header"].state.currentPageIndex;
+			if (index === pindex && pReact.jq(".pages_item").eq(index).hasClass("pt-page-current")){
+				var top = pReact.jq(then).scrollTop();
+				if (top+screen.height >= pReact.jq(document.body)[0].scrollHeight/2){
+					if (!isLoad){
+						isLoad = true;
+						newsListTip.remove();
+						var msg = num >=2 ? "没有了..." : "正在加载...";
+						pReact.renderDom(
+							<newsListTip {message: msg}/>,
+							document.getElementById("newslist_contents_message")
+						);
+						if (num <2){
+							setTimeout(function(){
+								pReact.renderDom(
+									<newsListItem />,
+									document.getElementById("newslist_contents_items")
+								);
+								newsListTip.remove();
+								isLoad = false;
+								num++;
+							},2000);
+						}
 					}
 				}
 			}
@@ -948,7 +957,7 @@ var priceinfo = pReact.createClass("priceinfo", {
 		);
 	}
 });
-var inputPrice = pReact.createClass({
+var inputPrice = pReact.createClass("inputPrice",{
 	getInitData: function(success, error){
 		success({date:pReact.getDate(), passcard: "8888888888888888888"});
 	},
@@ -1068,7 +1077,7 @@ pReact.renderDom(
 			alert("zoomOut")
 		});*/
 	}
-);var listItem = pReact.createClass({
+);var listItem = pReact.createClass("listItem", {
 	getInitData:function(success, error){
 		success([{
 				url: "url",
@@ -1245,7 +1254,7 @@ pReact.renderDom(
 		);
 	}
 });
-var listMain = pReact.createClass({
+var listMain = pReact.createClass("listItems", {
 	moreClick: function(e){
 		pReact.renderDom(
 			<listItem />,

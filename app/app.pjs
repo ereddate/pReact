@@ -76,7 +76,7 @@ var priceinfo = pReact.createClass("priceinfo", {
 		);
 	}
 });
-var inputPrice = pReact.createClass({
+var inputPrice = pReact.createClass("inputPrice",{
 	getInitData: function(success, error){
 		success({date:pReact.getDate(), passcard: "8888888888888888888"});
 	},

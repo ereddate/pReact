@@ -1,4 +1,4 @@
-var mainView_home = pReact.createClass({
+var mainView_home = pReact.createClass("mainViewHome", {
 	render:function(){
 		return (
 			<style>

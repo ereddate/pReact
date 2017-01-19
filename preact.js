@@ -1039,9 +1039,10 @@ pReact && define && (define("promise", ["pReact"], function() {
 		},
 		renderDom: function(html, data, parent, callback) {
 			var obj = typeof html == "function" ? (new html()) : html;
+			if (data) obj.state = !obj.state ? pReact.extend({}, data) : pReact.extend(obj.state, data);
 			$.promise.when(function(resolve, reject) {
-				if (data && "data" in data || !data && "getInitData" in obj && typeof obj.getInitData == "function") {
-					var fn = (!data ? obj : data).getInitData,
+				if ("getInitData" in obj && typeof obj.getInitData == "function" || data && "data" in data) {
+					var fn = (data && "getInitData" in data ? data : obj).getInitData,
 						fnStr = fn.toString();
 					try {
 						new Function("a", "b", "c", "(" + fnStr + ").call(a, b, c)")(obj, resolve, reject);

@@ -1,4 +1,4 @@
-var pageView = pReact.createClass({
+var pageView = pReact.createClass("pageView", {
 	getInitData: function(success, error){
 		success(window.pReact_web_config.pages)
 	},

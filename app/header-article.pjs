@@ -1,4 +1,4 @@
-var headerView = pReact.createClass({
+var headerView = pReact.createClass("headerArticle", {
 	getInitData: function(success, error){
 		success(pReact.extend(window.pReact_web_config, {
 			a: true

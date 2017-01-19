@@ -1,4 +1,4 @@
-var headerView = pReact.createClass({
+var headerView = pReact.createClass("headerArticle", {
 	getInitData: function(success, error){
 		success(pReact.extend(window.pReact_web_config, {
 			a: true
@@ -155,7 +155,7 @@ pReact.renderDom(
 		pReact.share && pReact.share(pReact.jq, ".share", window.pReact_web_config.share);
 	}
 );
-var mainView_home = pReact.createClass({
+var mainView_home = pReact.createClass("mainViewArticle", {
 	render:function(){
 		return (
 			<style>
@@ -187,9 +187,6 @@ var mainView_home = pReact.createClass({
 				}
 				.main_content .main_item p{
 					padding:0.3864rem 0;
-				}
-				.main_content .main_item .video{
-					margin:1rem 0;
 				}
 			</style>
 			<div class="page_main">
@@ -260,7 +257,7 @@ pReact.renderDom(
 			}];
 		}).drawCurve("red", 3);
 	}
-);var footerView = pReact.createClass({
+);var footerView = pReact.createClass("footView", {
 	render: function(){
 		return (
 			<style>
@@ -283,7 +280,7 @@ pReact.renderDom(
 pReact.renderDom(
 	<footerView />,
 	document.getElementById("footer")
-);var goTop = pReact.createClass({
+);var goTop = pReact.createClass("goTop",{
 	goTopClick: function(e){
 		e.preventDefault();
 		console.log("gotop");

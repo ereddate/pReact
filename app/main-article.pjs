@@ -1,4 +1,4 @@
-var mainView_home = pReact.createClass({
+var mainView_home = pReact.createClass("mainViewArticle", {
 	render:function(){
 		return (
 			<style>
@@ -40,6 +40,7 @@ var mainView_home = pReact.createClass({
 					</header>
 					<div id="inputprice" class="main_item">
 						<div id="canvasbox"></div>
+						<video class="video" p-controller="videobox" src="{{ videoUrl }}"></video>
 						{{ context }} 
 					</div>
 				</article>

@@ -1,4 +1,4 @@
-var scrollad = pReact.createClass({
+var scrollad = pReact.createClass("topBanner", {
     config:{
         time: 2000,
         anispeed: 200

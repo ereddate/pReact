@@ -1,4 +1,4 @@
-var goTop = pReact.createClass({
+var goTop = pReact.createClass("goTop",{
 	goTopClick: function(e){
 		e.preventDefault();
 		console.log("gotop");
