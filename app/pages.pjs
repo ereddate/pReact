@@ -6,7 +6,6 @@ var pageView = pReact.createClass("pageView", {
 		return (
 			<style>
 				.pages{
-					position:relative;
 					width:100%;
 				}
 				.pages .pages_item{
@@ -16,9 +15,11 @@ var pageView = pReact.createClass("pageView", {
 					left:0;
 					{{ "visibility: hidden" | cssPrefix }}
 					{{ "backface-visibility:hidden" | cssPrefix }}
+					{{ "display: none" | cssPrefix }}
 				}
 				.pages .pages_item.pt-page-current {
 					{{ "visibility: visible" | cssPrefix }}
+					{{ "display: block" | cssPrefix }}
 				    z-index: 1;
 				}
 			</style>
