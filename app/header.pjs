@@ -50,7 +50,6 @@ var headerView = pReact.createClass("header", {
 			<div class="a" style="display:none">1<p>2</p></div>
 			<style>
 				.header{
-					height:<?pjs toRem(44, html.fontSize) ?>rem;
 					line-height:<?pjs toRem(44, 25.88) ?>rem;
 					background:rgba({{ #DCDCDC | hexToRgb }},1);
 					position:fixed;
