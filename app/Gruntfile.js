@@ -1,4 +1,6 @@
 module.exports = function(grunt) {
+  var fs = require("fs"),
+    grunt_path = require("path");
   var pkg = grunt.file.readJSON('package.json');
   grunt.registerTask("pReact-pjs-concat", "pReactPjsConcat", function() {
     pkg.configs.concat.forEach(function(f) {
@@ -9,7 +11,16 @@ module.exports = function(grunt) {
       var contents = [];
       src.forEach(function(filepath) {
         if (grunt.file.exists(path + filepath + ext)) {
-          contents.push(grunt.file.read(path + filepath + ext));
+          var pjs = grunt.file.read(path + filepath + ext);
+          pjs = pjs.replace(/<img\s+base64\s+src\=[\"|\']([a-z0-9A-Z\_\-\/\.]+)[\"|\']\s*/gim, function(a, b) {
+            if (b) {
+              var imgExt = /\.(jpg|gif|png)/.exec(b);
+              var buffer = fs.readFileSync(grunt_path.resolve(b));
+              a = a.replace(a, "<img src='data:image/" + imgExt[1] + ";base64," + buffer.toString('base64') + "' ")
+            }
+            return a;
+          });
+          contents.push(pjs);
         } else {
           grunt.log.warn('Source file "' + filepath + ext + '" not found.');
         }
@@ -40,10 +51,10 @@ module.exports = function(grunt) {
           grunt.log.writeln('pjs file into ' + destPath + file + ' successfully!');
         }
         if (/<link\s+include\s+href\=[\"|\']([a-z0-9A-Z\_\-\/\.]+)[\"|\']\s*/.test(html)) {
-          html = html.replace(/<link\s+include\s+href\=[\"|\']([a-z0-9A-Z\_\-\/\.]+)[\"|\']\s*\/*>/gim, function(a, b){
-            if (b){
+          html = html.replace(/<link\s+include\s+href\=[\"|\']([a-z0-9A-Z\_\-\/\.]+)[\"|\']\s*\/*>/gim, function(a, b) {
+            if (b) {
               var css = grunt.file.read(b);
-              a = '<style>'+css+'</style>';
+              a = '<style>' + css + '</style>';
             }
             return a;
           });

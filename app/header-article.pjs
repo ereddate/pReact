@@ -133,11 +133,11 @@ var headerView = pReact.createClass("headerArticle", {
 			</header>
 			<div class="share">
                 <div class="share_list">
-                    <span class="wt page_share_ico" data-app="wechattimeline"><img src="img/shair1.png" alt=""><i>朋友圈</i></span>
-                    <span class="wf page_share_ico" data-app="wechatfriends"><img src="img/shair2.png" alt=""><i>微信好友</i></span>
-                    <span class="hexunwb page_share_ico" data-app="hexunwb"><img src="img/shair3.png" alt=""><i>和讯微博 </i></span>
-                    <span class="wb page_share_ico" data-app="sinaweibo"><img src="img/shair4.png" alt=""><i>新浪微博</i></span>
-                    <span class="wb page_share_ico" data-app="qq"><img src="img/shair7.png" alt=""><i>QQ</i></span>
+                    <span class="wt page_share_ico" data-app="wechattimeline"><img base64 src="img/shair1.png" alt=""><i>朋友圈</i></span>
+                    <span class="wf page_share_ico" data-app="wechatfriends"><img base64 src="img/shair2.png" alt=""><i>微信好友</i></span>
+                    <span class="hexunwb page_share_ico" data-app="hexunwb"><img base64 src="img/shair3.png" alt=""><i>和讯微博 </i></span>
+                    <span class="wb page_share_ico" data-app="sinaweibo"><img base64 src="img/shair4.png" alt=""><i>新浪微博</i></span>
+                    <span class="wb page_share_ico" data-app="qq"><img base64 src="img/shair7.png" alt=""><i>QQ</i></span>
                 </div>
                 <span class="icon-close share_close"></span>
             </div>
