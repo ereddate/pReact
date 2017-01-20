@@ -46,7 +46,7 @@ pReact.renderDom(
 		);
 	}
 );
-var mainView_scenic = pReact.createClass({
+var mainView_scenic = pReact.createClass("mainView_scenic", {
 	render:function(){
 		var html = mainView_home.render();
 		return (
@@ -58,7 +58,7 @@ pReact.renderDom(
 	<mainView_scenic (window.pReact_web_config.pages[1])/>,
 	document.getElementById("page_item1")
 );
-var mainView_map = pReact.createClass({
+var mainView_map = pReact.createClass("mainView_map", {
 	render:function(){
 		var html = mainView_home.render();
 		return (
@@ -70,7 +70,7 @@ pReact.renderDom(
 	<mainView_map (window.pReact_web_config.pages[2])/>,
 	document.getElementById("page_item2")
 );
-var mainView_service = pReact.createClass({
+var mainView_service = pReact.createClass("mainView_service", {
 	render:function(){
 		var html = mainView_home.render();
 		return (
@@ -82,7 +82,7 @@ pReact.renderDom(
 	<mainView_service (window.pReact_web_config.pages[3])/>,
 	document.getElementById("page_item3")
 );
-var mainView_user = pReact.createClass({
+var mainView_user = pReact.createClass("mainView_user", {
 	render:function(){
 		var html = mainView_home.render();
 		return (
@@ -94,7 +94,7 @@ pReact.renderDom(
 	<mainView_user (window.pReact_web_config.pages[5])/>,
 	document.getElementById("page_item5")
 );
-var mainView_search = pReact.createClass({
+var mainView_search = pReact.createClass("mainView_search", {
 	render:function(){
 		var html = mainView_home.render();
 		return (

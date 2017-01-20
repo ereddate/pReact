@@ -30,16 +30,13 @@
 				height:100%;
 			}
 		</style>
-		<link rel="stylesheet" type="text/css" href="css/font.css">
+		<link include href="css/font.css">
 	</head>
 	<body>
 		<div id="header"></div>
 		<div id="main" class="main"></div>
-		<script src="../preact.js"></script>
-		<script src="../preact-jq.js"></script>
-		<script src="../preact-touchs.js"></script>
-		<script src="../preact-extend.js"></script>
-		<script src="../preact-extend-base64.js"></script>
+		<script src="preact/preact.js"></script>
+		<script include src="dist/index/index.pjs" type="text/pReact" ></script>
 		<script>
 			window.pReact_web_config = {
 				isIndex:false,
@@ -79,9 +76,9 @@
 			pReact.ready(function(){
 				this.toMobile(16);
 				this({
-					path:"./",
-					ext: ".pjs",
-					files:["dist/index/index"],
+					//path:"./",
+					//ext: ".pjs",
+					//files:["dist/index/index"],
 					debug: true
 				}).done();
 			});

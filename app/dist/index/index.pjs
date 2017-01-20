@@ -50,7 +50,6 @@ var headerView = pReact.createClass("header", {
 			<div class="a" style="display:none">1<p>2</p></div>
 			<style>
 				.header{
-					height:<?pjs toRem(44, html.fontSize) ?>rem;
 					line-height:<?pjs toRem(44, 25.88) ?>rem;
 					background:rgba({{ #DCDCDC | hexToRgb }},1);
 					position:fixed;
@@ -313,7 +312,7 @@ pReact.renderDom(
 		);
 	}
 );
-var mainView_scenic = pReact.createClass({
+var mainView_scenic = pReact.createClass("mainView_scenic", {
 	render:function(){
 		var html = mainView_home.render();
 		return (
@@ -325,7 +324,7 @@ pReact.renderDom(
 	<mainView_scenic (window.pReact_web_config.pages[1])/>,
 	document.getElementById("page_item1")
 );
-var mainView_map = pReact.createClass({
+var mainView_map = pReact.createClass("mainView_map", {
 	render:function(){
 		var html = mainView_home.render();
 		return (
@@ -337,7 +336,7 @@ pReact.renderDom(
 	<mainView_map (window.pReact_web_config.pages[2])/>,
 	document.getElementById("page_item2")
 );
-var mainView_service = pReact.createClass({
+var mainView_service = pReact.createClass("mainView_service", {
 	render:function(){
 		var html = mainView_home.render();
 		return (
@@ -349,7 +348,7 @@ pReact.renderDom(
 	<mainView_service (window.pReact_web_config.pages[3])/>,
 	document.getElementById("page_item3")
 );
-var mainView_user = pReact.createClass({
+var mainView_user = pReact.createClass("mainView_user", {
 	render:function(){
 		var html = mainView_home.render();
 		return (
@@ -361,7 +360,7 @@ pReact.renderDom(
 	<mainView_user (window.pReact_web_config.pages[5])/>,
 	document.getElementById("page_item5")
 );
-var mainView_search = pReact.createClass({
+var mainView_search = pReact.createClass("mainView_search", {
 	render:function(){
 		var html = mainView_home.render();
 		return (
@@ -575,9 +574,9 @@ pReact.renderDom(
         success(this.data);
     },
     render:function(){
-        var fsize = parseFloat(pReact.jq("html").css("font-size"))||0;
-        var allwidth = (screen.width*(this.data.length)/fsize).toFixed(4),
-            width = (screen.width/fsize).toFixed(4),
+        var fsize = (screen.width/16).toFixed(2);
+        var allwidth = (screen.width*(this.data.length)/fsize).toFixed(2),
+            width = (screen.width/fsize).toFixed(2),
             time = this.config.time,
             anispeed = this.config.anispeed;
         return (
@@ -1301,4 +1300,41 @@ pReact.renderDom(
 			document.body
 		);
 	}
+);
+var iscroll = pReact.createClass("iscroll", {
+	render:function(){
+		return (
+			<style>
+				.iscroll_main{
+					position:relative;
+				}
+				.iscroll_main_context{
+					position:absolute;
+					width:100%;
+					left:0;
+					z-index:2;
+				}
+				.iscroll_main_context_scroll{
+					width:100%;
+				}
+				.test{
+					height:600px;
+					width:100%;
+				}
+			</style>
+			<div class="iscroll_main" p-controllers="iscroll">
+				<div class="iscroll_main_context">
+					<span class="iscroll_top_tip">top</span>
+					<div class="iscroll_main_context_scroll">
+						<div class="test">test</div>
+					</div>
+					<span class="iscroll_bottom_tip">bottom</span>
+				</div>
+			</div>
+		);
+	}
+});
+pReact.renderDom(
+	<iscroll />,
+	document.getElementById("inputprice3")
 );

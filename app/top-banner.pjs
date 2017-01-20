@@ -24,9 +24,9 @@ var scrollad = pReact.createClass("topBanner", {
         success(this.data);
     },
     render:function(){
-        var fsize = parseFloat(pReact.jq("html").css("font-size"))||0;
-        var allwidth = (screen.width*(this.data.length)/fsize).toFixed(4),
-            width = (screen.width/fsize).toFixed(4),
+        var fsize = (screen.width/16).toFixed(2);
+        var allwidth = (screen.width*(this.data.length)/fsize).toFixed(2),
+            width = (screen.width/fsize).toFixed(2),
             time = this.config.time,
             anispeed = this.config.anispeed;
         return (

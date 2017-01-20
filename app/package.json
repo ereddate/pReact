@@ -13,14 +13,27 @@
 		"ereddate@gmail.com"
 	],
 	"devDependencies": {
-		"grunt-contrib-watch":"*"
+		"grunt-contrib-watch": "*"
 	},
-	"path": "./",
-	"configs": [{
-		"src": ["header-article", "main-article", "footer", "gotop"],
-		"dest": "dist/article/article"
-	}, {
-		"src": ["header", "pages", "tip", "main", "footer", "footer-nav", "gotop", "top-banner", "newslist", "app", "list"],
-		"dest": "dist/index/index"
-	}]
+	"base": "./",
+	"configs": {
+		"concat": [{
+			"src": ["header-article", "main-article", "footer", "gotop"],
+			"dest": "dist/article/article",
+			"ext": ".pjs"
+		}, {
+			"src": ["header", "pages", "tip", "main", "footer", "footer-nav", "gotop", "top-banner", "newslist", "app", "list", "iscroll"],
+			"dest": "dist/index/index",
+			"ext": ".pjs"
+		}, {
+			"path":"../",
+			"src": ["preact", "preact-jq", "preact-touchs", "preact-extend", "preact-less", "preact-extend-base64", "preact-extend-share", "preact-extend-canvasdraw"],
+			"dest": "dist/preact/preact",
+			"ext": ".js"
+		}],
+		"include": [{
+			"src": ["*.html"],
+			"dest": "dist/"
+		}]
+	}
 }

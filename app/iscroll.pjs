@@ -1,0 +1,37 @@
+var iscroll = pReact.createClass("iscroll", {
+	render:function(){
+		return (
+			<style>
+				.iscroll_main{
+					position:relative;
+				}
+				.iscroll_main_context{
+					position:absolute;
+					width:100%;
+					left:0;
+					z-index:2;
+				}
+				.iscroll_main_context_scroll{
+					width:100%;
+				}
+				.test{
+					height:600px;
+					width:100%;
+				}
+			</style>
+			<div class="iscroll_main" p-controllers="iscroll">
+				<div class="iscroll_main_context">
+					<span class="iscroll_top_tip">top</span>
+					<div class="iscroll_main_context_scroll">
+						<div class="test">test</div>
+					</div>
+					<span class="iscroll_bottom_tip">bottom</span>
+				</div>
+			</div>
+		);
+	}
+});
+pReact.renderDom(
+	<iscroll />,
+	document.getElementById("inputprice3")
+);
