@@ -28,7 +28,6 @@ module.exports = function(grunt) {
       files = grunt.file.expand(src);
       files.forEach(function(file) {
         var html = grunt.file.read(pkg.base + file);
-        console.log(/<link\s+include\s+href\=[\"|\']([a-z0-9A-Z\_\-\/\.]+)[\"|\']\s*/.test(html))
         if (/<script\s+include\s+src\=[\"|\']([a-z0-9A-Z\_\-\/\.]+)[\"|\']\s+type\=[\"|\']text\/pReact[\"|\']\s*>\s*<\/script>/.test(html)) {
           html = html.replace(/<script\s+include\s+src\=[\"|\']([a-z0-9A-Z\_\-\/\.]+)[\"|\']\s+type\=[\"|\']text\/pReact[\"|\']\s*>\s*<\/script>/gim, function(a, b) {
             if (b) {
@@ -61,7 +60,7 @@ module.exports = function(grunt) {
   grunt.initConfig({
     watch: {
       pjs: {
-        files: ["*.pjs", "package.json", "Gruntfile.js", "*.html"],
+        files: ["*.pjs", "package.json", "Gruntfile.js", "*.html", "../*.js"],
         tasks: ["pReact-pjs-concat", "pReact-pjsInHtml-require"]
       }
     }
