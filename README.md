@@ -319,3 +319,30 @@ define("name", ["pReact"], function(){
 	pReact && pReact...;
 });
 ```
+grunt开发环境:
+```
+1）标签伪属性：
+include 将标签中src属性对应的文件插入当前标签中，目前应用到pjs、css合并入html中。
+如下：
+<script include src="dist/index/index.pjs"></script>
+<link include href="css/font.css">
+
+base64  将文件base64数据化后赋值给当前标签属性，目前应用到img图片标签。
+如下：
+<img base64 src="img/shair1.png" alt="">
+
+2）package.json中configs的说明：
+"configs": {
+	"concat": [{	//合并的文件配置
+		"path":"../",	//目录
+		"src": ["header-article", "main-article", "footer", "gotop"],	//文件
+		"dest": "dist/article/article",		//输出
+		"ext": ".pjs"	//扩展名
+	}],
+	"include": [{	//需要扫描并插入的文件配置
+		"src": ["*.html"],	//需要扫描的文件类型
+		"dest": "dist/"		//输出目录
+	}]
+}
+
+```
