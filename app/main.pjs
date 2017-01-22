@@ -38,7 +38,7 @@ pReact.renderDom(
 	document.getElementById("page_item0"),
 	function(){
 		pReact.Class["tip"].getInitData = function(success, error){
-			success({showContents: false, direction: "bottom", title:"pReact tip", desc:"github.com/ereddate/pReact"});
+			success({showContents: true, direction: "fullscreen", title:"pReact tip", desc:'', alldesc:"github.com/ereddate/pReact一、一般贸易进出口小幅增长、比重提升，加工贸易进出口下降。前11个月，我国一般贸易进出口12.02万亿元，增长0.5%，占我外贸总值的55.1%，较去年同期提升0.9个百分点。其中出口6.72万亿元，下降1.1%，占出口总值的53.9%；进口5.3万亿元，增长2.7%，占进口总值的56.6%；一般贸易项下顺差1.42万亿元，收窄13.1%。同期，我国加工贸易进出口6.57万亿元，下降5.7%，占我外贸总值的30.1%，比去年同期回落1.4个百分点。其中出口4.23万亿元，下降5.2%，占出口总值的33.9%；进口2.34万亿元，下降6.7%，占进口总值的25%；加工贸易项下顺差1.89万亿元，收窄3.3%。</p><p>　　此外，我国以海关特殊监管方式进出口2.34万亿元，下降2.4%，占我外贸总值的10.7%。其中出口8101.4亿元，下降7%，占出口总值的6.5%；进口1.53万亿元，增长0.2%，占进口总值的16.4%。"});
 		};
 		pReact.renderDom(
 			<pReact.Class["tip"] />,

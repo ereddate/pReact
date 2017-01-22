@@ -20,8 +20,8 @@ var tip = pReact.createClass("tip", {
 					}
 					.tip header h1, .tip header p{
 						font-size:.7728rem;
-						margin-left: 0.3864rem;
-						line-height:1.2rem;
+						margin:0 0.3864rem;
+						line-height:1.5rem;
 					}
 					.top{
 						top:1.7002rem;
@@ -31,11 +31,32 @@ var tip = pReact.createClass("tip", {
 					}
 					.tip_close{
 						position:absolute;
-						top:35%;
-						right:0.8887rem;
+						top:.3863rem;
+						right:.3863rem;
 						text-decoration:none;
 						font-size:.8rem;
 						color:rgb(255,255,255);
+					}
+					.tip_contents{
+						padding:0 0.3863rem;
+					}
+					.fullscreen{
+						top:0;
+						left:0;
+						right:0;
+						bottom:0;
+						background:rgba(105,105,105,1);
+					}
+					.fullscreen .tip_contents{
+						overflow:scroll;
+						overflow-x:hidden;
+					    position: absolute;
+					    left: 0;
+					    right: 0;
+					    bottom: 0;
+					    top: 1.5456rem;
+						color:rgb(0,0,0);
+					    background:rgba(255,255,255,1);
 					}
 				</style>
 				<header>
