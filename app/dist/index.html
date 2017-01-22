@@ -1541,7 +1541,7 @@ var iscroll = pReact.createClass("iscroll", {
 				    display:block;
 				}
 			</style>
-			<div class="iscroll_main" p-controllers="iscroll" id="wrapper">
+			<div class="iscroll_main" p-controller="iscroll" id="wrapper">
 				<div class="iscroll_main_context" id="scroller">
 					<span id="pullDown">下拉刷新</span>
 					<ul>
@@ -1593,38 +1593,40 @@ pReact.renderDom(
 	<iscroll />,
 	document.getElementById("inputprice3"),
 	function(){
-	    var isStop = false, pullDownEl = document.getElementById('pullDown');
-	    pullDownOffset = pullDownEl ? pullDownEl.offsetHeight : 'false';
-	    if (pullDownOffset === "false") return;
-	    pullUpEl = document.getElementById('pullUp');
-		var iscroll = new pReact.IScroll('#wrapper', {
+		var isStop = false;
+		var iscroll = new pReact.IScroll("#wrapper", {
 			scrollbars: true,
-	        useTransition: false,
-	        startX: 0,
-	        startY: -46.88
-	    });
-	    iscroll.on("refresh", function(){
-            if (pullDownEl.className.match('loading')) {
-                pullDownEl.className = '';
-                pullDownEl.innerHTML = '下拉刷新';
-            } else if (pullUpEl.className.match('loading')) {
-                pullUpEl.className = '';
-                pullUpEl.innerHTML = '上拉加载';
-            }
-        }).on("scrollEnd", function(){
-        	if (pullDownEl.className.match('flip')) {
-                pullDownEl.className = 'loading';
-                pullDownEl.innerHTML = '正在加载...';
-            } else if (pullUpEl.className.match('flip')) {
-                if (isStop === false) {
-                    pullUpEl.className = 'loading';
-                    pullUpEl.innerHTML = '正在加载...';
-                } else {
-                    pullUpEl.className = 'nomore';
-                    pullUpEl.innerHTML = '已经到底了';
-                }
-            }
-        });
+			useTransition: false,
+			startX: 0,
+			startY: -46.88
+		});
+		iscroll.refresh();
+		iscroll.on("refresh", function() {
+			var pullDownEl = document.getElementById('pullDown'),
+				pullUpEl = document.getElementById('pullUp');
+			if (pullDownEl.className.match('loading')) {
+				pullDownEl.className = '';
+				pullDownEl.innerHTML = '下拉刷新';
+			} else if (pullUpEl.className.match('loading')) {
+				pullUpEl.className = '';
+				pullUpEl.innerHTML = '上拉加载';
+			}
+		}).on("scrollEnd", function() {
+			var pullDownEl = document.getElementById('pullDown'),
+				pullUpEl = document.getElementById('pullUp');
+			if (pullDownEl.className.match('flip')) {
+				pullDownEl.className = 'loading';
+				pullDownEl.innerHTML = '正在加载...';
+			} else if (pullUpEl.className.match('flip')) {
+				if (isStop === false) {
+					pullUpEl.className = 'loading';
+					pullUpEl.innerHTML = '正在加载...';
+				} else {
+					pullUpEl.className = 'nomore';
+					pullUpEl.innerHTML = '已经到底了';
+				}
+			}
+		});
 	    console.log(iscroll.options);
 	}
 );</script>

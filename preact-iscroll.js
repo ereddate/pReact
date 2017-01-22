@@ -705,7 +705,7 @@ pReact && (function(window, document, Math, $) {
 			} else if (this.y < this.maxScrollY) {
 				y = this.maxScrollY;
 			}
-			console.log(x, this.x, this.maxScrollY, this.y)
+			console.log(this.maxScrollY, this.y)
 
 			if (x == this.x && y == this.y) {
 				return false;

@@ -465,9 +465,6 @@ pReact && ((function($) {
 				});
 			}
 		},
-		iscroll: function(elem, obj){
-
-		},
 		videobox: function(elem, obj) {
 			var dom = pReact.jq(elem),
 				src = dom.attr("src") || "",
@@ -488,7 +485,7 @@ pReact && ((function($) {
 			var len = obj.data.length,
 				time = parseInt(pReact.jq(elem).attr("p-speed")) || 1000,
 				aniTime = parseInt(pReact.jq(elem).attr("p-anispeed")) || 200,
-				fsize =	(screen.width/16).toFixed(2) || 0;
+				fsize = (screen.width / 16).toFixed(2) || 0;
 			var scrollad = function() {
 				return new scrollad.fn.init();
 			};
