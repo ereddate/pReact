@@ -1376,7 +1376,7 @@ var iscroll = pReact.createClass("iscroll", {
 				    display:block;
 				}
 			</style>
-			<div class="iscroll_main" p-controller="iscroll" id="wrapper">
+			<div class="iscroll_main" id="wrapper">
 				<div class="iscroll_main_context" id="scroller">
 					<span id="pullDown">下拉刷新</span>
 					<ul>
@@ -1462,6 +1462,5 @@ pReact.renderDom(
 				}
 			}
 		});
-	    console.log(iscroll.options);
 	}
 );
