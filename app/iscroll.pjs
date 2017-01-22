@@ -2,30 +2,120 @@ var iscroll = pReact.createClass("iscroll", {
 	render:function(){
 		return (
 			<style>
-				.iscroll_main{
-					position:relative;
-				}
-				.iscroll_main_context{
+				#page_item3{
 					position:absolute;
-					width:100%;
+					top:0;
 					left:0;
-					z-index:2;
+					right:0;
+					bottom:0;
 				}
-				.iscroll_main_context_scroll{
-					width:100%;
+				.iscroll_main {
+					position: absolute;
+					z-index: 1;
+					top: 4.0958rem;
+					bottom: 0;
+					left: 0;
+					width: 100%;
+					background: #ccc;
+					overflow: hidden;
+					-webkit-transition: all 1s ease-in-out;
+				    -moz-transition: all 1s ease-in-out;
+				    -o-transition: all 1s ease-in-out;
+				    transition: all 1s ease-in-out;
+					-webkit-touch-callout: none;
+					-webkit-user-select: none;
+					-moz-user-select: none;
+					-ms-user-select: none;
+					user-select: none;
+					-webkit-text-size-adjust: none;
+					-moz-text-size-adjust: none;
+					-ms-text-size-adjust: none;
+					-o-text-size-adjust: none;
+					text-size-adjust: none;
 				}
-				.test{
-					height:600px;
-					width:100%;
+
+				.iscroll_main_context {
+					position: absolute;
+					z-index: 1;
+					-webkit-tap-highlight-color: rgba(0,0,0,0);
+					width: 100%;
+					-webkit-transform: translateZ(0);
+					-moz-transform: translateZ(0);
+					-ms-transform: translateZ(0);
+					-o-transform: translateZ(0);
+					transform: translateZ(0);
+				}
+
+				.iscroll_main_context ul {
+					list-style: none;
+					padding: 0;
+					margin: 0;
+					width: 100%;
+					text-align: left;
+				}
+
+				.iscroll_main_context li {
+					padding: 0 10px;
+					height: 40px;
+					line-height: 40px;
+					border-bottom: 1px solid #ccc;
+					border-top: 1px solid #fff;
+					background-color: #fafafa;
+					font-size: 14px;
+				}
+				#pullDown, #pullUp {
+				    height: 2rem;
+				    line-height: 2rem;
+				    font-weight: bold;
+				    font-size: .55rem;
+				    color: #888;
+				    text-align: center;
+				    display:block;
 				}
 			</style>
-			<div class="iscroll_main" p-controllers="iscroll">
-				<div class="iscroll_main_context">
-					<span class="iscroll_top_tip">top</span>
-					<div class="iscroll_main_context_scroll">
-						<div class="test">test</div>
-					</div>
-					<span class="iscroll_bottom_tip">bottom</span>
+			<div class="iscroll_main" p-controllers="iscroll" id="wrapper">
+				<div class="iscroll_main_context" id="scroller">
+					<span id="pullDown">下拉刷新</span>
+					<ul>
+						<li>1</li>
+						<li>1</li>
+						<li>1</li>
+						<li>1</li>
+						<li>1</li>
+						<li>1</li>
+						<li>1</li>
+						<li>1</li>
+						<li>1</li>
+						<li>1</li>
+						<li>1</li>
+						<li>1</li>
+						<li>1</li>
+						<li>1</li>
+						<li>1</li>
+						<li>1</li>
+						<li>1</li>
+						<li>1</li>
+						<li>1</li>
+						<li>1</li>
+						<li>1</li>
+						<li>1</li>
+						<li>1</li>
+						<li>1</li>
+						<li>1</li>
+						<li>1</li>
+						<li>1</li>
+						<li>1</li>
+						<li>1</li>
+						<li>1</li>
+						<li>1</li>
+						<li>1</li>
+						<li>1</li>
+						<li>7</li>
+						<li>1</li>
+						<li>1</li>
+						<li>10</li>
+					</ul>
+					<span id="pullUp">上拉加载</span>
 				</div>
 			</div>
 		);
@@ -33,5 +123,40 @@ var iscroll = pReact.createClass("iscroll", {
 });
 pReact.renderDom(
 	<iscroll />,
-	document.getElementById("inputprice3")
+	document.getElementById("inputprice3"),
+	function(){
+	    var isStop = false, pullDownEl = document.getElementById('pullDown');
+	    pullDownOffset = pullDownEl ? pullDownEl.offsetHeight : 'false';
+	    if (pullDownOffset === "false") return;
+	    pullUpEl = document.getElementById('pullUp');
+		var iscroll = new pReact.IScroll('#wrapper', {
+			scrollbars: true,
+	        useTransition: false,
+	        startX: 0,
+	        startY: -46.88
+	    });
+	    iscroll.on("refresh", function(){
+            if (pullDownEl.className.match('loading')) {
+                pullDownEl.className = '';
+                pullDownEl.innerHTML = '下拉刷新';
+            } else if (pullUpEl.className.match('loading')) {
+                pullUpEl.className = '';
+                pullUpEl.innerHTML = '上拉加载';
+            }
+        }).on("scrollEnd", function(){
+        	if (pullDownEl.className.match('flip')) {
+                pullDownEl.className = 'loading';
+                pullDownEl.innerHTML = '正在加载...';
+            } else if (pullUpEl.className.match('flip')) {
+                if (isStop === false) {
+                    pullUpEl.className = 'loading';
+                    pullUpEl.innerHTML = '正在加载...';
+                } else {
+                    pullUpEl.className = 'nomore';
+                    pullUpEl.innerHTML = '已经到底了';
+                }
+            }
+        });
+	    console.log(iscroll.options);
+	}
 );

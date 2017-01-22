@@ -27,7 +27,7 @@
 			"ext": ".pjs"
 		}, {
 			"path":"../",
-			"src": ["preact", "preact-jq", "preact-touchs", "preact-extend", "preact-less", "preact-extend-base64", "preact-extend-share", "preact-extend-canvasdraw"],
+			"src": ["preact", "preact-jq", "preact-touchs", "preact-extend", "preact-less", "preact-iscroll", "preact-extend-base64", "preact-extend-share", "preact-extend-canvasdraw"],
 			"dest": "dist/preact/preact",
 			"ext": ".js"
 		}],
