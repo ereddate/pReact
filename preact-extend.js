@@ -788,6 +788,57 @@ pReact && ((function($) {
 			setFontSize();
 			window.addEventListener("onorientationchange" in window ? "orientationchange" : "resize", setFontSize, false);
 			return this;
+		},
+		storage: function(options) {
+			var type = options.type || 'localStorage';
+			return {
+				set: function(key, value) {
+					var storage = window.localStorage || document.cookie;
+					if (storage) {
+						switch (type) {
+							case "localStorage":
+								storage.setItem(key, value);
+								break;
+							case "cookie":
+								var exp = new Date();
+								exp.setTime(exp.getTime() + Number(time) * 3600 * 1000);
+								storage = key + "=" + escape(value) + ";expires=" + exp.toGMTString();
+								break;
+						}
+					}
+				},
+				get: function(key) {
+					var storage = window.localStorage || document.cookie;
+					if (storage) {
+						switch (type) {
+							case "localStorage":
+								return storage.getItem(key) || null;
+								break;
+							case "cookie":
+								var arr, reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
+								if (arr = storage.match(reg)) {
+									return (arr[2]);
+								} else {
+									return null;
+								}
+								break;
+						}
+					}
+				},
+				delete: function(key) {
+					var storage = window.localStorage || document.cookie;
+					if (storage) {
+						switch (type) {
+							case "localStorage":
+								storage.removeItem(key);
+								break;
+							case "cookie":
+								this.set(name, '', '-1');
+								break;
+						}
+					}
+				}
+			};
 		}
 	});
 	var dir = function(elem, dir) {

@@ -127,7 +127,6 @@ pReact.renderDom(
 	function(){
 		var isStop = false;
 		var iscroll = new pReact.IScroll("#wrapper", {
-			scrollbars: true,
 			useTransition: false,
 			startX: 0,
 			startY: -46.88
