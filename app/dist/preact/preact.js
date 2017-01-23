@@ -27,9 +27,14 @@
 			}
 		};
 		a.name = "pReact";
-		a.extend = function(c, d) {
+		a.extend = function(c, d, f) {
 			c = c || {};
-			for (e in d) c[e] = d[e];
+			for (e in d) {
+				if (f && e in c) {
+					c[e] = d[e];
+					continue;
+				} else c[e] = d[e];
+			}
 			return c;
 		};
 		a.fn.init.prototype = a.fn;
@@ -645,6 +650,95 @@ pReact && define && (define("promise", ["pReact"], function() {
 	}
 }), define("map", function() {
 	return {
+		mixDoms: function(a, b, d) {
+			a = a || {};
+			for (c in b) {
+				if (d) {
+					var e = d.call(b[c], c, b[c]);
+					if (e != false) {
+						a[c] = b[c];
+					}
+				} else {
+					a[c] = b[c];
+				}
+			}
+			return a;
+		},
+		readDoms: function(elem, parent) {
+			var that = this;
+			var elems = [];
+			if (elem && elem.length > 0) {
+				var i, len = elem.length;
+				for (i = 0; i < len; i++) {
+					elems.push(that.readattrs(elem[i], parent));
+				}
+			}
+			return elems;
+		},
+		readattrs: function(dom, parentNode) {
+			var that = this;
+			attrs = dom.attributes;
+			var vdom = {
+				tagName: dom.tagName,
+				props: {
+					name: dom.name,
+					id: dom.id
+				},
+				className: dom.className,
+				//childNodes: that.readDoms(dom.childNodes, dom),
+				elem: dom,
+				parent: parentNode,
+				setState: function(options) {
+					for (name in options) {
+						this[name] = options[name];
+						if (name in this.elem) this.elem[name] = options[name];
+					}
+					this.update();
+					return this;
+				},
+				update: function() {
+					that.readattrs(this.elem, this.parent);
+					return this;
+				}
+			};
+			dom.vdom = vdom;
+			return vdom;/*attrs ? that.mixDoms(vdom, {
+				props: that.mixDoms(vdom.props, attrs[0], function(name, obj) {
+					if (typeof obj === "function") {
+						return false;
+					}
+				})
+			}) : vdom;*/
+		},
+		readhtml: function(id, data) {
+			var that = this;
+			var dom = typeof id != "string" ? id : document.getElementById(id);
+			data.push(that.readattrs(dom, dom.parentNode));
+		},
+		diffDom: function(id, data, parent) {
+			var that = this;
+			var dom = typeof id != "string" ? id : document.getElementById(id);
+			if (!dom.vdom) {
+				dom = that.readattrs(dom, parent || dom.parentNode);
+				data.push(dom);
+			}
+			var diff = false,
+				diffParent = null,
+				diffIndex = -1;
+			pReact.each(data, function(i, item) {
+				if (item.elem == dom.elem && item.parent == dom.parent) {
+					diff = true;
+					diffIndex = i;
+					diffParent = item.parent;
+					return false;
+				}
+			});
+			return {
+				diff: diff,
+				parent: diffParent,
+				index: diffIndex
+			};
+		},
 		createDom: function(a, url, done) {
 			var map = this;
 			var doc = document,
@@ -796,7 +890,9 @@ pReact && define && (define("promise", ["pReact"], function() {
 				if (b) {
 					var k = b.split(' ');
 					var c = b.replace(k[0] + " ", "").replace(/\/\>/, "");
-					a = a.replace(b, "lookName(pReact.extend((!pReact.Class['" + k[0] + "'] && (pReact.Class['" + k[0] + "']={}) || pReact.Class['" + k[0] + "']), " + k[0] + "), " + k[0] + ")," + (c == "" ? "undefined" : c)).replace(/\<|\/\>/gi, "");
+					//console.log(k[0])
+					//a = a.replace(b, "lookName(pReact.extend(pReact.extend((!pReact.Class['" + k[0] + "'] && (pReact.Class['" + k[0] + "']={}) || pReact.Class['" + k[0] + "']), {pReactClassName: '" + k[0] + "'}, true), " + k[0] + "), " + k[0] + ")," + (c == "" ? "undefined" : c)).replace(/\<|\/\>/gi, "");
+					a = a.replace(b, "lookName({}, " + k[0] + ")," + (c == "" ? "undefined" : c)).replace(/\<|\/\>/gi, "");
 				}
 				return a;
 			}).replace(_.renderObjExp, function(a, b) {
@@ -964,6 +1060,7 @@ pReact && define && (define("promise", ["pReact"], function() {
 	$.tmplModel.filters = map.tmplFilter;
 	$.tmplModel.langs = map.tmplLang;
 	$.tmplModel.binds = map.binds;
+	$.vdoms = [];
 
 	$.extend($, {
 		jsonToArray: function(obj, fn) {
@@ -1035,11 +1132,12 @@ pReact && define && (define("promise", ["pReact"], function() {
 		createClass: function() {
 			var args = arguments,
 				len = args.length;
-			return len === 1 ? $.extend({}, args[0]) : len > 1 && (!this.Class && (this.Class = {}), (this.Class[args[0]] = $.extend({}, args[1])));
+			return len === 1 ? $.extend({}, args[0]) : len > 1 && (!this.Class && (this.Class = {}), ((this.Class[args[0]] = $.extend({}, args[1])), $.extend(this.Class[args[0]], {
+				pReactClassName: args[0]
+			})));
 		},
 		renderDom: function(html, data, parent, callback) {
 			var obj = typeof html == "function" ? (new html()) : html;
-			if (data) obj.state = !obj.state ? pReact.extend({}, data) : pReact.extend(obj.state, data);
 			$.promise.when(function(resolve, reject) {
 				if ("getInitData" in obj && typeof obj.getInitData == "function" || data && "data" in data) {
 					var fn = (data && "getInitData" in data ? data : obj).getInitData,
@@ -1056,12 +1154,26 @@ pReact && define && (define("promise", ["pReact"], function() {
 					resolve(data);
 				}
 			}).done(function(data) {
+				if (data) obj.state = !obj.state ? pReact.extend({}, data) : pReact.extend(obj.state, data);
 				var result = data ? $.tmpl(typeof obj == "string" ? obj : obj.render(), data) : typeof obj == "string" ? obj : obj.render();
+				var a;
 				if (typeof html == "string") {
-					parent.innerHTML = parent.innerHTML + result;
+					a = document.createDocumentFragment(),
+						b = document.createElement("div");
+					b.innerHTML = result;
+					pReact.each(b.childNodes, function(i, elem) {
+						a.appendChild(elem);
+					});
 				} else {
-					(result != "" || result) && parent.appendChild(map.renderHandle(result, html));
+					(result != "" || result) && (a = map.renderHandle(result, html));
 				}
+				a && (pReact.each(a.children, function(i, item) {
+					var r = map.diffDom(item, pReact.vdoms, parent);
+					r.diff && pReact.extend(pReact.vdoms[r.index], {
+						pReactClassName: obj.pReactClassName
+					});
+				}), parent.appendChild(a));
+				//console.log(r, pReact.vdoms)
 				callback && callback();
 			});
 			return this;
