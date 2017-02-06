@@ -10,9 +10,6 @@ APP例子中提供了grunt的开发环境，并提供watch任务实时监控代�
 引用：
 ```
 <script src="preact.js"></script>
-<script src="preact-jq.js"></script>
-<script src="preact-swipe.js"></script>
-<script src="preact-extend.js"></script>
 ```
 特有标签写法：
 ```
