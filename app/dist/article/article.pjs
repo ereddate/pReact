@@ -196,6 +196,7 @@ var mainView_home = pReact.createClass("mainViewArticle", {
 					</header>
 					<div id="inputprice" class="main_item">
 						<div id="canvasbox"></div>
+						<videoplay src="{{ videoUrl }}"></videoplay>
 						<video class="video" p-controller="videobox" src="{{ videoUrl }}"></video>
 						{{ context }} 
 					</div>
@@ -255,6 +256,8 @@ pReact.renderDom(
 				to: [285.6727272727275,155]
 			}];
 		}).drawCurve("red", 3);
+
+		pReact.video();
 	}
 );var footerView = pReact.createClass("footView", {
 	render: function(){
