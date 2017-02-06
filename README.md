@@ -14,6 +14,13 @@ APP例子中提供了grunt的开发环境，并提供watch任务实时监控代�
 <script src="preact-swipe.js"></script>
 <script src="preact-extend.js"></script>
 ```
+特有标签写法：
+```
+原：
+<script type="text/pReact"></script>
+现：
+<script type="text/html" data-type="pReact"></script>
+```
 写法：
 ```
 	(function(win){
