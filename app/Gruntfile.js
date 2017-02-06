@@ -3,6 +3,19 @@ module.exports = function(grunt) {
     grunt_path = require("path");
   var pkg = grunt.file.readJSON('package.json');
   if (pkg && pkg.configs) {
+
+    grunt.registerTask("pReact-js-copy", "pReactJsCopy", function() {
+      var files = grunt.file.expand("js/**/*.js");
+      files.forEach(function(f) {
+        grunt.file.mkdir("dist/js");
+        grunt.file.copy(f, "dist/" + f, {
+          encoding: grunt.file.defaultEncoding,
+          process: false,
+          noProcess: []
+        });
+      })
+    });
+
     pkg.configs.concat && grunt.registerTask("pReact-pjs-concat", "pReactPjsConcat", function() {
       pkg.configs.concat.forEach(function(f) {
         var src = f.src,
@@ -30,6 +43,7 @@ module.exports = function(grunt) {
         grunt.log.writeln('file ' + dest + ext + ' created.');
       });
     });
+
     pkg.configs.include && grunt.registerTask("pReact-pjsInHtml-require", "pReactPjsInHtmlRequire", function() {
       //console.log("pReact-pjsInHtml-require")
       pkg.configs.include.forEach(function(f) {
@@ -39,11 +53,11 @@ module.exports = function(grunt) {
         files = grunt.file.expand(src);
         files.forEach(function(file) {
           var html = grunt.file.read(pkg.base + file);
-          if (/<script\s+include\s+src\=[\"|\']([a-z0-9A-Z\_\-\/\.]+)[\"|\']\s+type\=[\"|\']text\/pReact[\"|\']\s*>\s*<\/script>/.test(html)) {
-            html = html.replace(/<script\s+include\s+src\=[\"|\']([a-z0-9A-Z\_\-\/\.]+)[\"|\']\s+type\=[\"|\']text\/pReact[\"|\']\s*>\s*<\/script>/gim, function(a, b) {
+          if (/<script\s+include\s+src\=[\"|\']([a-z0-9A-Z\_\-\/\.]+)[\"|\']\s+type\=[\"|\']text\/html[\"|\']\s+data-type=[\"|\']pReact[\"|\']\s*>\s*<\/script>/.test(html)) {
+            html = html.replace(/<script\s+include\s+src\=[\"|\']([a-z0-9A-Z\_\-\/\.]+)[\"|\']\s+type\=[\"|\']text\/html[\"|\']\s+data-type=[\"|\']pReact[\"|\']\s*>\s*<\/script>/gim, function(a, b) {
               if (b) {
                 var pjs = grunt.file.read(b);
-                a = '<script type="text/pReact">' + pjs + '</script>';
+                a = '<script type="text/html" data-type="pReact">' + pjs + '</script>';
               }
               return a;
             });
@@ -71,8 +85,8 @@ module.exports = function(grunt) {
     grunt.initConfig({
       watch: {
         pjs: {
-          files: ["*.pjs", "package.json", "Gruntfile.js", "*.html", "../*.js"],
-          tasks: ["pReact-pjs-concat", "pReact-pjsInHtml-require"]
+          files: ["*.pjs", "package.json", "Gruntfile.js", "*.html", "../*.js", "js/**/*.js"],
+          tasks: ["pReact-js-copy", "pReact-pjs-concat", "pReact-pjsInHtml-require"]
         }
       }
     });
