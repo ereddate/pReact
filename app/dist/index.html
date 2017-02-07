@@ -1146,7 +1146,7 @@ var priceinfo = pReact.createClass("priceinfo", {
 });
 var inputPrice = pReact.createClass("inputPrice",{
 	getInitData: function(success, error){
-		success({date:pReact.getDate(), passcard: "8888888888888888888"});
+		success({date:pReact.getDate(), passcard: "8888888888888888888", key: (Math.random(1000)+"").replace(".","")});
 	},
 	"type_change": function(e){
 		console.log(e.target.value)
@@ -1182,6 +1182,11 @@ var inputPrice = pReact.createClass("inputPrice",{
 	},
 	dateChange: function(e){
 		console.log(this.elem.value)
+	},
+	randomkey: function(e){
+		this.setState({
+			key: (Math.random(1000)+"").replace(".","")
+		});
 	},
 	render: function(){
 		return (
@@ -1221,6 +1226,7 @@ var inputPrice = pReact.createClass("inputPrice",{
 					<option value="2">萝卜</option>
 				</select></label>
 				<label><span>价格：</span><input type="number" name="price" value="" placeholder="0.00" />元/斤</label>
+				<label><span>key：</span>{{ key }}<input type="hidden" value="{{ key }}"><button type="button" onClick="{{ this.randomkey }}">生 成</button></label>
 				<button type="submit">保存价格</button>
 			</form>
 		);

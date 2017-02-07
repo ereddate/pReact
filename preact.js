@@ -685,14 +685,12 @@ pReact && define && (define("promise", ["pReact"], function() {
 					id: dom.id
 				},
 				className: dom.className,
-				//childNodes: that.readDoms(dom.childNodes, dom),
+				childNodes: that.readDoms(dom.childNodes, dom),
 				elem: dom,
 				parent: parentNode,
 				setState: function(options) {
-					for (name in options) {
-						this[name] = options[name];
-						if (name in this.elem) this.elem[name] = options[name];
-					}
+					pReact.extend(this, options);
+					pReact.renderDom(this.pReactClass, this.state, this.parent, this.pReactClassCallback, true);
 					this.update();
 					return this;
 				},
@@ -702,34 +700,47 @@ pReact && define && (define("promise", ["pReact"], function() {
 				}
 			};
 			dom.vdom = vdom;
-			return vdom;/*attrs ? that.mixDoms(vdom, {
-				props: that.mixDoms(vdom.props, attrs[0], function(name, obj) {
-					if (typeof obj === "function") {
-						return false;
-					}
-				})
-			}) : vdom;*/
+			return vdom;
+			/*attrs ? that.mixDoms(vdom, {
+							props: that.mixDoms(vdom.props, attrs[0], function(name, obj) {
+								if (typeof obj === "function") {
+									return false;
+								}
+							})
+						}) : vdom;*/
 		},
 		readhtml: function(id, data) {
 			var that = this;
 			var dom = typeof id != "string" ? id : document.getElementById(id);
 			data.push(that.readattrs(dom, dom.parentNode));
 		},
-		diffDom: function(id, data, parent) {
+		diffDom: function(id, data, parent, bool) {
+			//console.log(parent)
 			var that = this;
 			var dom = typeof id != "string" ? id : document.getElementById(id);
-			if (!dom.vdom) {
-				dom = that.readattrs(dom, parent || dom.parentNode);
-				data.push(dom);
+			//console.log(dom.vdom)
+			if (!dom.vdom && bool) {
+				var vdom = that.readattrs(dom, parent || dom.parentNode);
+				data.push(vdom);
 			}
 			var diff = false,
 				diffParent = null,
 				diffIndex = -1;
 			pReact.each(data, function(i, item) {
-				if (item.elem == dom.elem && item.parent == dom.parent) {
+				//console.log(item.elem, dom, item.parent, parent)
+				if (item.parent == parent) {
 					diff = true;
 					diffIndex = i;
 					diffParent = item.parent;
+					!dom.vdom && (dom.vdom = item);
+					return false;
+				}
+				var r = that.diffDom(dom, item.childNodes, parent, bool);
+				if (r.diff){
+					diff = r.diff;
+					diffIndex = r.index;
+					diffParent = r.parent;
+					!dom.vdom && (dom.vdom = item.childNodes[r.index]);
 					return false;
 				}
 			});
@@ -890,7 +901,7 @@ pReact && define && (define("promise", ["pReact"], function() {
 				if (b) {
 					var k = b.split(' ');
 					var c = b.replace(k[0] + " ", "").replace(/\/\>/, "");
-					//console.log(k[0])
+
 					//a = a.replace(b, "lookName(pReact.extend(pReact.extend((!pReact.Class['" + k[0] + "'] && (pReact.Class['" + k[0] + "']={}) || pReact.Class['" + k[0] + "']), {pReactClassName: '" + k[0] + "'}, true), " + k[0] + "), " + k[0] + ")," + (c == "" ? "undefined" : c)).replace(/\<|\/\>/gi, "");
 					a = a.replace(b, "lookName({}, " + k[0] + ")," + (c == "" ? "undefined" : c)).replace(/\<|\/\>/gi, "");
 				}
@@ -1136,7 +1147,7 @@ pReact && define && (define("promise", ["pReact"], function() {
 				pReactClassName: args[0]
 			})));
 		},
-		renderDom: function(html, data, parent, callback) {
+		renderDom: function(html, data, parent, callback, bool) {
 			var obj = typeof html == "function" ? (new html()) : html;
 			$.promise.when(function(resolve, reject) {
 				if ("getInitData" in obj && typeof obj.getInitData == "function" || data && "data" in data) {
@@ -1167,16 +1178,26 @@ pReact && define && (define("promise", ["pReact"], function() {
 				} else {
 					(result != "" || result) && (a = map.renderHandle(result, html));
 				}
+				//console.log(a)
 				a && (pReact.each(a.children, function(i, item) {
-					var r = map.diffDom(item, pReact.vdoms, parent);
+					var r = map.diffDom(item, pReact.vdoms, parent, true);
+					pReact.jq(parent).removeClass('preact_rootdom').addClass('preact_rootdom');
 					r.diff && pReact.extend(pReact.vdoms[r.index], {
-						pReactClassName: obj.pReactClassName
+						state: obj.state || {},
+						pReactClass: obj,
+						parent: parent,
+						pReactClassCallback: callback
 					});
-				}), parent.appendChild(a));
+				}), !bool ? parent.appendChild(a) : ((parent.innerHTML = ""), parent.appendChild(a)));
 				//console.log(r, pReact.vdoms)
 				callback && callback();
 			});
 			return this;
+		},
+		refresh: function(parent, elem, ops) {
+			var r = map.diffDom(elem, pReact.vdoms, parent);
+			r.diff ? pReact.vdoms[r.index].setState(ops) : pReact.vdoms.push(map.readattrs(elem, parent));
+			//console.log(r)
 		},
 		ready: function(callback) {
 			var a = doc.getElementsByTagName('script'),

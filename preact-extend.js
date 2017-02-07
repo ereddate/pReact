@@ -328,12 +328,16 @@ pReact && ((function($) {
 				var result = /\{\{\s*(.+)\s*\}\}/.exec(val);
 				result && result[1] && (elem.removeAttribute(name), /swipe/.test(name.toLowerCase()) && pReact.jq ? pReact.jq(elem).swipe({
 					callback: function(e, dir) {
+						var self = this;
 						try {
 							var fn = pReact.sEval('return function(e, dir){' + result[1] + '(e, dir);}', "e", "dir"),
 								then = typeof obj == "function" ? (new obj) : obj;
+							//console.log(then)
 							then.elem = e && e.path && (this.path = e.path) && this || this;
 							then.setState = function(ops) {
 								pReact.extend(!then.state ? (then.state = {}) : then.state, ops);
+								var parent = pReact.jq(self).parents(".preact_rootdom");
+								pReact.refresh(parent[0], self);
 							}
 							fn.call(then, e, dir);
 						} catch (e) {
@@ -341,12 +345,16 @@ pReact && ((function($) {
 						}
 					}
 				}) : elem[name.toLowerCase()] = function(e) {
+					var self = this;
 					try {
 						var fn = pReact.sEval('return function(e){' + result[1] + '(e);}', "e"),
 							then = typeof obj == "function" ? (new obj) : obj;
+						//console.log(then)
 						then.elem = e.path && (this.path = e.path) && this || this;
 						then.setState = function(ops) {
 							pReact.extend(!then.state ? (then.state = {}) : then.state, ops);
+							var parent = pReact.jq(self).parents(".preact_rootdom");
+							pReact.refresh(parent[0], self);
 						}
 						fn.call(then, pReact.extend(e, {
 							target: e.path && (e.target.path = e.path) && e.target || e.target
