@@ -777,8 +777,7 @@ pReact && define && (define("promise", ["pReact"], function() {
 					var html;
 					map.preact.load(p + $a[$n] + t, function(context) {
 						var item = doc.createElement("script");
-						item["data-type"] = "pReact";
-						item.type = "text/html";
+						item.type = "text/pReact";
 						item.innerHTML = context;
 						doc.body.appendChild(item);
 						$a && $a.del(0);
@@ -790,7 +789,7 @@ pReact && define && (define("promise", ["pReact"], function() {
 							});
 							for (i = 0; i <= b.length; i++) {
 								var elem = b[i];
-								elem && (elem.type && elem.type == "text/pReact" || elem.getAttribute("data-type") && elem.getAttribute("data-type") == "pReact") && (html = elem.innerHTML, elem.parentNode.removeChild(elem), map.render(elem.innerHTML));
+								elem && elem.type && elem.type == "text/pReact" && (html = elem.innerHTML, elem.parentNode.removeChild(elem), map.render(elem.innerHTML));
 							}
 							a.callback && a.callback.call($);
 						} else {
@@ -1187,7 +1186,7 @@ pReact && define && (define("promise", ["pReact"], function() {
 			});
 			for (i = 0; i <= a.length; i++) {
 				var elem = a[i];
-				elem && (elem.type && elem.type == "text/pReact" || elem.getAttribute("data-type") && elem.getAttribute("data-type") == "pReact") && (html = elem.innerHTML, elem.parentNode.removeChild(elem), map.render(html));
+				elem && elem.type && elem.type == "text/pReact" && (html = elem.innerHTML, elem.parentNode.removeChild(elem), map.render(html));
 			}
 			callback && callback.call($);
 			return this;

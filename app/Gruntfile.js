@@ -53,11 +53,11 @@ module.exports = function(grunt) {
         files = grunt.file.expand(src);
         files.forEach(function(file) {
           var html = grunt.file.read(pkg.base + file);
-          if (/<script\s+include\s+src\=[\"|\']([a-z0-9A-Z\_\-\/\.]+)[\"|\']\s+type\=[\"|\']text\/html[\"|\']\s+data-type=[\"|\']pReact[\"|\']\s*>\s*<\/script>/.test(html)) {
-            html = html.replace(/<script\s+include\s+src\=[\"|\']([a-z0-9A-Z\_\-\/\.]+)[\"|\']\s+type\=[\"|\']text\/html[\"|\']\s+data-type=[\"|\']pReact[\"|\']\s*>\s*<\/script>/gim, function(a, b) {
+          if (/<script\s+include\s+data\-src\=[\"|\']([a-z0-9A-Z\_\-\/\.]+)[\"|\']\s+type\=[\"|\']text\/pReact[\"|\']\s*>\s*<\/script>/.test(html)) {
+            html = html.replace(/<script\s+include\s+data\-src\=[\"|\']([a-z0-9A-Z\_\-\/\.]+)[\"|\']\s+type\=[\"|\']text\/pReact[\"|\']\s*>\s*<\/script>/gim, function(a, b) {
               if (b) {
                 var pjs = grunt.file.read(b);
-                a = '<script type="text/html" data-type="pReact">' + pjs + '</script>';
+                a = '<script type="text/pReact">' + pjs + '</script>';
               }
               return a;
             });
