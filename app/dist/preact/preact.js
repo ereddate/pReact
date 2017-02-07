@@ -1180,7 +1180,7 @@ pReact && define && (define("promise", ["pReact"], function() {
 				}
 				//console.log(a)
 				a && (pReact.each(a.children, function(i, item) {
-					var r = map.diffDom(item, pReact.vdoms, parent, true);
+					var r = map.diffDom(item, pReact.vdoms, parent, !bool);
 					pReact.jq(parent).removeClass('preact_rootdom').addClass('preact_rootdom');
 					r.diff && pReact.extend(pReact.vdoms[r.index], {
 						state: obj.state || {},
@@ -1196,7 +1196,7 @@ pReact && define && (define("promise", ["pReact"], function() {
 		},
 		refresh: function(parent, elem, ops) {
 			var r = map.diffDom(elem, pReact.vdoms, parent);
-			r.diff ? pReact.vdoms[r.index].setState(ops) : pReact.vdoms.push(map.readattrs(elem, parent));
+			r.diff && pReact.vdoms[r.index].setState(ops);
 			//console.log(r)
 		},
 		ready: function(callback) {
