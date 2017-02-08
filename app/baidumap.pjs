@@ -39,7 +39,6 @@ var baiduMap = pReact.createClass("baidumap", {
 				.mapinfo_list li {
 					font-size: 0.6182rem;
 					padding: 0 0.625rem;
-					height: 2.5rem;
 					line-height: 2.5rem;
 					border-bottom: 0.0625rem solid #ccc;
 					border-top: 0.0625rem solid #fff;
