@@ -87,6 +87,25 @@
 			},
 			isElement: function(obj) {
 				return !!obj && obj.nodeType === 1;
+			},
+			createElement: function(url, complete, i) {
+				var callback;
+				var script = document.createElement(/\.css/.test(url) && "link" || "script");
+				if (/\.css/.test(url)) {
+					script.rel = "stylesheet";
+					script.href = url;
+				} else {
+					script.charset = "utf-8";
+					script.src = url;
+				}
+				script.id = "defineUse_" + (i || (Math.random(1000) + "").replace(".", ""));
+				script.onload = (callback = function(evt) {
+					callback = null;
+					complete(this);
+				});
+				script.onerror = callback;
+				document.head.appendChild(script);
+				return this;
 			}
 		});
 		/*var args = arguments,
@@ -118,26 +137,6 @@
 			return new model.fn.init();
 		};
 
-		var createElement = function(url, complete, i) {
-			var callback;
-			var script = document.createElement(/\.js/.test(url) && "script" || "link");
-			if (/\.js/.test(url)) {
-				script.charset = "utf-8";
-				script.src = url;
-			} else if (/\.css/.test(url)) {
-				script.rel = "stylesheet";
-				script.href = url;
-			}
-			script.id = "defineUse_" + i;
-			script.onload = (callback = function(evt) {
-				/\.js/.test(url) && document.head.removeChild(this);
-				callback = null;
-				complete(this);
-			});
-			script.onerror = callback;
-			document.head.appendChild(script);
-		}
-
 		model.fn = model.prototype = {
 			init: function() {
 				define.amd = {};
@@ -151,7 +150,7 @@
 					$.each(name, function(i, str) {
 						if (name in define.amd)(result[str] = _require(str), complete && complete(result));
 						else {
-							createElement(str, function(elem) {
+							$.createElement(str, function(elem) {
 								if (parseInt(elem.id.replace("defineUse_", "")) >= name.length - 1) {
 									complete({});
 								}
@@ -161,7 +160,7 @@
 				} else {
 					if (name in define.amd)(result = _require(name), complete && complete(result));
 					else {
-						createElement(str, function(elem) {
+						$.createElement(str, function(elem) {
 							complete({});
 						}, i);
 					}
@@ -736,7 +735,7 @@ pReact && define && (define("promise", ["pReact"], function() {
 					return false;
 				}
 				var r = that.diffDom(dom, item.childNodes, parent, bool);
-				if (r.diff){
+				if (r.diff) {
 					diff = r.diff;
 					diffIndex = r.index;
 					diffParent = r.parent;
@@ -1022,35 +1021,49 @@ pReact && define && (define("promise", ["pReact"], function() {
 		tmplFilter: {},
 		tmpl: function(html, data) {
 			if (pReact.isEmptyObject(data)) return html;
-			pReact.each(data, function(name, val) {
-				html = html.replace(/{{\s+[^<>}{,]+\s+}}/gim, function(a) {
-					if ((new RegExp("{{\\s+(" + name + ")\\s+([^<>,]+\\s+)*}}")).test(a)) {
-						a = a.replace(new RegExp("{{\\s+(" + name + ")\\s+([^<>,}]+\\s+)*}}"), function(a, b, c) {
-							if (c) {
-								var result = c.split('|')[1].split(' : ');
-								a = a.replace(a, map.tmplFilter[$.trim(result[0])](val, result[1] && $.trim(result[1]).replace(/[\'\"]/gim, "") || 0));
-							} else {
-								a = a.replace(new RegExp("{{\\s+" + name + "\\s+}}", "gim"), val);
+
+			function rhtml(html, data) {
+				pReact.each(data, function(name, val) {
+					html = html.replace(/{{\s+[^<>}{,]+\s+}}/gim, function(a) {
+						if (/[a-zA-Z0-9_]+\.[a-zA-Z0-9_]+/.test(a) && !/this\.|this\[/.test(a) && !/{{\s+\$/.test(a)) {
+							var x = /([a-zA-Z0-9_]+)\.([a-zA-Z0-9_]+)/.exec(a);
+							if (x) {
+								a = a.replace(new RegExp("{{\\s+(" + x[1] + "\\." + name + ")\\s+([^<>,}]+\\s+)*}}"), function(a, b, c) {
+									if (c) {
+										var result = c.split('|')[1].split(' : ');
+										a = a.replace(a, map.tmplFilter[$.trim(data[name])](val, result[1] && $.trim(result[1]).replace(/[\'\"]/gim, "") || 0));
+									} else {
+										a = a.replace(new RegExp("{{\\s+" + x[1] + "\\." + name + "\\s+}}", "gim"), val);
+									}
+									return a;
+								});
 							}
-							return a;
-						});
-					} else if (/[a-zA-Z0-9_]+\.[a-zA-Z0-9_]+/.test(a) && !/this\.|this\[/.test(a) && !/{{\s+\$/.test(a)) {
-						var x = /([a-zA-Z0-9_]+)\.([a-zA-Z0-9_]+)/.exec(a);
-						if (x) {
-							a = a.replace(new RegExp("{{\\s+(" + x[1] + "\\." + name + ")\\s+([^<>,}]+\\s+)*}}"), function(a, b, c) {
+						} else if ((new RegExp("{{\\s+([a-zA-Z0-9_]+\\[[a-zA-Z0-9]\\]\\." + name + "|" + name + ")\\s+([^<>,]+\\s+)*}}")).test(a)) {
+							a = a.replace(new RegExp("{{\\s+([a-zA-Z0-9_]+\\[[a-zA-Z0-9]\\]\\." + name + "|" + name + ")\\s+([^<>,}]+\\s+)*}}"), function(a, b, c) {
 								if (c) {
 									var result = c.split('|')[1].split(' : ');
-									a = a.replace(a, map.tmplFilter[$.trim(data[name])](val, result[1] && $.trim(result[1]).replace(/[\'\"]/gim, "") || 0));
+									a = a.replace(a, map.tmplFilter[$.trim(result[0])](val, result[1] && $.trim(result[1]).replace(/[\'\"]/gim, "") || 0));
 								} else {
-									a = a.replace(new RegExp("{{\\s+" + x[1] + "\\." + name + "\\s+}}", "gim"), val);
+									a = a.replace(new RegExp("{{\\s+" + name + "\\s+}}", "gim"), val);
 								}
 								return a;
 							});
 						}
-					}
-					return a;
+						return a;
+					});
 				});
+				return html;
+			}
+			pReact.each(data, function(name, val) {
+				if (pReact.isPlainObject(val)) {
+					html = rhtml(html, val);
+				}else{
+					var obj = {};
+					obj[name] = val;
+					html = rhtml(html, obj);
+				}
 			});
+			//console.log(html)
 			html = html.replace(/{{\s+[^<>}{,]+\s+}}/gim, function(a) {
 				a = a.replace(new RegExp("{{\\s+(.+)\\s+([^<>,}]+\\s+)*}}"), function(a, b, c) {
 					if (b) {

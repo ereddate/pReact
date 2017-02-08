@@ -1,0 +1,61 @@
+var baiduMap = pReact.createClass("baidumap", {
+	getInitData:function(success, error){
+		success([{
+			name: "地址名称..."+(Math.random(1000)+"").replace(".","")
+		},{
+			name: "地址名称..."+(Math.random(1000)+"").replace(".","")
+		},{
+			name: "地址名称..."+(Math.random(1000)+"").replace(".","")
+		},{
+			name: "地址名称..."+(Math.random(1000)+"").replace(".","")
+		},{
+			name: "地址名称..."+(Math.random(1000)+"").replace(".","")
+		},{
+			name: "地址名称..."+(Math.random(1000)+"").replace(".","")
+		},{
+			name: "地址名称..."+(Math.random(1000)+"").replace(".","")
+		},{
+			name: "地址名称..."+(Math.random(1000)+"").replace(".","")
+		},{
+			name: "地址名称..."+(Math.random(1000)+"").replace(".","")
+		},{
+			name: "地址名称..."+(Math.random(1000)+"").replace(".","")
+		}]);
+	},
+	render:function(){
+		return (
+			<style>
+				.map_controller{
+					width:100%;
+					min-height:7.7280rem;
+				}
+				.mapinfo_list ul {
+					list-style: none;
+					padding: 0;
+					margin: 0;
+					width: 100%;
+					text-align: left;
+				}
+				.mapinfo_list li {
+					font-size: 0.6182rem;
+					padding: 0 0.625rem;
+					height: 2.5rem;
+					line-height: 2.5rem;
+					border-bottom: 0.0625rem solid #ccc;
+					border-top: 0.0625rem solid #fff;
+					background-color: #fafafa;
+				}
+			</style>
+			<div id="container" p-controller="baidumap" class="map_controller" p-key="BBbbcf21960189357c465acdebf60a93"></div>
+			<div class="mapinfo_list">
+				<?pjs for (i=0;i<data.length;i++) ?>
+					<li>{{ data[i].name | limitTo : 20 }}</li>
+				<?pjs end for ?>
+			</div>
+		);
+	}
+});
+pReact.renderDom(
+	<baiduMap />,
+	document.getElementById("inputprice2")
+);

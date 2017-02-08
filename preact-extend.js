@@ -637,13 +637,18 @@ pReact && ((function($) {
 						if (/<\?pjs\s+end\s+for\s+\?>/.test(a)) {
 							a = a.replace("<?pjs end for ?>", dataTName != " " ? "_###_, " + dataTName + "[i])); }" : "_###_); }");
 						}
+						//console.log(a)
 						return a;
 					}).replace(/\'/gi, "\\\'").replace(/\"/gi, "\\\"").replace(/_###_/gi, "'");
-					var reg = new RegExp("{{ " + dataTName + "\\[[a-zA-Z0-9_]\\]\\.", "gim");
+					//console.log(str)
+					var reg = new RegExp("{{ " + dataTName + "\\[[a-zA-Z0-9_]+\\]\\.", "gim");
 					if (reg.test(str)) {
 						str = str.replace(reg, "{{ ");
 					}
-					html = html.replace(o, pReact.sEval("return function(result){" + str + "; return arr.join('');}")(dataTName == "data" ? data : data[dataTName]));
+					//console.log(str)
+					var jsstr = "return function(result){" + str + "; return arr.join('');}";
+					//console.log(jsstr)
+					html = html.replace(o, pReact.sEval(jsstr)(dataTName == "data" ? data : data[dataTName]));
 					/*str = str.replace(/<\?pjs\s+[^\?]+\s+\?>/gi, function(a, b){
 						if (/<\?pjs\s+if\s+/.test(a)) {
 							a = a.replace("<?pjs if ", "_###_+function(){ return ").replace(" ?>", " ? _###_");

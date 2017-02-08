@@ -22,12 +22,12 @@
 			"dest": "dist/article/article",
 			"ext": ".pjs"
 		}, {
-			"src": ["header", "pages", "tip", "main", "footer", "footer-nav", "gotop", "top-banner", "newslist",  "app", "formkey", "list", "iscroll"],
+			"src": ["header", "pages", "tip", "main", "footer", "footer-nav", "gotop", "top-banner", "newslist",  "app", "formkey", "list", "iscroll", "baidumap"],
 			"dest": "dist/index/index",
 			"ext": ".pjs"
 		}, {
 			"path":"../",
-			"src": ["preact", "preact-extend-jq", "preact-extend-touchs", "preact-extend", "preact-extend-less", "preact-extend-iscroll", "preact-extend-base64", "preact-extend-share", "preact-extend-canvasdraw", "preact-extend-xvideo"],
+			"src": ["preact", "preact-extend-jq", "preact-extend-touchs", "preact-extend", "preact-extend-less", "preact-extend-iscroll", "preact-extend-base64", "preact-extend-share", "preact-extend-canvasdraw", "preact-extend-xvideo", "preact-extend-map"],
 			"dest": "dist/preact/preact",
 			"ext": ".js"
 		}],
