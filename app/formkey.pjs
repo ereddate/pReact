@@ -1,0 +1,19 @@
+var formSubKey = pReact.createClass("formsubkey", {
+	getInitData: function(success, error){
+		success({key: (Math.random(1000)+"").replace(".","")});
+	},
+	randomkey: function(e){
+		this.setState({
+			key: (Math.random(1000)+"").replace(".","")
+		});
+	},
+	render:function(){
+		return (
+			<span>key：</span>{{ key }}<input type="hidden" value="{{ key }}"><button type="button" onClick="{{ this.randomkey }}">生 成</button>
+		);
+	}
+});
+pReact.renderDom(
+	<formSubKey />,
+	document.getElementById("subkeybox")
+);

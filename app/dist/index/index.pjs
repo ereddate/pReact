@@ -981,7 +981,7 @@ var priceinfo = pReact.createClass("priceinfo", {
 });
 var inputPrice = pReact.createClass("inputPrice",{
 	getInitData: function(success, error){
-		success({date:pReact.getDate(), passcard: "8888888888888888888", key: (Math.random(1000)+"").replace(".","")});
+		success({date:pReact.getDate(), passcard: "8888888888888888888"});
 	},
 	"type_change": function(e){
 		console.log(e.target.value)
@@ -1017,11 +1017,6 @@ var inputPrice = pReact.createClass("inputPrice",{
 	},
 	dateChange: function(e){
 		console.log(this.elem.value)
-	},
-	randomkey: function(e){
-		this.setState({
-			key: (Math.random(1000)+"").replace(".","")
-		});
 	},
 	render: function(){
 		return (
@@ -1061,7 +1056,7 @@ var inputPrice = pReact.createClass("inputPrice",{
 					<option value="2">萝卜</option>
 				</select></label>
 				<label><span>价格：</span><input type="number" name="price" value="" placeholder="0.00" />元/斤</label>
-				<label><span>key：</span>{{ key }}<input type="hidden" value="{{ key }}"><button type="button" onClick="{{ this.randomkey }}">生 成</button></label>
+				<label id="subkeybox"></label>
 				<button type="submit">保存价格</button>
 			</form>
 		);
@@ -1105,7 +1100,26 @@ pReact.renderDom(
 			alert("zoomOut")
 		});*/
 	}
-);var listItem = pReact.createClass("listItem", {
+);var formSubKey = pReact.createClass("formsubkey", {
+	getInitData: function(success, error){
+		success({key: (Math.random(1000)+"").replace(".","")});
+	},
+	randomkey: function(e){
+		this.setState({
+			key: (Math.random(1000)+"").replace(".","")
+		});
+	},
+	render:function(){
+		return (
+			<span>key：</span>{{ key }}<input type="hidden" value="{{ key }}"><button type="button" onClick="{{ this.randomkey }}">生 成</button>
+		);
+	}
+});
+pReact.renderDom(
+	<formSubKey />,
+	document.getElementById("subkeybox")
+);
+var listItem = pReact.createClass("listItem", {
 	getInitData:function(success, error){
 		success([{
 				url: "url",

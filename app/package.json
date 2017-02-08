@@ -22,7 +22,7 @@
 			"dest": "dist/article/article",
 			"ext": ".pjs"
 		}, {
-			"src": ["header", "pages", "tip", "main", "footer", "footer-nav", "gotop", "top-banner", "newslist", "app", "list", "iscroll"],
+			"src": ["header", "pages", "tip", "main", "footer", "footer-nav", "gotop", "top-banner", "newslist",  "app", "formkey", "list", "iscroll"],
 			"dest": "dist/index/index",
 			"ext": ".pjs"
 		}, {

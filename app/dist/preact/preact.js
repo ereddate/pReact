@@ -728,7 +728,7 @@ pReact && define && (define("promise", ["pReact"], function() {
 				diffIndex = -1;
 			pReact.each(data, function(i, item) {
 				//console.log(item.elem, dom, item.parent, parent)
-				if (item.parent == parent) {
+				if (item.parent == parent && dom.tagName == item.tagName) {
 					diff = true;
 					diffIndex = i;
 					diffParent = item.parent;
@@ -837,7 +837,7 @@ pReact && define && (define("promise", ["pReact"], function() {
 		},
 		findDom: function(a, obj) {
 			var _ = this;
-			if (a.children.length > 0) {
+			if (a.children && a.children.length > 0) {
 				pReact.each(_.binds, function(name, fn) {
 					typeof fn == "function" && fn(a, obj);
 					pReact.each(a.children, function(i, elem) {
@@ -857,10 +857,10 @@ pReact && define && (define("promise", ["pReact"], function() {
 			var elem = document.createElement("div"),
 				i;
 			elem.innerHTML = html;
-			var len = elem.children.length;
+			var len = elem.childNodes.length;
 			for (i = 0; i < len; i++) {
-				var item = elem.children[0];
-				fragment.appendChild(item), _.findDom(item, obj);
+				var item = elem.childNodes[0];
+				fragment.appendChild(item), item.nodeType === 1 && _.findDom(item, obj);
 			}
 			return fragment;
 		},
@@ -1178,8 +1178,7 @@ pReact && define && (define("promise", ["pReact"], function() {
 				} else {
 					(result != "" || result) && (a = map.renderHandle(result, html));
 				}
-				//console.log(a)
-				a && (pReact.each(a.children, function(i, item) {
+				a && (pReact.each(a.childNodes, function(i, item) {
 					var r = map.diffDom(item, pReact.vdoms, parent, !bool);
 					pReact.jq(parent).removeClass('preact_rootdom').addClass('preact_rootdom');
 					r.diff && pReact.extend(pReact.vdoms[r.index], {
