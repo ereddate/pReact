@@ -82,7 +82,7 @@ pReact.renderDom(
 	<footerNav />,
 	document.getElementById("footer"),
 	function(){
-		pReact.jq(".footer_nav").find(".button").eq(3).trigger("click");
+		pReact.jq(".footer_nav").find(".button").eq(5).trigger("click");
 		var bottomButton = pReact.jq(".footer_nav a"),
 			pages = pReact.jq(".pages"),
 			page = pages.find(".pages_item");

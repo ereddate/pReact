@@ -1,7 +1,7 @@
 pReact && pReact.extend(pReact.tmplModel.binds.controllers, {
 	baidumap: function(elem, obj) {
 		if (elem) {
-			var key = pReact.jq(elem).attr("p-key");
+			var key = pReact.jq(elem).attr("p-key") || "";
 			pReact.createElement("http://api.map.baidu.com/getscript?v=2.0&ak=" + key + "&services=&t=" + (Math.random(1000) + "").replace(".", ""), function() {
 				window.BMap_loadScriptTime = (new Date).getTime();
 				var map = new BMap.Map("container");

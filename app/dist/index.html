@@ -666,7 +666,7 @@ pReact.renderDom(
 	<footerNav />,
 	document.getElementById("footer"),
 	function(){
-		pReact.jq(".footer_nav").find(".button").eq(3).trigger("click");
+		pReact.jq(".footer_nav").find(".button").eq(5).trigger("click");
 		var bottomButton = pReact.jq(".footer_nav a"),
 			pages = pReact.jq(".pages"),
 			page = pages.find(".pages_item");
@@ -735,7 +735,111 @@ pReact.renderDom(
 			pReact.jq(".goTop")[b>=100?"show":"hide"]();
 		}).trigger("scroll");
 	}
-);var scrollad = pReact.createClass("topBanner", {
+);var aboutUs = pReact.createClass("aboutus", {
+	getInitData:function(success, error){
+		success({
+			userimg: "http://img3.imgtn.bdimg.com/it/u=2529825477,3610139947&fm=214&gp=0.jpg",
+			username: "ereddate",
+			menu:[{
+				name: "单项功能菜单"
+			}]
+		})
+	},
+	render:function(){
+		return (
+			<style>
+				.aboutus{
+
+				}
+				.aboutus_user, .aboutus_user label{
+					margin:0 auto;
+					text-align:center;
+				}
+				.aboutus_user label a{
+					width:4.9460rem;
+					height:4.9460rem;
+					overflow:hidden;
+					border-radius: 4.9460rem;
+					background:rgba(128,128,128,1);
+					display:block;
+					margin:0.7727rem auto 0.3864rem auto;
+				}
+				.aboutus_user label img.userimg{
+					width:4.9460rem;
+					overflow:hidden;
+					border-radius: 4.9460rem;
+				}
+				.aboutus_user p.username{
+					font-size: 0.9273rem;
+				}
+			</style>
+			<div class="aboutus">
+				<div class="aboutus_user">
+					<label><a href="{{ userimg }}"><img class="userimg" src="{{ userimg }}" /></a><p>{{ username }}</p></label>
+				</div>
+				<div class="aboutus_menu" id="aboutus_menus"></div>
+			</div>
+		);
+	}
+});
+pReact.renderDom(
+	<aboutUs />,
+	document.getElementById("inputprice5")
+);
+var aboutusMenu = pReact.createClass("aboutusmenu", {
+	getInitData:function(success, error){
+		success([{
+			name: "单项功能菜单"
+		},{
+			name: "单项功能菜单"
+		},{
+			name: "单项功能菜单"
+		},{
+			name: "单项功能菜单"
+		},{
+			name: "单项功能菜单"
+		},{
+			name: "单项功能菜单"
+		},{
+			name: "单项功能菜单"
+		},{
+			name: "单项功能菜单"
+		},{
+			name: "单项功能菜单"
+		}]);
+	},
+	render:function(){
+		return (
+			<style>
+			.aboutus_menu ul {
+				list-style: none;
+				padding: 0;
+				margin: 0;
+				width: 100%;
+				text-align: left;
+			}
+			.aboutus_menu li {
+				font-size: 0.6182rem;
+				padding: 0 0.625rem;
+				line-height: 2.5rem;
+				border-bottom: 0.0625rem solid #ccc;
+				border-top: 0.0625rem solid #fff;
+				background-color: #fafafa;
+			}
+			</style>
+			<ul>
+				<?pjs for (i=0;i<data.length;i++) ?>
+					<li>{{ data[i].name | limitTo : 20 }}</li>
+				<?pjs end for ?>
+			</ul>
+		);
+	}
+});
+pReact.renderDom(
+	<aboutusMenu />,
+	document.getElementById("aboutus_menus")
+);
+var scrollad = pReact.createClass("topBanner", {
     config:{
         time: 2000,
         anispeed: 200
