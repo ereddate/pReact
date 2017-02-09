@@ -821,7 +821,7 @@
       el.className = el.className.replace(REclassListFallback.rm[className], ' ');
     };
 
-  ListDOM.prototype.addClass = function(className) {
+  ListDOM.prototype.addClass = function(className, callback) {
     var i, n;
 
     if (className instanceof Function) {
@@ -839,11 +839,11 @@
         classListAdd(this[i], className);
       }
     }
-
+    callback && callback.call(this);
     return this;
   };
 
-  ListDOM.prototype.removeClass = function(className) {
+  ListDOM.prototype.removeClass = function(className, callback) {
     var i, n;
     if (className instanceof Function) {
       for (i = 0, n = this.length; i < n; i++) {
@@ -860,6 +860,7 @@
         classListRemove(this[i], className);
       }
     }
+    callback && callback.call(this);
     return this;
   };
 

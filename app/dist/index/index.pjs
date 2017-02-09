@@ -298,6 +298,7 @@ pReact.renderDom(
 					background:rgba(128,128,128,1);
 					color:rgba(255,255,255,1);
 					font-size:0.7728rem;
+					z-index:2;
 				}
 				.main_content .main_header h1{
 					font-size:0.7728rem;
@@ -308,6 +309,7 @@ pReact.renderDom(
 				}
 				.main_content .main_item{
 					background:rgba(255,255,255,1);
+					z-index:1;
 				}
 			</style>
 			<article class="main_content">
@@ -432,7 +434,13 @@ var footerNav = pReact.createClass("footerNav",{
 			page = pReact.jq(".pages").find(".pages_item");
 		var currentPage = page.eq(index);
 		page.removeClass("pt-page-current");
-		currentPage.addClass("pt-page-current");
+		console.log(index);
+		currentPage.addClass("pt-page-current", function(){
+			if (index == 3){
+				console.log(pReact.Class["iscroll"].state.iscroll);
+				pReact.Class["iscroll"].state.iscroll && pReact.Class["iscroll"].state.iscroll.refresh();
+			}
+		});
 		pReact.jq(window).scrollTo(1);
 		a.removeClass("on").eq(index).addClass("on");
 		b.removeClass("on").eq(index).addClass("on");
@@ -1451,50 +1459,18 @@ var iscroll = pReact.createClass("iscroll", {
 	render:function(){
 		return (
 			<style>
-				#page_item3{
-					position:absolute;
-					top:0;
-					left:0;
-					right:0;
-					bottom:0;
+				#inputprice3{
+					overflow:hidden;
 				}
-				.iscroll_main {
-					position: absolute;
+				.iscroll_main{
 					z-index: 1;
-					top: 4.0958rem;
-					bottom: 0;
-					left: 0;
-					width: 100%;
-					background: #ccc;
-					overflow: hidden;
-					-webkit-transition: all 1s ease-in-out;
-				    -moz-transition: all 1s ease-in-out;
-				    -o-transition: all 1s ease-in-out;
-				    transition: all 1s ease-in-out;
-					-webkit-touch-callout: none;
-					-webkit-user-select: none;
-					-moz-user-select: none;
-					-ms-user-select: none;
-					user-select: none;
-					-webkit-text-size-adjust: none;
-					-moz-text-size-adjust: none;
-					-ms-text-size-adjust: none;
-					-o-text-size-adjust: none;
-					text-size-adjust: none;
 				}
-
 				.iscroll_main_context {
-					position: absolute;
+					margin-top:0;
 					z-index: 1;
-					-webkit-tap-highlight-color: rgba(0,0,0,0);
-					width: 100%;
-					-webkit-transform: translateZ(0);
-					-moz-transform: translateZ(0);
-					-ms-transform: translateZ(0);
-					-o-transform: translateZ(0);
-					transform: translateZ(0);
+					transform: translate(0, -3rem) translateZ(0);
+					-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 				}
-
 				.iscroll_main_context ul {
 					list-style: none;
 					padding: 0;
@@ -1502,24 +1478,24 @@ var iscroll = pReact.createClass("iscroll", {
 					width: 100%;
 					text-align: left;
 				}
-
 				.iscroll_main_context li {
-					padding: 0 10px;
-					height: 40px;
-					line-height: 40px;
-					border-bottom: 1px solid #ccc;
-					border-top: 1px solid #fff;
+					font-size: 0.6182rem;
+					padding: 0 0.625rem;
+					height: 2.5rem;
+					line-height: 2.5rem;
+					border-bottom: 0.0625rem solid #ccc;
+					border-top: 0.0625rem solid #fff;
 					background-color: #fafafa;
-					font-size: 14px;
 				}
 				#pullDown, #pullUp {
-				    height: 2rem;
-				    line-height: 2rem;
-				    font-weight: bold;
-				    font-size: .55rem;
-				    color: #888;
-				    text-align: center;
-				    display:block;
+					height: 3rem;
+					line-height: 3rem;
+					font-weight: bold;
+					font-size: 0.6182rem;
+					color: #888;
+					text-align: center;
+					display: block;
+					position: relative;
 				}
 			</style>
 			<div class="iscroll_main" id="wrapper">
@@ -1527,20 +1503,20 @@ var iscroll = pReact.createClass("iscroll", {
 					<span id="pullDown">下拉刷新</span>
 					<ul>
 						<li>1</li>
-						<li>1</li>
-						<li>1</li>
-						<li>1</li>
-						<li>1</li>
-						<li>1</li>
-						<li>1</li>
-						<li>1</li>
-						<li>1</li>
-						<li>1</li>
-						<li>1</li>
-						<li>1</li>
-						<li>1</li>
-						<li>1</li>
-						<li>1</li>
+						<li>2</li>
+						<li>3</li>
+						<li>4</li>
+						<li>5</li>
+						<li>6</li>
+						<li>7</li>
+						<li>8</li>
+						<li>9</li>
+						<li>10</li>
+						<li>11</li>
+						<li>12</li>
+						<li>13</li>
+						<li>14</li>
+						<li>15</li>
 						<li>1</li>
 						<li>1</li>
 						<li>1</li>
@@ -1564,7 +1540,7 @@ var iscroll = pReact.createClass("iscroll", {
 						<li>1</li>
 						<li>10</li>
 					</ul>
-					<span id="pullUp">上拉加载</span>
+					<span id="pullUp">正在加载...</span>
 				</div>
 			</div>
 		);
@@ -1574,39 +1550,44 @@ pReact.renderDom(
 	<iscroll />,
 	document.getElementById("inputprice3"),
 	function(){
-		var isStop = false;
-		var iscroll = new pReact.IScroll("#wrapper", {
-			useTransition: false,
-			startX: 0,
-			startY: -46.88
-		});
-		iscroll.refresh();
-		iscroll.on("refresh", function() {
-			var pullDownEl = document.getElementById('pullDown'),
-				pullUpEl = document.getElementById('pullUp');
-			if (pullDownEl.className.match('loading')) {
-				pullDownEl.className = '';
-				pullDownEl.innerHTML = '下拉刷新';
-			} else if (pullUpEl.className.match('loading')) {
-				pullUpEl.className = '';
-				pullUpEl.innerHTML = '上拉加载';
-			}
-		}).on("scrollEnd", function() {
-			var pullDownEl = document.getElementById('pullDown'),
-				pullUpEl = document.getElementById('pullUp');
-			if (pullDownEl.className.match('flip')) {
-				pullDownEl.className = 'loading';
-				pullDownEl.innerHTML = '正在加载...';
-			} else if (pullUpEl.className.match('flip')) {
-				if (isStop === false) {
-					pullUpEl.className = 'loading';
-					pullUpEl.innerHTML = '正在加载...';
+		var a = pReact.scroll("#wrapper", {
+			content: "#scroller",
+			upElem: "#pullDown",
+			upElemHeight: 77.64,
+			downElem: "#pullUp",
+			downElemHeight: 77.64,
+			refreshData: function(loading, loaded) {
+				this.upElem.html("正在加载...");
+				loading();
+				setTimeout(function() {
+					loaded();
+				}, 1000);
+			},
+			touchMove: function(y) {
+				if (y >= 50) {
+					this.upElem.html("松开刷新");
 				} else {
-					pullUpEl.className = 'nomore';
-					pullUpEl.innerHTML = '已经到底了';
+					this.upElem.html("下拉刷新");
 				}
+			},
+			touchEnd: function(y, loading, loaded) {
+				if (y >= 50) {
+					this.refreshData(loading, loaded);
+				} else {
+					this.upElem.html("下拉刷新");
+					loaded();
+				}
+			},
+			loadMore: function() {
+				var a = this.content.find("li").clone();
+				this.content.find("ul").append(a);
+				console.log('loadmore')
 			}
+		}).done(function() {
+
 		});
+		!pReact.Class["iscroll"].state && (pReact.Class["iscroll"].state={});
+		pReact.Class["iscroll"].state.iscroll = a;
 	}
 );var baiduMap = pReact.createClass("baidumap", {
 	getInitData:function(success, error){

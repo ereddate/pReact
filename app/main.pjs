@@ -11,6 +11,7 @@ var mainView_home = pReact.createClass("mainViewHome", {
 					background:rgba(128,128,128,1);
 					color:rgba(255,255,255,1);
 					font-size:0.7728rem;
+					z-index:2;
 				}
 				.main_content .main_header h1{
 					font-size:0.7728rem;
@@ -21,6 +22,7 @@ var mainView_home = pReact.createClass("mainViewHome", {
 				}
 				.main_content .main_item{
 					background:rgba(255,255,255,1);
+					z-index:1;
 				}
 			</style>
 			<article class="main_content">

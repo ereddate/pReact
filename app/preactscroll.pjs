@@ -1,0 +1,135 @@
+var iscroll = pReact.createClass("iscroll", {
+	render:function(){
+		return (
+			<style>
+				#inputprice3{
+					overflow:hidden;
+				}
+				.iscroll_main{
+					z-index: 1;
+				}
+				.iscroll_main_context {
+					margin-top:0;
+					z-index: 1;
+					transform: translate(0, -3rem) translateZ(0);
+					-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+				}
+				.iscroll_main_context ul {
+					list-style: none;
+					padding: 0;
+					margin: 0;
+					width: 100%;
+					text-align: left;
+				}
+				.iscroll_main_context li {
+					font-size: 0.6182rem;
+					padding: 0 0.625rem;
+					height: 2.5rem;
+					line-height: 2.5rem;
+					border-bottom: 0.0625rem solid #ccc;
+					border-top: 0.0625rem solid #fff;
+					background-color: #fafafa;
+				}
+				#pullDown, #pullUp {
+					height: 3rem;
+					line-height: 3rem;
+					font-weight: bold;
+					font-size: 0.6182rem;
+					color: #888;
+					text-align: center;
+					display: block;
+					position: relative;
+				}
+			</style>
+			<div class="iscroll_main" id="wrapper">
+				<div class="iscroll_main_context" id="scroller">
+					<span id="pullDown">下拉刷新</span>
+					<ul>
+						<li>1</li>
+						<li>2</li>
+						<li>3</li>
+						<li>4</li>
+						<li>5</li>
+						<li>6</li>
+						<li>7</li>
+						<li>8</li>
+						<li>9</li>
+						<li>10</li>
+						<li>11</li>
+						<li>12</li>
+						<li>13</li>
+						<li>14</li>
+						<li>15</li>
+						<li>1</li>
+						<li>1</li>
+						<li>1</li>
+						<li>1</li>
+						<li>1</li>
+						<li>1</li>
+						<li>1</li>
+						<li>1</li>
+						<li>1</li>
+						<li>1</li>
+						<li>1</li>
+						<li>1</li>
+						<li>1</li>
+						<li>1</li>
+						<li>1</li>
+						<li>1</li>
+						<li>1</li>
+						<li>1</li>
+						<li>7</li>
+						<li>1</li>
+						<li>1</li>
+						<li>10</li>
+					</ul>
+					<span id="pullUp">正在加载...</span>
+				</div>
+			</div>
+		);
+	}
+});
+pReact.renderDom(
+	<iscroll />,
+	document.getElementById("inputprice3"),
+	function(){
+		var a = pReact.scroll("#wrapper", {
+			content: "#scroller",
+			upElem: "#pullDown",
+			upElemHeight: 77.64,
+			downElem: "#pullUp",
+			downElemHeight: 77.64,
+			refreshData: function(loading, loaded) {
+				this.upElem.html("正在加载...");
+				loading();
+				setTimeout(function() {
+					loaded();
+				}, 1000);
+			},
+			touchMove: function(y) {
+				if (y >= 50) {
+					this.upElem.html("松开刷新");
+				} else {
+					this.upElem.html("下拉刷新");
+				}
+			},
+			touchEnd: function(y, loading, loaded) {
+				if (y >= 50) {
+					this.refreshData(loading, loaded);
+				} else {
+					this.upElem.html("下拉刷新");
+					loaded();
+				}
+			},
+			loadMore: function() {
+				var a = this.content.find("li").clone();
+				this.content.find("ul").append(a);
+				console.log('loadmore')
+			}
+		}).done(function() {
+
+		});
+		!pReact.Class["iscroll"].state && (pReact.Class["iscroll"].state={});
+		pReact.Class["iscroll"].state.iscroll = a;
+	}
+);
