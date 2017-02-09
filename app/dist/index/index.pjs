@@ -155,13 +155,13 @@ var headerView = pReact.createClass("header", {
 			<?pjs end if ?>
 				<nav class="header_nav">
 					<span class="header_nav_menu">
-					<?pjs for (i=0;i<pages.length;i++) ?>
+					<?pjs for (i=0;i<data.pages.length;i++) ?>
 						<?pjs if (i == 0) ?>
-							<a href="javascript:;" onClick="{{ this.menuItemClick }}">{{ pages[i].mainTitle }}</a>
+							<a href="javascript:;" onClick="{{ this.menuItemClick }}">{{ data.pages[i].mainTitle }}</a>
 						<?pjs else if (i == 1) ?>
-							<a href="javascript:;" onClick="{{ this.menuItemClick }}">{{ pages[i].mainTitle }}</a>
+							<a href="javascript:;" onClick="{{ this.menuItemClick }}">{{ data.pages[i].mainTitle }}</a>
 						<?pjs else ?>
-							<a href="javascript:;" onClick="{{ this.menuItemClick }}">{{ pages[i].mainTitle }}</a>
+							<a href="javascript:;" onClick="{{ this.menuItemClick }}">{{ data.pages[i].mainTitle }}</a>
 						<?pjs end if ?>
 					<?pjs end for ?>
 					</span>
@@ -485,11 +485,11 @@ var footerNav = pReact.createClass("footerNav",{
 				}
 			</style>
 			<div class="footer_nav"<?pjs if ({{ isShow }} === false) ?> style="display:none" <?pjs end if ?>>
-				<?pjs for (i = 0; i < pages.length; i++) ?>
+				<?pjs for (i = 0; i < data.pages.length; i++) ?>
 					<?pjs if ({{ index }} < 5) ?>
-						<a href="" class="button" onClick="{{ this.bottomButtonClick }}">{{ pages[i].buttonTitle }}</a>
+						<a href="" class="button" onClick="{{ this.bottomButtonClick }}">{{ data.pages[i].buttonTitle }}</a>
 					<?pjs else ?>
-						<a href="" class="button noline" onClick="{{ this.bottomButtonClick }}">{{ pages[i].buttonTitle }}</a>
+						<a href="" class="button noline" onClick="{{ this.bottomButtonClick }}">{{ data.pages[i].buttonTitle }}</a>
 					<?pjs end if ?>
 				<?pjs end for ?>
 			</div>

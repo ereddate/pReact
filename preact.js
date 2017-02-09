@@ -1055,6 +1055,7 @@ pReact && define && (define("promise", ["pReact"], function() {
 				return html;
 			}
 			pReact.each(data, function(name, val) {
+				//console.log(name, val)
 				if (pReact.isPlainObject(val)) {
 					html = rhtml(html, val);
 				}else{

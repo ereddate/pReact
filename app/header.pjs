@@ -155,13 +155,13 @@ var headerView = pReact.createClass("header", {
 			<?pjs end if ?>
 				<nav class="header_nav">
 					<span class="header_nav_menu">
-					<?pjs for (i=0;i<pages.length;i++) ?>
+					<?pjs for (i=0;i<data.pages.length;i++) ?>
 						<?pjs if (i == 0) ?>
-							<a href="javascript:;" onClick="{{ this.menuItemClick }}">{{ pages[i].mainTitle }}</a>
+							<a href="javascript:;" onClick="{{ this.menuItemClick }}">{{ data.pages[i].mainTitle }}</a>
 						<?pjs else if (i == 1) ?>
-							<a href="javascript:;" onClick="{{ this.menuItemClick }}">{{ pages[i].mainTitle }}</a>
+							<a href="javascript:;" onClick="{{ this.menuItemClick }}">{{ data.pages[i].mainTitle }}</a>
 						<?pjs else ?>
-							<a href="javascript:;" onClick="{{ this.menuItemClick }}">{{ pages[i].mainTitle }}</a>
+							<a href="javascript:;" onClick="{{ this.menuItemClick }}">{{ data.pages[i].mainTitle }}</a>
 						<?pjs end if ?>
 					<?pjs end for ?>
 					</span>

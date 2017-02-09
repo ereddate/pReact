@@ -1055,6 +1055,7 @@ pReact && define && (define("promise", ["pReact"], function() {
 				return html;
 			}
 			pReact.each(data, function(name, val) {
+				//console.log(name, val)
 				if (pReact.isPlainObject(val)) {
 					html = rhtml(html, val);
 				}else{
@@ -3653,33 +3654,41 @@ pReact && ((function($) {
 			pReact.each(result, function(i, str) {
 				if (/<\?pjs\s+end\s+for\s+\?>/.test(str)) {
 					var o = "<?pjs for " + str.split(/<\?pjs\s+end\s+for\s+\?>/)[0] + "<?pjs end for ?>",
-						t = o;
+						t = o,
+						dataIName;
 					str = t.replace(/<\?pjs\s+[^\?]+\s+\?>/gi, function(a, b) {
+						//console.log(/<\?pjs\s+for\s+\(([^=\s]+)/.exec(a))
+						var tname = /<\?pjs\s+for\s+\(([^=\s]+)/.exec(a);
+						dataIName = tname && tname[1] || dataIName || "i";
 						if (/<\?pjs\s+for\s+/.test(a)) {
-							var c = /\s*.+\s*[=><]+\s*([^\.0-9-\+\*\/=><]+)\.*[a-zA-Z0-9+-><=\*\/]*/.exec(a);
+							var c = /\s*([^\s=<>\!;]+)\.|in\s+([^\s=<>\!;\)]+)/.exec(a); ///\s*.+\s*[=><]+\s*([^\.0-9-\+\*\/=><]+)\.*[a-zA-Z0-9+-><=\*\/]*/.exec(a);
+							//console.log(c)
 							if (c) {
 								if (c[1] && !/[0-9]/.test(c[1])) dataTName = c[1];
 								else if (c[2] && !/[0-9]/.test(c[2])) dataTName = c[2];
 							}
+							//console.log(dataTName)
 						}
 						if (/<\?pjs\s+for\s+/.test(a)) {
-							a = a.replace("<?pjs for ", dataTName != " " ? "var " + dataTName + " = result, arr = []; for " : "var arr = []; for ").replace(" ?>", dataTName != " " ? "{ arr.push(pReact.tmpl(_###_" : "{ arr.push(_###_");
+							var d = dataTName.split('.') && dataTName.split('.')[0] || dataTName.split('[') && dataTName.split('[')[0];
+							a = a.replace("<?pjs for ", dataTName != " " ? "var " + d + " = result, arr = []; for " : "var arr = []; for ").replace(" ?>", dataTName != " " ? "{ arr.push(pReact.tmpl(_###_" : "{ arr.push(_###_");
 						}
 						if (/<\?pjs\s+end\s+for\s+\?>/.test(a)) {
-							a = a.replace("<?pjs end for ?>", dataTName != " " ? "_###_, " + dataTName + "[i])); }" : "_###_); }");
+							a = a.replace("<?pjs end for ?>", dataTName != " " ? "_###_, " + dataTName + "[" + dataIName + "])); }" : "_###_); }");
 						}
 						//console.log(a)
 						return a;
 					}).replace(/\'/gi, "\\\'").replace(/\"/gi, "\\\"").replace(/_###_/gi, "'");
-					//console.log(str)
-					var reg = new RegExp("{{ " + dataTName + "\\[[a-zA-Z0-9_]+\\]\\.", "gim");
+					//console.log(t)
+					var reg = new RegExp("{{ " + dataTName.replace(".","\\.") + "\\[" + dataIName + "\\]\\.|" + dataTName.replace(".","\\.") + "\\." + dataIName + "\\.", "gim");
+					//console.log(reg)
 					if (reg.test(str)) {
 						str = str.replace(reg, "{{ ");
 					}
 					//console.log(str)
 					var jsstr = "return function(result){" + str + "; return arr.join('');}";
 					//console.log(jsstr)
-					html = html.replace(o, pReact.sEval(jsstr)(dataTName == "data" ? data : data[dataTName]));
+					html = html.replace(o, pReact.sEval(jsstr)(data));
 					/*str = str.replace(/<\?pjs\s+[^\?]+\s+\?>/gi, function(a, b){
 						if (/<\?pjs\s+if\s+/.test(a)) {
 							a = a.replace("<?pjs if ", "_###_+function(){ return ").replace(" ?>", " ? _###_");

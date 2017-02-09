@@ -9,17 +9,24 @@
 		<div id="test"></div>
 		<script type="text/pReact">
 			var test = pReact.createClass("test", {
-				divClickHandle: function(){
-					this.setState({a: Math.random(100)});
-				},
 				render:function(){
 					return (
-						<div><button onClick="{{ this.divClickHandle }}">refresh</button>abc{{ a }}</div>
+						<div>
+							<?pjs for (name in data.a) ?>
+								<span>{{ data.a[name].c }}</span>
+							<?pjs end for ?>
+							<?pjs for (i=0;i<data.b.length;i++) ?>
+								<span>{{ data.b[i].c }}</span>
+							<?pjs end for ?>
+							<?pjs for (i=0;i<data.b.length;i++) ?>
+								<span>{{ c }}</span>
+							<?pjs end for ?>
+						</div>
 					);
 				}
 			});
 			pReact.renderDom(
-				<test {a: 1} />,
+				<test {a: {a:{c: 1},b: {c: 2}}, b:[{c:1},{c:2}]} />,
 				document.getElementById("test"),
 				function(){
 
