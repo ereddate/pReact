@@ -201,8 +201,8 @@ pReact.tmplFilterExtend({
 pjs模板，伪标签写法<?pjs ... ?>，如下：
 ```
 //伪标签。for、if、switch语法不能同名嵌套使用，for可以套if\switch使用，反之不可。
-<?pjs for (var i=0;i<data.length;i++) ?> 或 <?pjs for (var i=0;i<2;i++) ?>
-	<div>{{ id }}</div>
+<?pjs for (var i=0;i<data.length;i++) ?> 或 <?pjs for (var i=0;i<data.a.length;i++) ?> 或 <?pjs for (var i=0;i<2;i++) ?>
+	<div>{{ data[i].id }}</div> 或 <div>{{ data.a[i].id }}</div>
 	<?pjs if (a > b) ?>
 		<div>1</div>
 	<?pjs else if (a < b) ?>
