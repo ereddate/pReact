@@ -1194,7 +1194,7 @@ pReact && define && (define("promise", ["pReact"], function() {
 				}
 				a && (pReact.each(a.childNodes, function(i, item) {
 					var r = map.diffDom(item, pReact.vdoms, parent, !bool);
-					console.log(r, item.vdom)
+					//console.log(r, item.vdom)
 					pReact.jq(parent).removeClass('preact_rootdom').addClass('preact_rootdom');
 					r.diff && pReact.extend(pReact.vdoms[r.index], {
 						state: obj.state || {},

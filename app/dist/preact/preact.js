@@ -1194,7 +1194,7 @@ pReact && define && (define("promise", ["pReact"], function() {
 				}
 				a && (pReact.each(a.childNodes, function(i, item) {
 					var r = map.diffDom(item, pReact.vdoms, parent, !bool);
-					console.log(r, item.vdom)
+					//console.log(r, item.vdom)
 					pReact.jq(parent).removeClass('preact_rootdom').addClass('preact_rootdom');
 					r.diff && pReact.extend(pReact.vdoms[r.index], {
 						state: obj.state || {},
@@ -9249,14 +9249,14 @@ pReact && ((function($) {
 			return this;
 		},
 		refresh: function(){
-			console.log("refresh")
+			//console.log("refresh")
 			this.maxscroll = this.parent.height();
 		},
 		done: function(callback) {
 			var that = this;
 			pReact.jq(window).on("scroll", function(e) {
 				var top = pReact.jq(this).scrollTop();
-				console.log(top , that.maxscroll , that.parent[0].scrollHeight)
+				//console.log(top , that.maxscroll , that.parent[0].scrollHeight)
 				if (top + that.maxscroll >= that.parent[0].scrollHeight) {
 					this.timeout && clearTimeout(this.timeout);
 					this.timeout = setTimeout(function() {
@@ -9283,12 +9283,12 @@ pReact && ((function($) {
 							that.content.css({
 								transform: "translate(0px, 0px) translateZ(0px)"
 							});
-							console.log("loading")
+							//console.log("loading")
 						}, function() {
 							that.content.css({
 								transform: "translate(0px, -" + that.topOffset + "px) translateZ(0px)"
 							});
-							console.log("loaded")
+							//console.log("loaded")
 						}) : that.content.css({
 							transform: "translate(0px, -" + that.topOffset + "px) translateZ(0px)"
 						});
