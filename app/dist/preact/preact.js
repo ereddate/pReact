@@ -1273,6 +1273,19 @@ pReact && define && (define("promise", ["pReact"], function() {
 })(this, function(root, isNodejs) {
   'use strict';
 
+  function getLength(that) {
+    var len = that.length;
+    if (that.length === 0 && typeof that != "array" && that[0]) {
+      for (name in that) {
+        if (/[0-9]/.test(name)) {
+          len += 1;
+        }
+      }
+      that.length = len;
+    }
+    return len;
+  }
+
   function _isType(type) {
     return function(o) {
       return (typeof o === type);
@@ -1644,7 +1657,7 @@ pReact && define && (define("promise", ["pReact"], function() {
 
   ListDOM.prototype.first = function() {
     var list = new ListDOM();
-
+    this.length = getLength(this);
     if (this.length) {
       list[0] = this[0];
       list.length = 1;
@@ -1654,7 +1667,7 @@ pReact && define && (define("promise", ["pReact"], function() {
 
   ListDOM.prototype.last = function() {
     var list = new ListDOM();
-
+    this.length = getLength(this);
     if (this.length) {
       list[0] = this[this.length - 1];
       list.length = 1;
@@ -1694,6 +1707,7 @@ pReact && define && (define("promise", ["pReact"], function() {
   ListDOM.prototype.$ = ListDOM.prototype.find;
 
   ListDOM.prototype.add = function(selector, element) {
+    this.length = getLength(this);
     var el2add = jqlite(selector, element),
       i, len, n = this.length,
       elems = new ListDOM();
@@ -1712,6 +1726,7 @@ pReact && define && (define("promise", ["pReact"], function() {
 
   ListDOM.prototype.each = function(each) {
     if (_isFunction(each)) {
+      this.length = getLength(this);
       for (var i = 0, len = this.length, elem; i < len; i++) {
         each.call(this[i], i, this[i]);
       }
@@ -1720,6 +1735,7 @@ pReact && define && (define("promise", ["pReact"], function() {
   };
 
   ListDOM.prototype.empty = function() {
+    this.length = getLength(this);
     for (var i = 0, len = this.length, elem, child; i < len; i++) {
       elem = this[i];
       child = elem.firstChild;
@@ -1734,7 +1750,7 @@ pReact && define && (define("promise", ["pReact"], function() {
   ListDOM.prototype.filter = function(selector) {
     var elems = new ListDOM(),
       elem, i, len;
-
+    this.length = getLength(this);
     if (_isFunction(selector)) {
       for (i = 0, len = this.length, elem; i < len; i++) {
         elem = this[i];
@@ -1775,7 +1791,7 @@ pReact && define && (define("promise", ["pReact"], function() {
     if (!selector) {
       return this;
     }
-
+    this.length = getLength(this);
     for (var i = 0, len = this.length; i < len; i++) {
       elem = _getClosest(this[i], selector);
       if (elem) {
@@ -1789,7 +1805,7 @@ pReact && define && (define("promise", ["pReact"], function() {
 
   ListDOM.prototype.children = auxDiv.children ? function(selector) {
     var elems = new ListDOM();
-
+    this.length = getLength(this);
     for (var i = 0, len = this.length; i < len; i++) {
       pushMatches(elems, this[i].children);
     }
@@ -1814,7 +1830,7 @@ pReact && define && (define("promise", ["pReact"], function() {
   ListDOM.prototype.parent = function(selector) {
     var list = new ListDOM(),
       n = 0;
-
+    this.length = getLength(this);
     for (var i = 0, len = this.length; i < len; i++) {
       if (this[i].parentElement) {
         list[n++] = this[i].parentElement;
@@ -1856,7 +1872,7 @@ pReact && define && (define("promise", ["pReact"], function() {
     var elems = new ListDOM(),
       i, len;
     deep = deep === undefined || deep;
-
+    this.length = getLength(this);
     for (i = 0, len = this.length; i < len; i++) {
       elems[i] = this[i].cloneNode(deep);
 
@@ -1870,6 +1886,7 @@ pReact && define && (define("promise", ["pReact"], function() {
   };
 
   ListDOM.prototype.data = function(key, value) {
+    this.length = getLength(this);
     if (!this.length) {
       return value ? this : undefined;
     }
@@ -1898,6 +1915,7 @@ pReact && define && (define("promise", ["pReact"], function() {
   };
 
   ListDOM.prototype.removeData = function(key) {
+    this.length = getLength(this);
     for (var i = 0, n = this.length; i < n; i++) {
       if (this[i].$$jqliteData && this[i].$$jqliteData[key]) {
         delete this[i].$$jqliteData[key];
@@ -1908,7 +1926,7 @@ pReact && define && (define("promise", ["pReact"], function() {
 
   ListDOM.prototype.dataset = auxDiv.dataset ? function(key, value) {
     var i, len;
-
+    this.length = getLength(this);
     if (value === undefined) {
       if (key === undefined) {
         return this[0] ? this[0].dataset : {};
@@ -1942,6 +1960,7 @@ pReact && define && (define("promise", ["pReact"], function() {
 
   ListDOM.prototype.removeDataset = auxDiv.dataset ? function(key) {
     var i, len;
+    this.length = getLength(this);
     if (typeof key === 'string') {
       for (i = 0, len = this.length; i < len; i++) {
         delete this[i].dataset[key];
@@ -1969,6 +1988,7 @@ pReact && define && (define("promise", ["pReact"], function() {
   ListDOM.prototype.attr = function(key, value) {
     var args = arguments,
       argsLen = args.length;
+    this.length = getLength(this);
     if (argsLen > 1) {
       var i, len;
       if (_isFunction(value)) {
@@ -1982,19 +2002,20 @@ pReact && define && (define("promise", ["pReact"], function() {
       } else if (this[0]) {
         return this[0].getAttribute(key);
       }
-    }else if (argsLen === 1 && _isObject(args[0])){
-      for (name in args[0]){
+    } else if (argsLen === 1 && _isObject(args[0])) {
+      for (name in args[0]) {
         for (i = 0, len = this.length; i < len; i++) {
           this[i].setAttribute(name, args[0][name]);
         }
       }
-    }else if (argsLen === 1 && typeof args[0] == "string"){
+    } else if (argsLen === 1 && typeof args[0] == "string") {
       return this[0].getAttribute(args[0]);
     }
     return this;
   };
 
   ListDOM.prototype.removeAttr = function(key) {
+    this.length = getLength(this);
     for (var i = 0, len = this.length; i < len; i++) {
       this[i].removeAttribute(key);
     }
@@ -2003,7 +2024,7 @@ pReact && define && (define("promise", ["pReact"], function() {
 
   ListDOM.prototype.prop = function(key, value) {
     var i, len;
-
+    this.length = getLength(this);
     if (_isFunction(value)) {
       for (i = 0, len = this.length; i < len; i++) {
         this[i][key] = value(i, this[i][key]);
@@ -2028,6 +2049,7 @@ pReact && define && (define("promise", ["pReact"], function() {
         return (this[0].value || this[0].getAttribute('value'));
       }
     } else {
+      this.length = getLength(this);
       for (var i = 0, len = this.length; i < len; i++) {
         if (this[i].nodeName === 'select') {
           element = this[i];
@@ -2077,7 +2099,7 @@ pReact && define && (define("promise", ["pReact"], function() {
 
   ListDOM.prototype.addClass = function(className, callback) {
     var i, n;
-
+    this.length = getLength(this);
     if (className instanceof Function) {
       for (i = 0, n = this.length; i < n; i++) {
         classListAdd(this[i], className.call(this[i], i, this[i].className));
@@ -2099,6 +2121,7 @@ pReact && define && (define("promise", ["pReact"], function() {
 
   ListDOM.prototype.removeClass = function(className, callback) {
     var i, n;
+    this.length = getLength(this);
     if (className instanceof Function) {
       for (i = 0, n = this.length; i < n; i++) {
         classListRemove(this[i], className.call(this[i], i, this[i].className));
@@ -2119,6 +2142,7 @@ pReact && define && (define("promise", ["pReact"], function() {
   };
 
   ListDOM.prototype.hasClass = function(className) {
+    this.length = getLength(this);
     for (var i = 0, n = this.length; i < n; i++) {
       if (classListHas(this[i], className)) {
         return true;
@@ -2129,7 +2153,7 @@ pReact && define && (define("promise", ["pReact"], function() {
 
   ListDOM.prototype.toggleClass = function(className, state) {
     var i, n, _state, _className;
-
+    this.length = getLength(this);
     if (className instanceof Function) {
 
       for (i = 0, n = this.length; i < n; i++) {
@@ -2163,7 +2187,7 @@ pReact && define && (define("promise", ["pReact"], function() {
       jContent2, i, j, len, len2, element;
 
     jContent.remove();
-
+    this.length = getLength(this);
     for (i = 0, len = this.length; i < len; i++) {
       jContent2 = (i ? jContent.clone(true) : jContent);
       element = this[i];
@@ -2184,7 +2208,7 @@ pReact && define && (define("promise", ["pReact"], function() {
       jContent2, i, j, len, len2, element, previous;
 
     jContent.remove();
-
+    this.length = getLength(this);
     for (i = 0, len = this.length; i < len; i++) {
       jContent2 = (i ? jContent.clone(true) : jContent);
       element = this[i];
@@ -2210,7 +2234,7 @@ pReact && define && (define("promise", ["pReact"], function() {
       jContent2, i, j, len, len2, parent;
 
     jContent.remove();
-
+    this.length = getLength(this);
     for (i = 0, len = this.length; i < len; i++) {
       jContent2 = (i ? jContent.clone(true) : jContent);
       parent = this[i].parentElement || this[i].parentNode;
@@ -2228,7 +2252,7 @@ pReact && define && (define("promise", ["pReact"], function() {
       jContent2, i, j, len, len2, element, parent;
 
     jContent.remove();
-
+    this.length = getLength(this);
     for (i = 0, len = this.length; i < len; i++) {
       jContent2 = (i ? jContent.clone(true) : jContent);
       parent = this[i].parentElement || this[i].parentNode;
@@ -2255,7 +2279,7 @@ pReact && define && (define("promise", ["pReact"], function() {
     if (!jContent.length) {
       return this;
     }
-
+    this.length = getLength(this);
     for (i = this.length - 1; i >= 0; i--) {
       jContent2 = (i ? jContent.clone(true) : jContent);
       element = this[i];
@@ -2322,7 +2346,7 @@ pReact && define && (define("promise", ["pReact"], function() {
         element = element.firstElementChild;
       }
     }
-
+    this.length = getLength(this);
     for (var i = 0, len = this.length; i < len; i++) {
       element.appendChild(this[i]);
     }
@@ -2346,7 +2370,7 @@ pReact && define && (define("promise", ["pReact"], function() {
   ListDOM.prototype.next = function(selector) {
     var list = new ListDOM(),
       elem, n = 0;
-
+    this.length = getLength(this);
     for (var i = 0, len = this.length; i < len; i++) {
       elem = this[i].nextElementSibling;
       if (elem) {
@@ -2361,7 +2385,7 @@ pReact && define && (define("promise", ["pReact"], function() {
   ListDOM.prototype.nextAll = function(selector) {
     var list = new ListDOM(),
       elem, n = 0;
-
+    this.length = getLength(this);
     for (var i = 0, len = this.length; i < len; i++) {
       elem = this[i].nextElementSibling;
       while (elem) {
@@ -2377,7 +2401,7 @@ pReact && define && (define("promise", ["pReact"], function() {
   ListDOM.prototype.prev = function(selector) {
     var list = new ListDOM(),
       elem, n = 0;
-
+    this.length = getLength(this);
     for (var i = 0, len = this.length; i < len; i++) {
       elem = this[i].previousElementSibling;
       if (elem) {
@@ -2402,7 +2426,7 @@ pReact && define && (define("promise", ["pReact"], function() {
   ListDOM.prototype.prevAll = function(selector) {
     var list = new ListDOM(),
       elem, n = 0;
-
+    this.length = getLength(this);
     for (var i = 0, len = this.length; i < len; i++) {
       n = _prevAll(list, this[i].previousElementSibling, n);
     }
@@ -2442,7 +2466,7 @@ pReact && define && (define("promise", ["pReact"], function() {
     if (value !== undefined) {
       var i, len;
       value = (value instanceof Function) ? value() : (value instanceof Number ? (value + 'px') : value);
-
+      this.length = getLength(this);
       if (typeof value === 'string' && /^\+=|\-=/.test(value)) {
         value = (value.charAt(0) === '-') ? -parseFloat(value.substr(2)) : parseFloat(value.substr(2));
 
@@ -2515,7 +2539,7 @@ pReact && define && (define("promise", ["pReact"], function() {
       this.show();
       return animateFade(list, true, time, easing, callback || function() {});
     }
-
+    this.length = getLength(this);
     for (var i = 0, n = this.length; i < n; i++) {
       if (this[i].style.display) {
         this[i].style.display = '';
@@ -2533,7 +2557,7 @@ pReact && define && (define("promise", ["pReact"], function() {
         }
       });
     }
-
+    this.length = getLength(this);
     for (var i = 0, n = this.length; i < n; i++) {
       this[i].style.display = 'none';
     }
@@ -2541,6 +2565,7 @@ pReact && define && (define("promise", ["pReact"], function() {
   };
 
   ListDOM.prototype.position = function() {
+    this.length = getLength(this);
     if (this.length) {
       return {
         top: this[0].offsetTop,
@@ -2550,6 +2575,7 @@ pReact && define && (define("promise", ["pReact"], function() {
   };
 
   ListDOM.prototype.offset = function(coordinates) {
+    this.length = getLength(this);
     if (coordinates === undefined) {
       var rect = this[0].getBoundingClientRect();
       return this.length && {
@@ -2577,6 +2603,7 @@ pReact && define && (define("promise", ["pReact"], function() {
   };
 
   ListDOM.prototype.width = function(value, offset) {
+    this.length = getLength(this);
     var el;
     if (value === true) {
       if (this.length) {
@@ -2601,6 +2628,7 @@ pReact && define && (define("promise", ["pReact"], function() {
 
   ListDOM.prototype.height = function(value, offset) {
     var el;
+    this.length = getLength(this);
     if (value === true) {
       if (this.length) {
         el = this[0];
@@ -2624,6 +2652,7 @@ pReact && define && (define("promise", ["pReact"], function() {
 
   ListDOM.prototype.html = function(html) {
     var i, len;
+    this.length = getLength(this);
     if (html === undefined) {
       html = '';
       for (i = 0, len = this.length; i < len; i++) {
@@ -2663,6 +2692,7 @@ pReact && define && (define("promise", ["pReact"], function() {
 
   ListDOM.prototype.text = function(text) {
     var i, len;
+    this.length = getLength(this);
     if (text === undefined) {
       text = '';
       for (i = 0, len = this.length; i < len; i++) {
@@ -2721,6 +2751,7 @@ pReact && define && (define("promise", ["pReact"], function() {
     list: ['click', 'focus', 'blur', 'submit'],
     define: function(name) {
       ListDOM.prototype[name] = function(listener) {
+        this.length = getLength(this);
         if (listener) {
           this.on(name, listener);
         } else {
@@ -2747,7 +2778,7 @@ pReact && define && (define("promise", ["pReact"], function() {
 
   ListDOM.prototype.off = function(eventName, listener) {
     var i, n;
-
+    this.length = getLength(this);
     if (/\s/.test(eventName)) {
       eventName = eventName.split(/\s+/g);
     }
@@ -2783,7 +2814,7 @@ pReact && define && (define("promise", ["pReact"], function() {
     if (typeof eventName !== 'string') {
       throw 'bad arguments';
     }
-
+    this.length = getLength(this);
     for (var i = 0, len = this.length; i < len; i++) {
       triggerEvent(this[i], eventName, args, data);
     }
@@ -2812,6 +2843,8 @@ pReact && define && (define("promise", ["pReact"], function() {
   };*/
 
   // finally
+
+  jqlite.getLength = getLength;
 
   jqlite.noConflict = function() {
     if (root.$ === jqlite) {
@@ -3943,6 +3976,7 @@ pReact && ((function($) {
 		},
 		parents: function(id) {
 			var parent = null;
+		    this.length = pReact.jq.getLength(this);
 			if (this.length > 0) {
 				var elem = this[0];
 				parent = dir(elem, "parentNode");
@@ -9224,7 +9258,7 @@ pReact && ((function($) {
  *
  * https://github.com/ereddate/pReact
  */
- pReact && (function(win, pReact) {
+pReact && (function(win, pReact) {
 	var iscroll = function(elem, options) {
 		return new iscroll.fn.init(elem, options);
 	};
@@ -9242,21 +9276,23 @@ pReact && ((function($) {
 			var that = this;
 			return this;
 		},
-		refresh: function(){
+		refresh: function() {
 			//console.log("refresh")
 			this.maxscroll = this.parent.height();
 		},
 		done: function(callback) {
 			var that = this;
 			pReact.jq(window).on("scroll", function(e) {
-				var top = pReact.jq(this).scrollTop();
-				//console.log(top , that.maxscroll , that.parent[0].scrollHeight)
-				if (top + that.maxscroll >= that.parent[0].scrollHeight) {
-					this.timeout && clearTimeout(this.timeout);
-					this.timeout = setTimeout(function() {
-						that.loadMore && that.loadMore.call(that);
-					}, 500);
-				}
+				that.scrollFilterCallback && that.scrollFilterCallback(that, function() {
+					var top = pReact.jq(this).scrollTop();
+					//console.log(top , that.maxscroll , that.parent[0].scrollHeight)
+					if (top + that.maxscroll >= that.parent[0].scrollHeight) {
+						this.timeout && clearTimeout(this.timeout);
+						this.timeout = setTimeout(function() {
+							that.loadMore && that.loadMore.call(that);
+						}, 500);
+					}
+				});
 			})
 			that.parent[0].ontouchstart = function(e) {
 				var touch = e.changedTouches[0];
@@ -9274,29 +9310,25 @@ pReact && ((function($) {
 				that.parent[0].ontouchend = function(e) {
 					if (this.currentY > 0) {
 						that.touchEnd ? that.touchEnd.call(that, this.deltaY, function() {
-							that.content.css({
-								transform: "translate(0px, 0px) translateZ(0px)"
-							});
-							//console.log("loading")
+							iscroll.animate(that.content, 0, 0, 0);
 						}, function() {
-							that.content.css({
-								transform: "translate(0px, -" + that.topOffset + "px) translateZ(0px)"
-							});
-							//console.log("loaded")
-						}) : that.content.css({
-							transform: "translate(0px, -" + that.topOffset + "px) translateZ(0px)"
-						});
+							iscroll.animate(that.content, 0, "-" + that.topOffset, 0);
+						}) : iscroll.animate(that.content, 0, "-" + that.topOffset, 0);
 						this.currentY = 0;
 					} else if (this.currentY < this.maxscroll) {
-						that.content.css({
-							transform: "translate(0px, " + this.maxscroll + "px) translateZ(0px)"
-						});
+						iscroll.animate(that.content, 0, this.maxscroll, 0);
 					}
 					that.parent[0].ontouchmove = that.parent[0].ontouchend = null;
 				};
 			};
+			callback && callback.call(that);
 			return this;
 		}
+	};
+	iscroll.animate = function(elem, x, y, z) {
+		(typeof elem == "string" ? pReact.jq(elem) : elem).css({
+			transform: "translate(" + x + "px, " + y + "px) translateZ(" + z + "px)"
+		});
 	};
 	iscroll.fn.init.prototype = iscroll.fn;
 	pReact.scroll = iscroll;

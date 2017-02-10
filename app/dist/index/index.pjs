@@ -507,7 +507,7 @@ pReact.renderDom(
 	<footerNav />,
 	document.getElementById("footer"),
 	function(){
-		pReact.jq(".footer_nav").find(".button").eq(5).trigger("click");
+		pReact.jq(".footer_nav").find(".button").eq(0).trigger("click");
 		var bottomButton = pReact.jq(".footer_nav a"),
 			pages = pReact.jq(".pages"),
 			page = pages.find(".pages_item");
@@ -1513,6 +1513,7 @@ var iscroll = pReact.createClass("iscroll", {
 						<li>11</li>
 						<li>12</li>
 						<li>13</li>
+						<li id="clickRefresh">click refresh!</li>
 						<li>14</li>
 						<li>15</li>
 						<li>1</li>
@@ -1548,12 +1549,17 @@ pReact.renderDom(
 	<iscroll />,
 	document.getElementById("inputprice3"),
 	function(){
-		var a = pReact.scroll("#wrapper", {
+		pReact.scroll("#wrapper", {
 			content: "#scroller",
 			upElem: "#pullDown",
 			upElemHeight: 77.64,
 			downElem: "#pullUp",
 			downElemHeight: 77.64,
+			scrollFilterCallback: function(that, done){
+				if (that.parent.parents(".pages_item").hasClass('pt-page-current')) {
+					done();
+				}
+			},
 			refreshData: function(loading, loaded) {
 				this.upElem.html("正在加载...");
 				loading();
@@ -1582,10 +1588,19 @@ pReact.renderDom(
 				console.log('loadmore')
 			}
 		}).done(function() {
-
+			!pReact.Class["iscroll"].state && (pReact.Class["iscroll"].state={});
+			pReact.Class["iscroll"].state.iscroll = this;
+			var that = this;
+			pReact.jq("#clickRefresh").on("click", function(e){
+				window.scrollTo(0,0);
+				that.upElem.html("正在加载...");
+				pReact.scroll.animate(that.content, 0, 0, 0);
+				setTimeout(function(){
+					pReact.scroll.animate(that.content, 0, "-"+that.topOffset, 0);
+					that.upElem.html("下拉刷新");
+				}, 1000);
+			});
 		});
-		!pReact.Class["iscroll"].state && (pReact.Class["iscroll"].state={});
-		pReact.Class["iscroll"].state.iscroll = a;
 	}
 );var baiduMap = pReact.createClass("baidumap", {
 	getInitData:function(success, error){

@@ -4,7 +4,7 @@
  *
  * https://github.com/ereddate/pReact
  */
- pReact && (function(win, pReact) {
+pReact && (function(win, pReact) {
 	var iscroll = function(elem, options) {
 		return new iscroll.fn.init(elem, options);
 	};
@@ -22,21 +22,23 @@
 			var that = this;
 			return this;
 		},
-		refresh: function(){
+		refresh: function() {
 			//console.log("refresh")
 			this.maxscroll = this.parent.height();
 		},
 		done: function(callback) {
 			var that = this;
 			pReact.jq(window).on("scroll", function(e) {
-				var top = pReact.jq(this).scrollTop();
-				//console.log(top , that.maxscroll , that.parent[0].scrollHeight)
-				if (top + that.maxscroll >= that.parent[0].scrollHeight) {
-					this.timeout && clearTimeout(this.timeout);
-					this.timeout = setTimeout(function() {
-						that.loadMore && that.loadMore.call(that);
-					}, 500);
-				}
+				that.scrollFilterCallback && that.scrollFilterCallback(that, function() {
+					var top = pReact.jq(this).scrollTop();
+					//console.log(top , that.maxscroll , that.parent[0].scrollHeight)
+					if (top + that.maxscroll >= that.parent[0].scrollHeight) {
+						this.timeout && clearTimeout(this.timeout);
+						this.timeout = setTimeout(function() {
+							that.loadMore && that.loadMore.call(that);
+						}, 500);
+					}
+				});
 			})
 			that.parent[0].ontouchstart = function(e) {
 				var touch = e.changedTouches[0];
@@ -54,29 +56,25 @@
 				that.parent[0].ontouchend = function(e) {
 					if (this.currentY > 0) {
 						that.touchEnd ? that.touchEnd.call(that, this.deltaY, function() {
-							that.content.css({
-								transform: "translate(0px, 0px) translateZ(0px)"
-							});
-							//console.log("loading")
+							iscroll.animate(that.content, 0, 0, 0);
 						}, function() {
-							that.content.css({
-								transform: "translate(0px, -" + that.topOffset + "px) translateZ(0px)"
-							});
-							//console.log("loaded")
-						}) : that.content.css({
-							transform: "translate(0px, -" + that.topOffset + "px) translateZ(0px)"
-						});
+							iscroll.animate(that.content, 0, "-" + that.topOffset, 0);
+						}) : iscroll.animate(that.content, 0, "-" + that.topOffset, 0);
 						this.currentY = 0;
 					} else if (this.currentY < this.maxscroll) {
-						that.content.css({
-							transform: "translate(0px, " + this.maxscroll + "px) translateZ(0px)"
-						});
+						iscroll.animate(that.content, 0, this.maxscroll, 0);
 					}
 					that.parent[0].ontouchmove = that.parent[0].ontouchend = null;
 				};
 			};
+			callback && callback.call(that);
 			return this;
 		}
+	};
+	iscroll.animate = function(elem, x, y, z) {
+		(typeof elem == "string" ? pReact.jq(elem) : elem).css({
+			transform: "translate(" + x + "px, " + y + "px) translateZ(" + z + "px)"
+		});
 	};
 	iscroll.fn.init.prototype = iscroll.fn;
 	pReact.scroll = iscroll;

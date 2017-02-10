@@ -909,6 +909,7 @@ pReact && ((function($) {
 		},
 		parents: function(id) {
 			var parent = null;
+		    this.length = pReact.jq.getLength(this);
 			if (this.length > 0) {
 				var elem = this[0];
 				parent = dir(elem, "parentNode");

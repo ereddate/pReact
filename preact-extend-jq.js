@@ -19,6 +19,19 @@
 })(this, function(root, isNodejs) {
   'use strict';
 
+  function getLength(that) {
+    var len = that.length;
+    if (that.length === 0 && typeof that != "array" && that[0]) {
+      for (name in that) {
+        if (/[0-9]/.test(name)) {
+          len += 1;
+        }
+      }
+      that.length = len;
+    }
+    return len;
+  }
+
   function _isType(type) {
     return function(o) {
       return (typeof o === type);
@@ -390,7 +403,7 @@
 
   ListDOM.prototype.first = function() {
     var list = new ListDOM();
-
+    this.length = getLength(this);
     if (this.length) {
       list[0] = this[0];
       list.length = 1;
@@ -400,7 +413,7 @@
 
   ListDOM.prototype.last = function() {
     var list = new ListDOM();
-
+    this.length = getLength(this);
     if (this.length) {
       list[0] = this[this.length - 1];
       list.length = 1;
@@ -440,6 +453,7 @@
   ListDOM.prototype.$ = ListDOM.prototype.find;
 
   ListDOM.prototype.add = function(selector, element) {
+    this.length = getLength(this);
     var el2add = jqlite(selector, element),
       i, len, n = this.length,
       elems = new ListDOM();
@@ -458,6 +472,7 @@
 
   ListDOM.prototype.each = function(each) {
     if (_isFunction(each)) {
+      this.length = getLength(this);
       for (var i = 0, len = this.length, elem; i < len; i++) {
         each.call(this[i], i, this[i]);
       }
@@ -466,6 +481,7 @@
   };
 
   ListDOM.prototype.empty = function() {
+    this.length = getLength(this);
     for (var i = 0, len = this.length, elem, child; i < len; i++) {
       elem = this[i];
       child = elem.firstChild;
@@ -480,7 +496,7 @@
   ListDOM.prototype.filter = function(selector) {
     var elems = new ListDOM(),
       elem, i, len;
-
+    this.length = getLength(this);
     if (_isFunction(selector)) {
       for (i = 0, len = this.length, elem; i < len; i++) {
         elem = this[i];
@@ -521,7 +537,7 @@
     if (!selector) {
       return this;
     }
-
+    this.length = getLength(this);
     for (var i = 0, len = this.length; i < len; i++) {
       elem = _getClosest(this[i], selector);
       if (elem) {
@@ -535,7 +551,7 @@
 
   ListDOM.prototype.children = auxDiv.children ? function(selector) {
     var elems = new ListDOM();
-
+    this.length = getLength(this);
     for (var i = 0, len = this.length; i < len; i++) {
       pushMatches(elems, this[i].children);
     }
@@ -560,7 +576,7 @@
   ListDOM.prototype.parent = function(selector) {
     var list = new ListDOM(),
       n = 0;
-
+    this.length = getLength(this);
     for (var i = 0, len = this.length; i < len; i++) {
       if (this[i].parentElement) {
         list[n++] = this[i].parentElement;
@@ -602,7 +618,7 @@
     var elems = new ListDOM(),
       i, len;
     deep = deep === undefined || deep;
-
+    this.length = getLength(this);
     for (i = 0, len = this.length; i < len; i++) {
       elems[i] = this[i].cloneNode(deep);
 
@@ -616,6 +632,7 @@
   };
 
   ListDOM.prototype.data = function(key, value) {
+    this.length = getLength(this);
     if (!this.length) {
       return value ? this : undefined;
     }
@@ -644,6 +661,7 @@
   };
 
   ListDOM.prototype.removeData = function(key) {
+    this.length = getLength(this);
     for (var i = 0, n = this.length; i < n; i++) {
       if (this[i].$$jqliteData && this[i].$$jqliteData[key]) {
         delete this[i].$$jqliteData[key];
@@ -654,7 +672,7 @@
 
   ListDOM.prototype.dataset = auxDiv.dataset ? function(key, value) {
     var i, len;
-
+    this.length = getLength(this);
     if (value === undefined) {
       if (key === undefined) {
         return this[0] ? this[0].dataset : {};
@@ -688,6 +706,7 @@
 
   ListDOM.prototype.removeDataset = auxDiv.dataset ? function(key) {
     var i, len;
+    this.length = getLength(this);
     if (typeof key === 'string') {
       for (i = 0, len = this.length; i < len; i++) {
         delete this[i].dataset[key];
@@ -715,6 +734,7 @@
   ListDOM.prototype.attr = function(key, value) {
     var args = arguments,
       argsLen = args.length;
+    this.length = getLength(this);
     if (argsLen > 1) {
       var i, len;
       if (_isFunction(value)) {
@@ -728,19 +748,20 @@
       } else if (this[0]) {
         return this[0].getAttribute(key);
       }
-    }else if (argsLen === 1 && _isObject(args[0])){
-      for (name in args[0]){
+    } else if (argsLen === 1 && _isObject(args[0])) {
+      for (name in args[0]) {
         for (i = 0, len = this.length; i < len; i++) {
           this[i].setAttribute(name, args[0][name]);
         }
       }
-    }else if (argsLen === 1 && typeof args[0] == "string"){
+    } else if (argsLen === 1 && typeof args[0] == "string") {
       return this[0].getAttribute(args[0]);
     }
     return this;
   };
 
   ListDOM.prototype.removeAttr = function(key) {
+    this.length = getLength(this);
     for (var i = 0, len = this.length; i < len; i++) {
       this[i].removeAttribute(key);
     }
@@ -749,7 +770,7 @@
 
   ListDOM.prototype.prop = function(key, value) {
     var i, len;
-
+    this.length = getLength(this);
     if (_isFunction(value)) {
       for (i = 0, len = this.length; i < len; i++) {
         this[i][key] = value(i, this[i][key]);
@@ -774,6 +795,7 @@
         return (this[0].value || this[0].getAttribute('value'));
       }
     } else {
+      this.length = getLength(this);
       for (var i = 0, len = this.length; i < len; i++) {
         if (this[i].nodeName === 'select') {
           element = this[i];
@@ -823,7 +845,7 @@
 
   ListDOM.prototype.addClass = function(className, callback) {
     var i, n;
-
+    this.length = getLength(this);
     if (className instanceof Function) {
       for (i = 0, n = this.length; i < n; i++) {
         classListAdd(this[i], className.call(this[i], i, this[i].className));
@@ -845,6 +867,7 @@
 
   ListDOM.prototype.removeClass = function(className, callback) {
     var i, n;
+    this.length = getLength(this);
     if (className instanceof Function) {
       for (i = 0, n = this.length; i < n; i++) {
         classListRemove(this[i], className.call(this[i], i, this[i].className));
@@ -865,6 +888,7 @@
   };
 
   ListDOM.prototype.hasClass = function(className) {
+    this.length = getLength(this);
     for (var i = 0, n = this.length; i < n; i++) {
       if (classListHas(this[i], className)) {
         return true;
@@ -875,7 +899,7 @@
 
   ListDOM.prototype.toggleClass = function(className, state) {
     var i, n, _state, _className;
-
+    this.length = getLength(this);
     if (className instanceof Function) {
 
       for (i = 0, n = this.length; i < n; i++) {
@@ -909,7 +933,7 @@
       jContent2, i, j, len, len2, element;
 
     jContent.remove();
-
+    this.length = getLength(this);
     for (i = 0, len = this.length; i < len; i++) {
       jContent2 = (i ? jContent.clone(true) : jContent);
       element = this[i];
@@ -930,7 +954,7 @@
       jContent2, i, j, len, len2, element, previous;
 
     jContent.remove();
-
+    this.length = getLength(this);
     for (i = 0, len = this.length; i < len; i++) {
       jContent2 = (i ? jContent.clone(true) : jContent);
       element = this[i];
@@ -956,7 +980,7 @@
       jContent2, i, j, len, len2, parent;
 
     jContent.remove();
-
+    this.length = getLength(this);
     for (i = 0, len = this.length; i < len; i++) {
       jContent2 = (i ? jContent.clone(true) : jContent);
       parent = this[i].parentElement || this[i].parentNode;
@@ -974,7 +998,7 @@
       jContent2, i, j, len, len2, element, parent;
 
     jContent.remove();
-
+    this.length = getLength(this);
     for (i = 0, len = this.length; i < len; i++) {
       jContent2 = (i ? jContent.clone(true) : jContent);
       parent = this[i].parentElement || this[i].parentNode;
@@ -1001,7 +1025,7 @@
     if (!jContent.length) {
       return this;
     }
-
+    this.length = getLength(this);
     for (i = this.length - 1; i >= 0; i--) {
       jContent2 = (i ? jContent.clone(true) : jContent);
       element = this[i];
@@ -1068,7 +1092,7 @@
         element = element.firstElementChild;
       }
     }
-
+    this.length = getLength(this);
     for (var i = 0, len = this.length; i < len; i++) {
       element.appendChild(this[i]);
     }
@@ -1092,7 +1116,7 @@
   ListDOM.prototype.next = function(selector) {
     var list = new ListDOM(),
       elem, n = 0;
-
+    this.length = getLength(this);
     for (var i = 0, len = this.length; i < len; i++) {
       elem = this[i].nextElementSibling;
       if (elem) {
@@ -1107,7 +1131,7 @@
   ListDOM.prototype.nextAll = function(selector) {
     var list = new ListDOM(),
       elem, n = 0;
-
+    this.length = getLength(this);
     for (var i = 0, len = this.length; i < len; i++) {
       elem = this[i].nextElementSibling;
       while (elem) {
@@ -1123,7 +1147,7 @@
   ListDOM.prototype.prev = function(selector) {
     var list = new ListDOM(),
       elem, n = 0;
-
+    this.length = getLength(this);
     for (var i = 0, len = this.length; i < len; i++) {
       elem = this[i].previousElementSibling;
       if (elem) {
@@ -1148,7 +1172,7 @@
   ListDOM.prototype.prevAll = function(selector) {
     var list = new ListDOM(),
       elem, n = 0;
-
+    this.length = getLength(this);
     for (var i = 0, len = this.length; i < len; i++) {
       n = _prevAll(list, this[i].previousElementSibling, n);
     }
@@ -1188,7 +1212,7 @@
     if (value !== undefined) {
       var i, len;
       value = (value instanceof Function) ? value() : (value instanceof Number ? (value + 'px') : value);
-
+      this.length = getLength(this);
       if (typeof value === 'string' && /^\+=|\-=/.test(value)) {
         value = (value.charAt(0) === '-') ? -parseFloat(value.substr(2)) : parseFloat(value.substr(2));
 
@@ -1261,7 +1285,7 @@
       this.show();
       return animateFade(list, true, time, easing, callback || function() {});
     }
-
+    this.length = getLength(this);
     for (var i = 0, n = this.length; i < n; i++) {
       if (this[i].style.display) {
         this[i].style.display = '';
@@ -1279,7 +1303,7 @@
         }
       });
     }
-
+    this.length = getLength(this);
     for (var i = 0, n = this.length; i < n; i++) {
       this[i].style.display = 'none';
     }
@@ -1287,6 +1311,7 @@
   };
 
   ListDOM.prototype.position = function() {
+    this.length = getLength(this);
     if (this.length) {
       return {
         top: this[0].offsetTop,
@@ -1296,6 +1321,7 @@
   };
 
   ListDOM.prototype.offset = function(coordinates) {
+    this.length = getLength(this);
     if (coordinates === undefined) {
       var rect = this[0].getBoundingClientRect();
       return this.length && {
@@ -1323,6 +1349,7 @@
   };
 
   ListDOM.prototype.width = function(value, offset) {
+    this.length = getLength(this);
     var el;
     if (value === true) {
       if (this.length) {
@@ -1347,6 +1374,7 @@
 
   ListDOM.prototype.height = function(value, offset) {
     var el;
+    this.length = getLength(this);
     if (value === true) {
       if (this.length) {
         el = this[0];
@@ -1370,6 +1398,7 @@
 
   ListDOM.prototype.html = function(html) {
     var i, len;
+    this.length = getLength(this);
     if (html === undefined) {
       html = '';
       for (i = 0, len = this.length; i < len; i++) {
@@ -1409,6 +1438,7 @@
 
   ListDOM.prototype.text = function(text) {
     var i, len;
+    this.length = getLength(this);
     if (text === undefined) {
       text = '';
       for (i = 0, len = this.length; i < len; i++) {
@@ -1467,6 +1497,7 @@
     list: ['click', 'focus', 'blur', 'submit'],
     define: function(name) {
       ListDOM.prototype[name] = function(listener) {
+        this.length = getLength(this);
         if (listener) {
           this.on(name, listener);
         } else {
@@ -1493,7 +1524,7 @@
 
   ListDOM.prototype.off = function(eventName, listener) {
     var i, n;
-
+    this.length = getLength(this);
     if (/\s/.test(eventName)) {
       eventName = eventName.split(/\s+/g);
     }
@@ -1529,7 +1560,7 @@
     if (typeof eventName !== 'string') {
       throw 'bad arguments';
     }
-
+    this.length = getLength(this);
     for (var i = 0, len = this.length; i < len; i++) {
       triggerEvent(this[i], eventName, args, data);
     }
@@ -1558,6 +1589,8 @@
   };*/
 
   // finally
+
+  jqlite.getLength = getLength;
 
   jqlite.noConflict = function() {
     if (root.$ === jqlite) {
