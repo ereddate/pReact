@@ -25,10 +25,9 @@ pReact && (function(win, pReact) {
 		},
 		refresh: function() {
 			//console.log("refresh")
-			var fz = screen.width / 16;
-			this.topOffset = parseFloat(this.upElem.height())/fz;
-			this.bottomOffset = parseFloat(this.downElem.height())/fz;
-			this.maxscroll = parseFloat(this.parent.height())/fz;
+			this.topOffset = parseFloat(this.upElem.height());
+			this.bottomOffset = parseFloat(this.downElem.height());
+			this.maxscroll = parseFloat(this.parent.height());
 		},
 		done: function(callback) {
 			var that = this;
@@ -74,8 +73,9 @@ pReact && (function(win, pReact) {
 		}
 	};
 	iscroll.animate = function(elem, x, y, z, unit) {
+		var fz = screen.width / 16;
 		(typeof elem == "string" ? pReact.jq(elem) : elem).css({
-			transform: "translate(" + x + unit + ", " + y + unit + ") translateZ(" + z + unit + ")"
+			transform: "translate(" + x/fz + unit + ", " + y/fz + unit + ") translateZ(" + z/fz + unit + ")"
 		});
 	};
 	iscroll.fn.init.prototype = iscroll.fn;
