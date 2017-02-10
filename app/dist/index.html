@@ -599,10 +599,8 @@ var footerNav = pReact.createClass("footerNav",{
 			page = pReact.jq(".pages").find(".pages_item");
 		var currentPage = page.eq(index);
 		page.removeClass("pt-page-current");
-		console.log(index);
 		currentPage.addClass("pt-page-current", function(){
 			if (index == 3){
-				console.log(pReact.Class["iscroll"].state.iscroll);
 				pReact.Class["iscroll"].state.iscroll && pReact.Class["iscroll"].state.iscroll.refresh();
 			}
 		});

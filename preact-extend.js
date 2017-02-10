@@ -330,16 +330,14 @@ pReact && ((function($) {
 					callback: function(e, dir) {
 						var self = this;
 						try {
-							var fn = pReact.sEval('return function(e, dir){' + result[1] + '(e, dir);}', "e", "dir"),
-								then = typeof obj == "function" ? (new obj) : obj;
-							//console.log(then)
+							var then = typeof obj == "function" ? (new obj) : obj;
 							then.elem = e && e.path && (this.path = e.path) && this || this;
 							then.setState = function(ops) {
 								pReact.extend(!then.state ? (then.state = {}) : then.state, ops);
 								var parent = pReact.jq(self).parents(".preact_rootdom");
 								pReact.refresh(parent[0], self);
 							}
-							fn.call(then, e, dir);
+							then[result[1].replace("this.","").replace(/this\[["']/gim, "").replace(/["']\]/gim, "").replace(/\s+/gim, "")].call(then, e, dir);
 						} catch (e) {
 							console.log(e);
 						}
@@ -347,18 +345,14 @@ pReact && ((function($) {
 				}) : elem[name.toLowerCase()] = function(e) {
 					var self = this;
 					try {
-						var fn = pReact.sEval('return function(e){' + result[1] + '(e);}', "e"),
-							then = typeof obj == "function" ? (new obj) : obj;
-						//console.log(then)
+						var then = typeof obj == "function" ? (new obj) : obj;
 						then.elem = e.path && (this.path = e.path) && this || this;
 						then.setState = function(ops) {
 							pReact.extend(!then.state ? (then.state = {}) : then.state, ops);
 							var parent = pReact.jq(self).parents(".preact_rootdom");
 							pReact.refresh(parent[0], self);
 						}
-						fn.call(then, pReact.extend(e, {
-							target: e.path && (e.target.path = e.path) && e.target || e.target
-						}));
+						then[result[1].replace("this.","").replace(/this\[["']/gim, "").replace(/["']\]/gim, "").replace(/\s+/gim, "")].call(then, e);
 					} catch (e) {
 						console.log(e);
 					}
