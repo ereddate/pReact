@@ -9297,29 +9297,27 @@ pReact && (function(win, pReact) {
 			that.parent[0].ontouchstart = function(e) {
 				var touch = e.changedTouches[0];
 				this.pointY = touch.pageY - (this.currentY || 0);
-				that.parent[0].ontouchmove = function(e) {
-					var touch = e.changedTouches[0];
-					var deltaY = touch.pageY - this.pointY - that.topOffset;
-					this.currentY = touch.pageY + deltaY + that.topOffset;
-					!that.isscroll && that.content.css({
-						transform: "translate(0px, " + deltaY + "px) translateZ(0px)"
-					});
-					this.deltaY = deltaY;
-					that.touchMove && that.touchMove.call(that, deltaY);
-				};
-				that.parent[0].ontouchend = function(e) {
-					if (this.currentY > 0) {
-						that.touchEnd ? that.touchEnd.call(that, this.deltaY, function() {
-							iscroll.animate(that.content, 0, 0, 0);
-						}, function() {
-							iscroll.animate(that.content, 0, "-" + that.topOffset, 0);
-						}) : iscroll.animate(that.content, 0, "-" + that.topOffset, 0);
-						this.currentY = 0;
-					} else if (this.currentY < this.maxscroll) {
-						iscroll.animate(that.content, 0, this.maxscroll, 0);
-					}
-					that.parent[0].ontouchmove = that.parent[0].ontouchend = null;
-				};
+			};
+			that.parent[0].ontouchmove = function(e) {
+				var touch = e.changedTouches[0];
+				var deltaY = touch.pageY - this.pointY - that.topOffset;
+				this.currentY = touch.pageY + deltaY + that.topOffset;
+				iscroll.animate(that.content, 0, deltaY, 0);
+				this.deltaY = deltaY;
+				that.touchMove && that.touchMove.call(that, deltaY);
+			};
+			that.parent[0].ontouchend = function(e) {
+				if (this.currentY > 0) {
+					that.touchEnd ? that.touchEnd.call(that, this.deltaY, function() {
+						iscroll.animate(that.content, 0, 0, 0);
+					}, function() {
+						iscroll.animate(that.content, 0, "-" + that.topOffset, 0);
+					}) : iscroll.animate(that.content, 0, "-" + that.topOffset, 0);
+					this.currentY = 0;
+				} else if (this.currentY < this.maxscroll) {
+					iscroll.animate(that.content, 0, this.maxscroll, 0);
+				}
+				that.parent[0].ontouchmove = that.parent[0].ontouchend = null;
 			};
 			callback && callback.call(that);
 			return this;
