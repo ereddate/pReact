@@ -1552,9 +1552,7 @@ pReact.renderDom(
 		pReact.scroll("#wrapper", {
 			content: "#scroller",
 			upElem: "#pullDown",
-			upElemHeight: 77.64,
 			downElem: "#pullUp",
-			downElemHeight: 77.64,
 			scrollFilterCallback: function(that, done){
 				if (that.parent.parents(".pages_item").hasClass('pt-page-current')) {
 					done();
@@ -1594,9 +1592,9 @@ pReact.renderDom(
 			pReact.jq("#clickRefresh").on("click", function(e){
 				window.scrollTo(0,0);
 				that.upElem.html("正在加载...");
-				pReact.scroll.animate(that.content, 0, 0, 0);
+				pReact.scroll.animate(that.content, 0, 0, 0, that.unit);
 				setTimeout(function(){
-					pReact.scroll.animate(that.content, 0, "-"+that.topOffset, 0);
+					pReact.scroll.animate(that.content, 0, "-"+that.topOffset, 0, that.unit);
 					that.upElem.html("下拉刷新");
 				}, 1000);
 			});
