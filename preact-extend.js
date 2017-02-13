@@ -337,7 +337,7 @@ pReact && ((function($) {
 								var parent = pReact.jq(self).parents(".preact_rootdom");
 								pReact.refresh(parent[0], self);
 							}
-							then[result[1].replace("this.","").replace(/this\[["']/gim, "").replace(/["']\]/gim, "").replace(/\s+/gim, "")].call(then, e, dir);
+							then[result[1].replace("this.", "").replace(/this\[["']/gim, "").replace(/["']\]/gim, "").replace(/\s+/gim, "")].call(then, e, dir);
 						} catch (e) {
 							console.log(e);
 						}
@@ -352,7 +352,7 @@ pReact && ((function($) {
 							var parent = pReact.jq(self).parents(".preact_rootdom");
 							pReact.refresh(parent[0], self);
 						}
-						then[result[1].replace("this.","").replace(/this\[["']/gim, "").replace(/["']\]/gim, "").replace(/\s+/gim, "")].call(then, e);
+						then[result[1].replace("this.", "").replace(/this\[["']/gim, "").replace(/["']\]/gim, "").replace(/\s+/gim, "")].call(then, e);
 					} catch (e) {
 						console.log(e);
 					}
@@ -608,6 +608,22 @@ pReact && ((function($) {
 		});
 		return html;
 	},
+	styles: function(html, data) {
+		html = html.replace(/<\?pjs\s+styles\(["'](.+)["']\)\s+\?>/gi, function(a, b, c) {
+			if (b && pReact.Styles && pReact.Styles[b]) {
+				var json = pReact.Styles[b],
+					style = [];
+				pReact.each(json, function(name, val) {
+					style.push(name.replace(/[A-Z]/gim, function(a) {
+						return /[A-Z]/.test(a) ? "-" + a.toLowerCase() : a;
+					}) + ":" + val);
+				});
+				return style.join(';') + ";";
+			}
+			return a;
+		});
+		return html;
+	},
 	forend: function(html, data) {
 		var arr = [];
 		var result = html.split("<?pjs for ");
@@ -642,7 +658,7 @@ pReact && ((function($) {
 						return a;
 					}).replace(/\'/gi, "\\\'").replace(/\"/gi, "\\\"").replace(/_###_/gi, "'");
 					//console.log(t)
-					var reg = new RegExp("{{ " + dataTName.replace(".","\\.") + "\\[" + dataIName + "\\]\\.|" + dataTName.replace(".","\\.") + "\\." + dataIName + "\\.", "gim");
+					var reg = new RegExp("{{ " + dataTName.replace(".", "\\.") + "\\[" + dataIName + "\\]\\.|" + dataTName.replace(".", "\\.") + "\\." + dataIName + "\\.", "gim");
 					//console.log(reg)
 					if (reg.test(str)) {
 						str = str.replace(reg, "{{ ");
@@ -909,7 +925,7 @@ pReact && ((function($) {
 		},
 		parents: function(id) {
 			var parent = null;
-		    this.length = pReact.jq.getLength(this);
+			this.length = pReact.jq.getLength(this);
 			if (this.length > 0) {
 				var elem = this[0];
 				parent = dir(elem, "parentNode");

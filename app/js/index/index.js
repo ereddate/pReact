@@ -33,6 +33,14 @@ window.pReact_web_config = {
 		buttonTitle: "关于"
 	}]
 }
+var styles = pReact.createStyle({
+	"header_nav_i":{
+		display:"block",
+		font:"inherit",
+		fontSize:"0.7728rem",
+		marginRight: "0.3864rem"
+	}
+});
 pReact.ready(function() {
 	this.toMobile(16);
 	this({

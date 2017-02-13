@@ -73,6 +73,7 @@ var headerView = pReact.createClass("header", {
 					display:none;
 				}
 				.header .header_nav i{
+					<?pjs styles("header_nav_i") ?>
 					display:block;
 					font:inherit;
 					font-size:0.7728rem;

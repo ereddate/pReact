@@ -238,6 +238,7 @@
 					display:none;
 				}
 				.header .header_nav i{
+					<?pjs styles("header_nav_i") ?>
 					display:block;
 					font:inherit;
 					font-size:0.7728rem;
@@ -340,8 +341,7 @@
 pReact.renderDom(
 	<headerView {test: 1} />,
 	document.getElementById("header")
-);
-var pageView = pReact.createClass("pageView", {
+);var pageView = pReact.createClass("pageView", {
 	getInitData: function(success, error){
 		success(window.pReact_web_config.pages)
 	},
