@@ -13,7 +13,9 @@
 		"ereddate@gmail.com"
 	],
 	"devDependencies": {
-		"grunt-contrib-watch": "*"
+		"grunt-contrib-watch": "*",
+		"grunt": "*",
+		"grunt-cli": "*"
 	},
 	"base": "./",
 	"configs": {
@@ -22,11 +24,11 @@
 			"dest": "dist/article/article",
 			"ext": ".pjs"
 		}, {
-			"src": ["header", "pages", "tip", "main", "footer", "footer-nav", "gotop", "aboutus", "top-banner", "newslist",  "app", "formkey", "list", "preactscroll", "baidumap"],
+			"src": ["header", "pages", "tip", "main", "footer", "footer-nav", "gotop", "aboutus", "top-banner", "newslist", "app", "formkey", "list", "preactscroll", "baidumap"],
 			"dest": "dist/index/index",
 			"ext": ".pjs"
 		}, {
-			"path":"../",
+			"path": "../",
 			"src": ["preact", "preact-extend-jq", "preact-extend-touchs", "preact-extend", "preact-extend-less", "preact-extend-scrolllist", "preact-extend-base64", "preact-extend-share", "preact-extend-canvasdraw", "preact-extend-xvideo", "preact-extend-map"],
 			"dest": "dist/preact/preact",
 			"ext": ".js"

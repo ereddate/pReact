@@ -1208,6 +1208,16 @@ pReact && define && (define("promise", ["pReact"], function() {
 			});
 			return this;
 		},
+		createStyle: function(){
+			var args = arguments,
+				len = args.length,
+				style;
+			if (len === 0) return;
+			style = args[0];
+			!pReact.Styles && (pReact.Styles = {});
+			pReact.extend(pReact.Styles, style);
+			return style;
+		},
 		refresh: function(parent, elem, ops) {
 			var r = map.diffDom(elem, pReact.vdoms, parent);
 			r.diff && pReact.vdoms[r.index].setState(ops);

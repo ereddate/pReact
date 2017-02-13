@@ -966,7 +966,69 @@ var scrollad = pReact.createClass("topBanner", {
 pReact.renderDom(
     <scrollad />,
     document.getElementById("inputprice0")
-);var newsListItem = pReact.createClass("newsListItem",{
+);
+var styles = pReact.createStyle({
+    topbanner: {
+        width: "100%",
+        position: "relative",
+        boxShadow: "inset 0 1px 1px #000"
+    },
+    "topbanner_inner": {
+        width: "100%",
+        display: "-webkit-box",
+        display: "-ms-flexbox"
+    },
+    "topbanner_inner_li": {
+        width: "100%",
+        position: "relative",
+        float: "left"
+    },
+    "topbanner_inner_li_a": {
+        display: "block",
+        position: "relative"
+    },
+    "topbanner_dot": {
+        position: "absolute",
+        right: 0,
+        bottom: 0,
+        padding: "12px 0",
+        display: "none\9"
+    },
+    "topbanner_dot_li": {
+        borderRadius: "0.1932rem",
+        float: "left",
+        width: "6px",
+        height: "6px",
+        background: "#aaa",
+        marginRight: "7px"
+    },
+    "topbanner_dot_li_on": {
+        background: "#4998e7"
+    },
+    "topbanner_title": {
+        position: "absolute",
+        right: 0,
+        bottom: 0,
+        fontSize: ".5em",
+        textAlign: "center",
+        height: "32px",
+        lineHeight: "32px",
+        padding: "0 36px 0 0",
+        color: "#fafafa",
+        left: 0,
+        fontWeight: 400,
+        textShadow: "1px 1px 1px #000",
+        background: ["-moz-linear-gradient(top,rgba(0,0,0,0),rgba(0,0,0,.9))","-webkit-gradient(linear,top,from(rgba(0,0,0,0)),to(rgba(0,0,0,.9)))","-webkit-linear-gradient(top,rgba(0,0,0,0),rgba(0,0,0,.9))","-o-linear-gradient(top,rgba(0,0,0,0),rgba(0,0,0,.9))"]
+    },
+    "topbanner_image": {
+        width: "100%",
+        minHeight: "165px"
+    },
+    "topbanner_image_img": {
+        maxWidth: "100%",
+        margin: "0 auto"
+    }
+});var newsListItem = pReact.createClass("newsListItem",{
 	getInitData:function(success, error){
 		success([{
 				title: "阿娇，你能不能换掉这双“驴蹄鞋”？",
