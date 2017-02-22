@@ -526,7 +526,7 @@
 							i+=1;
 							b.appendChild(i=== 1 ? pReact.tmpl((
 								<li style={styles.newsListItem}>
-									<img src="{{img}}" alt="{{title}}" style={styles.left} />
+									<img data-src="{{img}}" alt="{{title}}" style={styles.left} />
 									<div style={styles.right}>
 										<a href="{{url}}" style={styles.newsListActive}>{{title}}</a>
 										<p style={styles.newsListItemSource}>{{source}} {{time}}</p>
@@ -534,7 +534,7 @@
 								</li>
 							), n) : pReact.tmpl((
 								<li style={styles.newsListItem}>
-									<img src="{{img}}" alt="{{title}}" style={styles.left} />
+									<img data-src="{{img}}" alt="{{title}}" style={styles.left} />
 									<div style={styles.right}>
 										<a href="{{url}}" style={styles.newsListItemTitle}>{{title}}</a>
 										<p style={styles.newsListItemSource}>{{source}} {{time}}</p>
@@ -642,7 +642,7 @@
 							b.appendChild(pReact.tmpl((
 								<div style={styles.photosListItem}>
 									<a href="{{url}}" style={styles.photosListItemLlink}>
-										<img src="{{img}}" alt="{{title}}" style={styles.photosListItemImg}/>
+										<img data-src="{{img}}" alt="{{title}}" style={styles.photosListItemImg}/>
 									</a>
 									<p style={styles.photosListItemTitle}>{{title}}</p>
 								</div>

@@ -184,313 +184,317 @@
 	pReact.Styles = module.Styles;
 
 	module.extend(win.pReact, {
-		extend(a, b) {
-			a = module.extend(a, b);
-			return a;
-		},
-		createClass(name, classObject) {
-			module.Class[name] = module.extend(classObject, {
-				_className: name
-			});
-			return classObject;
-		},
-		createStyle(style) {
-			module.extend(module.Styles, (() => {
-				for (name in style) {
-					style[name] = module.toStyle(style[name]);
-				}
+			extend(a, b) {
+				a = module.extend(a, b);
+				return a;
+			},
+			createClass(name, classObject) {
+				module.Class[name] = module.extend(classObject, {
+					_className: name
+				});
+				return classObject;
+			},
+			createStyle(style) {
+				module.extend(module.Styles, (() => {
+					for (name in style) {
+						style[name] = module.toStyle(style[name]);
+					}
+					return style;
+				})());
 				return style;
-			})());
-			return style;
-		},
-		renderDom(name, data, parent, callback) {
-			if (!Object.is(parent, null)) {
-				let obj = (module.is(typeof name, "string") ? module.Class[name] : name),
-					element,
-					toElements = (element) => {
-						if (module.is(typeof element, "string")) {
-							var fragment = document.createDocumentFragment(),
-								temp = document.createElement("div");
-							element = tmpl(element, data, obj);
-							temp.innerHTML = element;
-							fragment = module.translateFragment(temp, fragment, obj, data);
-							//parent.innerHTML = "";
-							parent.appendChild(fragment);
-						} else {
-							element = tmpl(element, data, obj);
-							//parent.innerHTML = "";
-							parent.appendChild(element);
-						}
-					},
-					done = (result) => {
-						obj._data = result;
-						obj.render && (element = obj.render());
-						if (element) {
-							//console.log(element, parent)
-							if (module.is(typeof element, "object") && "length" in element || module.is(typeof element, "array")) {
-								element.forEach((e) => {
-									toElements(e);
-								})
+			},
+			renderDom(name, data, parent, callback) {
+				if (!Object.is(parent, null)) {
+					let obj = (module.is(typeof name, "string") ? module.Class[name] : name),
+						element,
+						toElements = (element) => {
+							if (module.is(typeof element, "string")) {
+								var fragment = document.createDocumentFragment(),
+									temp = document.createElement("div");
+								element = tmpl(element, data, obj);
+								temp.innerHTML = element;
+								fragment = module.translateFragment(temp, fragment, obj, data);
+								//parent.innerHTML = "";
+								parent.appendChild(fragment);
 							} else {
-								toElements(element);
+								element = tmpl(element, data, obj);
+								//parent.innerHTML = "";
+								parent.appendChild(element);
 							}
-							parent.className = parent.className.replace(/\s*preactroot/gim, "");
-							parent.className += " preactroot";
-						}
-						callback && callback();
-					};
+						},
+						done = (result) => {
+							obj._data = result;
+							obj.render && (element = obj.render());
+							if (element) {
+								//console.log(element, parent)
+								if (module.is(typeof element, "object") && "length" in element || module.is(typeof element, "array")) {
+									element.forEach((e) => {
+										toElements(e);
+									})
+								} else {
+									toElements(element);
+								}
+								parent.className = parent.className.replace(/\s*preactroot/gim, "");
+								parent.className += " preactroot";
+							}
+							callback && callback();
+						};
 
-				if (module.isEmptyObject(data) || module.is(data, undefined)) {
-					("getInitData" in obj) && (new Promise((resolve, reject) => {
-						obj.getInitData(resolve, reject)
-					}).then((result) => {
-						done(result);
-					}, () => {
-						done({});
-					})) || done({});
-				} else {
-					done(data);
+					if (module.isEmptyObject(data) || module.is(data, undefined)) {
+						("getInitData" in obj) && (new Promise((resolve, reject) => {
+							obj.getInitData(resolve, reject)
+						}).then((result) => {
+							done(result);
+						}, () => {
+							done({});
+						})) || done({});
+					} else {
+						done(data);
+					}
 				}
-			}
-			return parent;
-		},
-		toMobile(num) {
-			var head = doc.getElementsByTagName("head")[0],
-				style = doc.createElement("style");
-			head.appendChild(style);
-			style.innerHTML = "abbr,article,aside,audio,canvas,datalist,details,dialog,eventsource,figure,footer,object,header,hgroup,mark,menu,meter,nav,output,progress,section,time,video{display:block}";
-			var e = "abbr,article,aside,audio,canvas,datalist,details,dialog,eventsource,figure,footer,object,header,hgroup,mark,menu,meter,nav,output,progress,section,time,video".split(',');
-			var i = e.length;
-			while (i--) {
-				doc.createElement(e[i])
-			}
-			var meta = doc.createElement("meta");
-			meta.name = "viewport";
-			meta.content = "width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0";
-			head.appendChild(meta);
-			module.setFontSize(num);
-			window.addEventListener("onorientationchange" in window ? "orientationchange" : "resize", (() => {
+				return parent;
+			},
+			toMobile(num) {
+				var head = doc.getElementsByTagName("head")[0],
+					style = doc.createElement("style");
+				head.appendChild(style);
+				style.innerHTML = "abbr,article,aside,audio,canvas,datalist,details,dialog,eventsource,figure,footer,object,header,hgroup,mark,menu,meter,nav,output,progress,section,time,video{display:block}";
+				var e = "abbr,article,aside,audio,canvas,datalist,details,dialog,eventsource,figure,footer,object,header,hgroup,mark,menu,meter,nav,output,progress,section,time,video".split(',');
+				var i = e.length;
+				while (i--) {
+					doc.createElement(e[i])
+				}
+				var meta = doc.createElement("meta");
+				meta.name = "viewport";
+				meta.content = "width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0";
+				head.appendChild(meta);
 				module.setFontSize(num);
-			}), false);
-			return this;
-		},
-		getBaseFontSize(num) {
-			return window.baseFontSize || module.setFontSize(num);
-		},
-		ready(callback) {
-			this.toMobile();
-			var script = doc.getElementsByTagName("script");
-			(module.extend([], [].slice.call(script))).forEach((e) => {
-				if (module.is(e.type, "text/pReact")) {
-					module.evalContent(translateContent(e.innerHTML));
-					e.parentNode.removeChild(e);
-				}
-			});
-			callback && callback();
-			return this;
-		},
-		tmpl(html, data) {
-			return tmpl(html, data);
-		},
-		createDom() {
-			let args = arguments,
-				len = args.length,
-				tagName, attrs, arr = module.extend([], args);
-			if (len < 2) return;
-			tagName = args[0];
-			attrs = args[1];
-			var childrens = [],
-				i = 0;
-			arr.forEach((r) => {
-				i += 1;
-				if (i > 2) childrens.push(r);
-			});
-			let element = module.is(tagName, "textNode") ? doc.createTextNode("") : module.is(tagName, "docmentfragment") ? doc.createDocumentFragment() : doc.createElement(tagName);
-			if (!module.is(tagName, "docmentfragment")) {
-				element._props = {};
-				module.extend(element._props, module.extend(attrs, {
-					tagName: tagName
-				}));
-				module.extend(element, {
-					_set(options) {
-						var then = this;
-						module.set(then, options);
-					},
-					_findNode(selector) {
-						var then = this;
-						return module.fineNode(then, selector);
-					},
-					_parents(selector) {
-						var then = this;
-						return module.parents(then, selector);
-					},
-					_attr(name, value) {
-						var then = this;
-						return !module.is(typeof name, "string") && [].slice.call(name).forEach((e) => {
-							element.setAttribute(e.name, e.value);
-						}) || !module.is(typeof value, "undefined") && then.setAttribute(name, value) || then.getAttribute(name);
-					},
-					_removeAttr(name) {
-						this.removeAttribute(name);
-						return this;
-					},
-					_on(eventName, fn) {
-						var then = this;
-						eventName = eventName.toLowerCase().split(' ');
-						eventName.forEach((ev) => {
-							then[/^on/.test(ev) ? ev : "on" + ev] = ((e) => {
-								fn.call(this, e)
-							});
-							module.eventData.push({
-								element: then,
-								eventName: ev,
-								factory: fn
-							});
-						})
-					},
-					_off(eventName) {
-						var then = this,
-							i = 0;
-						eventName = eventName.toLowerCase().split(' ');
-						eventName.forEach((ev) => {
-							then[/^on/.test(eventName) ? eventName : "on" + eventName] = null;
-							module.eventData.forEach((a) => {
-								i += 1;
-								if (module.is(a.element, then) && module.is(a.eventName, eventName)) module.eventData.splice(i, 1)
-							})
-						})
-					},
-					_remove(element) {
-						element && this.removeChild(element) || this.parentNode && this.parentNode.removeChild(this);
-						return this;
-					},
-					_css(name, value) {
-						var args = arguments,
-							len = args.length;
-						if (len === 0) {
+				window.addEventListener("onorientationchange" in window ? "orientationchange" : "resize", (() => {
+					module.setFontSize(num);
+				}), false);
+				return this;
+			},
+			getBaseFontSize(num) {
+				return window.baseFontSize || module.setFontSize(num);
+			},
+			ready(callback) {
+				this.toMobile();
+				var script = doc.getElementsByTagName("script");
+				(module.extend([], [].slice.call(script))).forEach((e) => {
+					if (module.is(e.type, "text/pReact")) {
+						module.evalContent(translateContent(e.innerHTML));
+						e.parentNode.removeChild(e);
+					}
+				});
+				callback && callback();
+				return this;
+			},
+			tmpl(html, data) {
+				return tmpl(html, data);
+			},
+			createDom() {
+				let args = arguments,
+					len = args.length,
+					tagName, attrs, arr = module.extend([], args);
+				if (len < 2) return;
+				tagName = args[0];
+				attrs = args[1];
+				var childrens = [],
+					i = 0;
+				arr.forEach((r) => {
+					i += 1;
+					if (i > 2) childrens.push(r);
+				});
+				let element = module.is(tagName, "textNode") ? doc.createTextNode("") : module.is(tagName, "docmentfragment") ? doc.createDocumentFragment() : doc.createElement(tagName);
+				if (!module.is(tagName, "docmentfragment")) {
+					element._props = {};
+					module.extend(element._props, module.extend(attrs, {
+						tagName: tagName
+					}));
+					module.extend(element, {
+						_set(options) {
+							var then = this;
+							module.set(then, options);
+						},
+						_findNode(selector) {
+							var then = this;
+							return module.fineNode(then, selector);
+						},
+						_parents(selector) {
+							var then = this;
+							return module.parents(then, selector);
+						},
+						_attr(name, value) {
+							var then = this;
+							return !module.is(typeof name, "string") && [].slice.call(name).forEach((e) => {
+								element.setAttribute(e.name, e.value);
+							}) || !module.is(typeof value, "undefined") && then.setAttribute(name, value) || then.getAttribute(name);
+						},
+						_removeAttr(name) {
+							this.removeAttribute(name);
 							return this;
-						} else if (len === 1) {
-							if ("style" in this) {
-								if (module.is(typeof name, "string")) {
-									var f = [],
-										then = this;
-									name.split(' ').forEach((n) => {
-										f.push(then.style[n]);
-									});
-									return f.length > 1 ? f : f.join('');
-								} else if (module.isPlainObject(name)) {
-									for (n in name) {
-										this.style[n] = name[n]
+						},
+						_on(eventName, fn) {
+							var then = this;
+							eventName = eventName.toLowerCase().split(' ');
+							eventName.forEach((ev) => {
+								then[/^on/.test(ev) ? ev : "on" + ev] = ((e) => {
+									fn.call(this, e)
+								});
+								module.eventData.push({
+									element: then,
+									eventName: ev,
+									factory: fn
+								});
+							})
+						},
+						_off(eventName) {
+							var then = this,
+								i = 0;
+							eventName = eventName.toLowerCase().split(' ');
+							eventName.forEach((ev) => {
+								then[/^on/.test(eventName) ? eventName : "on" + eventName] = null;
+								module.eventData.forEach((a) => {
+									i += 1;
+									if (module.is(a.element, then) && module.is(a.eventName, eventName)) module.eventData.splice(i, 1)
+								})
+							})
+						},
+						_remove(element) {
+							element && element.nodeType && this.removeChild(element) || this.parentNode && this.parentNode.removeChild(this);
+							return this;
+						},
+						_css(name, value) {
+							var args = arguments,
+								len = args.length;
+							if (len === 0) {
+								return this;
+							} else if (len === 1) {
+								if ("style" in this) {
+									if (module.is(typeof name, "string")) {
+										var f = [],
+											then = this;
+										name.split(' ').forEach((n) => {
+											f.push(then.style[n]);
+										});
+										return f.length > 1 ? f : f.join('');
+									} else if (module.isPlainObject(name)) {
+										for (n in name) {
+											this.style[n] = name[n]
+										}
+										return this;
 									}
+								} else {
 									return this;
 								}
 							} else {
+								this.style[name] = value;
 								return this;
 							}
-						} else {
-							this.style[name] = value;
-							return this;
+						},
+						_offset() {
+							return {
+								top: this.offsetTop,
+								left: this.offsetLeft
+							}
+						},
+						_previous() {
+							return this.previousElementSibling;
+						},
+						_next() {
+							return this.nextElementSibling;
+						},
+						_has(a, b) {
+							return module.has(a, b);
 						}
-					},
-					_offset() {
-						return {
-							top: this.offsetTop,
-							left: this.offsetLeft
+					})
+					module.state.elements.push(element);
+					var f = (v) => {
+						var val = false;
+						if (/\{+\s*([^<>}{,]+)\s*\}+/.test(v) && /\./.test(v)) {
+							var r = /\{+\s*([^<>}{,]+)\s*\}+/.exec(v);
+							if (r) {
+								val = pReact.getStyle(r[1].split('.')[1]);
+								if (module.is(val, false)) val = module.Class[r[1].split('.')[0]] && module.Class[r[1].split('.')[0]][r[1].split('.')[1]];
+							}
 						}
-					},
-					_previous() {
-						return this.previousElementSibling;
-					},
-					_next() {
-						return this.nextElementSibling;
-					},
-					_has(a, b) {
-						return module.has(a, b);
-					}
-				})
-				module.state.elements.push(element);
-				var f = (v) => {
-					var val = false;
-					if (/\{+\s*([^<>}{,]+)\s*\}+/.test(v) && /\./.test(v)) {
-						var r = /\{+\s*([^<>}{,]+)\s*\}+/.exec(v);
-						if (r) {
-							val = pReact.getStyle(r[1].split('.')[1]);
-							if (module.is(val, false)) val = module.Class[r[1].split('.')[0]] && module.Class[r[1].split('.')[0]][r[1].split('.')[1]];
-						}
-					}
-					if (module.is(val, false)) val = v;
-					return val;
-				};
-				for (name in attrs) {
-					var n = attrs[name],
-						v = f(n);
-					switch (name) {
-						case "text":
-							if (module.is(typeof v, "string") && module.is(element.nodeType, 3)) {
-								element.textContent = v;
-							} else if (module.is(typeof v, "function")) {
-								v = v();
-								if (module.is(typeof v, "string")) {
+						if (module.is(val, false)) val = v;
+						return val;
+					};
+					for (name in attrs) {
+						var n = attrs[name],
+							v = f(n);
+						//console.log(v, name)
+						switch (name) {
+							case "text":
+								if (module.is(typeof v, "string") && module.is(element.nodeType, 3)) {
 									element.textContent = v;
-								} else if (!module.is(v.nodeType, undefined)) {
-									element = v;
-									var r = /\{+\s*([^<>}{,]+)\s*\}+/.exec(n);
-									if (r) {
-										module.setElementClass(element, r[1].split('.')[0])
+								} else if (module.is(typeof v, "function")) {
+									v = v();
+									if (module.is(typeof v, "string")) {
+										element.textContent = v;
+									} else if (!module.is(v.nodeType, undefined)) {
+										element = v;
+										var r = /\{+\s*([^<>}{,]+)\s*\}+/.exec(n);
+										if (r) {
+											module.setElementClass(element, r[1].split('.')[0])
+										}
 									}
+								} else {
+									var textnode = doc.createTextNode(v);
+									element.appendChild(textnode);
 								}
-							} else {
-								var textnode = doc.createTextNode(v);
-								element.appendChild(textnode);
-							}
-							break;
-						case "html":
-							v = module.is(typeof v, "function") ? v() : v;
-							element.innerHTML = v.nodeType ? v.innerHTML : v;
-							break;
-						case "class":
-							element.className += " " + v;
-							break;
-						case "handle":
-							module.bind(v, element);
-							break;
-						default:
-							if (/^on/.test(name) || /href/.test(name) && /\{{,1}\s*[^<>}{,]+\s*\}{,1}/.test(v)) {
-								!element._props.handle && (element._props.handle = {});
-								let a = {};
-								var fn = v;
-								if (/href/.test(name) && /\{\s*[^{}]+\s*\}/.test(v)) {
-									element.setAttribute(name, "javascript:;");
-									name = "onclick";
+								break;
+							case "src":
+								element.setAttribute((/\{+\s*([^<>}{,]+)\s*\}+/.test(v) ? "data-" + name : name), v);
+								break;
+							case "html":
+								v = module.is(typeof v, "function") ? v() : v;
+								element.innerHTML = v.nodeType ? v.innerHTML : v;
+								break;
+							case "class":
+								element.className += " " + v;
+								break;
+							case "handle":
+								module.bind(v, element);
+								break;
+							default:
+								if (/^on/.test(name) || /href/.test(name) && /\{{,1}\s*[^<>}{,]+\s*\}{,1}/.test(v)) {
+									!element._props.handle && (element._props.handle = {});
+									let a = {};
+									var fn = v;
+									if (/href/.test(name) && /\{\s*[^{}]+\s*\}/.test(v)) {
+										element.setAttribute(name, "javascript:;");
+										name = "onclick";
+									}
+									a[name.replace("on", "")] = fn;
+									module.extend(element._props.handle, a);
+									module.bind(a, element);
+								} else {
+									//console.log(name, v, element)
+									!/element|tagName/.test(name) && element.setAttribute(name, v);
+									//element.getAttribute && console.log(element.getAttribute(name));
 								}
-								a[name.replace("on", "")] = fn;
-								module.extend(element._props.handle, a);
-								module.bind(a, element);
-							} else {
-								//console.log(name, v, element)
-								!/element|tagName/.test(name) && element.setAttribute(name, v);
-								//element.getAttribute && console.log(element.getAttribute(name));
-							}
-							break;
+								break;
+						}
 					}
+					element._childrens = childrens
 				}
-				element._childrens = childrens
+				childrens.forEach((e) => {
+					if (module.is(typeof e, "function")) {
+						var items = e();
+						element.appendChild(items);
+					} else {
+						element.appendChild(e);
+					}
+				});
+				return element;
+			},
+			getStyle(name) {
+				return !Object.is(module.Styles[name], undefined) && module.Styles[name];
 			}
-			childrens.forEach((e) => {
-				if (module.is(typeof e, "function")) {
-					var items = e();
-					element.appendChild(items);
-				} else {
-					element.appendChild(e);
-				}
-			});
-			return element;
-		},
-		getStyle(name) {
-			return !Object.is(module.Styles[name], undefined) && module.Styles[name];
-		}
-	})
-	console.log(module.state)
+		})
+		//console.log(module.state)
 })(this, (element, data, obj) => {
 	var f = (element) => {
 
@@ -498,14 +502,21 @@
 				!e["_factory"] && (e["_factory"] = obj);
 				!e["_data"] && (e["_data"] = data);
 				var attrs = e.attributes && e.attributes.length > 0 && [].slice.call(e.attributes) || false;
+				//console.log(attrs)
 				if (attrs) {
 					attrs.forEach((a) => {
 						for (name in data) {
-							new RegExp("{{\\s*" + name + "\\s*}}").test(a.value) && e.setAttribute(a.name, data[name]);
+							new RegExp("{{\\s*" + name.toLowerCase() + "\\s*}}").test(a.value.toLowerCase()) && e.setAttribute(a.name, data[name]);
 						}
-						e.setAttribute(a.name, /\{+\s*([^<>}{,]+)\s*\}+/.test(a.value) ? (a.value = a.value.replace(/\{+\s*([^<>}{,]+)\s*\}+/gim, ((a, b) => {
-							return g(a, b, e);
-						}))) : a.value);
+						//console.log(a.name);
+						if (/data\-src/.test(a.name.toLowerCase()))
+							(e.setAttribute("src", /\{+\s*([^<>}{,]+)\s*\}+/.test(a.value) ? (a.value = a.value.replace(/\{+\s*([^<>}{,]+)\s*\}+/gim, ((a, b) => {
+								return g(a, b, e);
+							}))) : a.value), e._removeAttr("data-src"));
+						else
+							e.setAttribute(a.name, /\{+\s*([^<>}{,]+)\s*\}+/.test(a.value) ? (a.value = a.value.replace(/\{+\s*([^<>}{,]+)\s*\}+/gim, ((a, b) => {
+								return g(a, b, e);
+							}))) : a.value);
 					})
 				}
 				["text", "nodeValue"].forEach((text) => {
@@ -591,7 +602,7 @@
 		if (attrs) {
 			var f = [];
 			[].slice.call(attrs).forEach((t) => {
-				f.push(t.name + ":\"" + t.value + "\"")
+				f.push(t.name.toLowerCase() + ":\"" + t.value.toLowerCase() + "\"")
 			});
 			a = a.replace(b, c + ",{" + f.join(',') + "}");
 		} else {
