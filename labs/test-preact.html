@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+		<script src="preact.20170215.js"></script>
+		<style>
+			body{background:#f4f5f7;font-family:微软雅黑;}
+			body,ul, p{list-style:none;padding:0;margin:0;}
+			.item{overflow:hidden;display:block;clear:both;}
+		</style>
+	</head>
+	<body>
+		<div id="page"></div>
+		<script type="text/pReact">
+			var baseFontSize = baseFontSize || pReact.getBaseFontSize(),
+				styles = pReact.createStyle({
+					header: {
+						margin:0,
+						background: "rgba(220,220,220,.8)",
+						position: "fixed",
+						top:0,
+						left:0,
+						right:0,
+						height:(50/baseFontSize).toFixed(4)+"rem",
+						zIndex:999999
+					},
+					menu: {
+						listStyle:"none",
+						position: "absolute",
+						top:(50/baseFontSize).toFixed(4)+"rem",
+						left:0,
+						width: "100%",
+						margin:0,
+						padding:0,
+						display:"none"
+					},
+					showMenu:{
+						listStyle:"none",
+						position: "absolute",
+						fontSize: (20/baseFontSize).toFixed(4)+"rem",
+						top:(50/baseFontSize).toFixed(4)+"rem",
+						left:0,
+						width: "100%",
+						margin:0,
+						padding:0,
+						display:"block",
+						height: (120/baseFontSize).toFixed(4)+"rem",
+						overflow: "scroll"
+					},
+					showMenuButton: {
+						fontSize: (20/baseFontSize).toFixed(4)+"rem",
+						position: "absolute",
+						top:(10/baseFontSize).toFixed(4)+"rem",
+						right:(10/baseFontSize).toFixed(4)+"rem"
+					},
+					logo:{
+						fontSize: (20/baseFontSize).toFixed(4)+"rem",
+						display: "block",
+						lineHeight: (50/baseFontSize).toFixed(4)+"rem",
+						marginLeft: (10/baseFontSize).toFixed(4)+"rem"
+					},
+					menuButton:{
+						fontSize: (20/baseFontSize).toFixed(4)+"rem",
+						lineHeight: (30/baseFontSize).toFixed(4)+"rem",
+						padding: "0 "+(10/baseFontSize).toFixed(4)+"rem",
+						display: "block",
+						background: "rgba(128,128,128,1)",
+						color: "rgb(255,255,255)",
+						textDecoration: "none"
+					},
+					search:{
+						marginTop: (50/baseFontSize).toFixed(4)+"rem",
+						textAlign: "center",
+						height: (40/baseFontSize).toFixed(4)+"rem",
+						background: "rgb(255,255,255)"
+					},
+					searchInput:{
+						width:((screen.width-44)/baseFontSize).toFixed(4)+"rem",
+						margin: "0 "+(10/baseFontSize).toFixed(4)+"rem",
+						border: (1/baseFontSize).toFixed(4)+"rem solid rgb(169,169,169)",
+						fontSize: (14/baseFontSize).toFixed(4)+"rem",
+						borderRadius: (10/baseFontSize).toFixed(4)+"rem",
+						padding: (2/baseFontSize).toFixed(4)+"rem "+(10/baseFontSize).toFixed(4)+"rem"
+					},
+					quota:{
+						marginTop: (10/baseFontSize).toFixed(4)+"rem",
+						display: "flex",
+						flexFlow: "row"
+					},
+					quotaUl:{
+						width:"100%"
+					},
+					quotaInitColor:{
+						backgroundColor: "#4eb559",
+						color: "rgb(255,255,255)",
+						textAlign: "center",
+						width:  (100/3).toFixed(2)+"%",
+						float: "left",
+						fontSize: (14/baseFontSize).toFixed(4)+"rem",
+						padding: (10/baseFontSize).toFixed(4)+"rem 0",
+						lineHeight: (25/baseFontSize).toFixed(4)+"rem"
+					},
+					quotaRiseColor:{
+						backgroundColor: "#f93735",
+						color: "rgb(255,255,255)",
+						textAlign: "center",
+						width: (100/3).toFixed(2)+"%",
+						float: "left",
+						fontSize: (14/baseFontSize).toFixed(4)+"rem",
+						padding: (10/baseFontSize).toFixed(4)+"rem 0",
+						lineHeight: (25/baseFontSize).toFixed(4)+"rem"
+					},
+					newsChannelItem:{
+						float:"left"
+					},
+					newsChannel:{
+						display:"block",
+						clear: "both",
+						padding: "0 0 "+(10/baseFontSize).toFixed(4)+"rem 0",
+						overflow: "hidden",
+						fontSize: (14/baseFontSize).toFixed(4)+"rem"
+					},
+					channelActive:{
+						color: "red",
+						textDecoration: "none",
+						margin: "0 "+(10/baseFontSize).toFixed(4)+"rem 0 0"
+					},
+					channelTitle:{
+						textDecoration: "none",
+						color: "rgb(0,0,0)",
+						margin: "0 "+(10/baseFontSize).toFixed(4)+"rem"
+					},
+					newsList:{
+						display:"block",
+						clear: "both"
+					},
+					newsListItem:{
+						margin:"0 0 "+(10/baseFontSize).toFixed(4)+"rem 0",
+						clear:"both",
+						overflow: "hidden"
+					},
+					newsListActive:{
+						color: "red",
+						fontSize: (20/baseFontSize).toFixed(4)+"rem",
+						textDecoration: "none",
+						lineHeight: (30/baseFontSize).toFixed(4)+"rem",
+						display:"block"
+					},
+					newsListItemSource:{
+						color: "rgb(130,130,130)",
+						fontSize: (10/baseFontSize).toFixed(4)+"rem",
+						lineHeight: (26/baseFontSize).toFixed(4)+"rem",
+					},
+					newsListItemTitle:{
+						color: "rgb(0,0,0)",
+						fontSize: (20/baseFontSize).toFixed(4)+"rem",
+						textDecoration: "none",
+						lineHeight: (26/baseFontSize).toFixed(4)+"rem",
+						display:"block"
+					},
+					viewItem: {
+						display:"block",
+						clear: "both",
+						background: "rgb(255,255,255)",
+						marginTop:(10/baseFontSize).toFixed(4)+"rem",
+						padding: (10/baseFontSize).toFixed(4)+"rem"
+					},
+					footer:{
+						height: (180/baseFontSize).toFixed(4)+"rem",
+						textAlign: "center",
+						fontSize: (16/baseFontSize).toFixed(4)+"rem",
+						background: "rgba(218,60,60,1)",
+						overflow:"hidden",
+						color: "rgb(255,255,255)",
+						marginTop: (10/baseFontSize).toFixed(4)+"rem"
+					},
+					footerMenu:{
+						margin: (20/baseFontSize).toFixed(4)+"rem"
+					},
+					footerMenuItem:{
+						textDecoration: "none",
+						color: "rgb(255,255,255)",
+						margin: "0 "+(5/baseFontSize).toFixed(4)+"rem"
+					},
+					footerButton:{
+						width: (140/baseFontSize).toFixed(4)+"rem",
+						fontSize: (16/baseFontSize).toFixed(4)+"rem",
+						borderRadius: (10/baseFontSize).toFixed(4)+"rem",
+						border: 0,
+						background: "rgb(255,255,255)",
+						lineHeight: (40/baseFontSize).toFixed(4)+"rem"
+					},
+					copyright:{
+						clear: "both",
+						display: "block",
+						fontSize: (14/baseFontSize).toFixed(4)+"rem",
+						marginTop: (20/baseFontSize).toFixed(4)+"rem"
+					},
+					adTongLan:{
+						width:"100%",
+						height: (64/baseFontSize).toFixed(4)+"rem",
+						textAlign: "center",
+						marginTop: (10/baseFontSize).toFixed(4)+"rem",
+						background: "rgb(105,105,105)"
+					},
+					adTongLanItem:{
+						lineHeight: (64/baseFontSize).toFixed(4)+"rem"
+					},
+					gotop:{
+						position:"fixed",
+						bottom:(60/baseFontSize).toFixed(4)+"rem",
+						right:(20/baseFontSize).toFixed(4)+"rem",
+						background: "rgba(105,105,105, .5)",
+						fontSize: (16/baseFontSize).toFixed(4)+"rem",
+						borderRadius: (100/baseFontSize).toFixed(4)+"rem",
+						width: (40/baseFontSize).toFixed(4)+"rem",
+						height: (40/baseFontSize).toFixed(4)+"rem",
+						textAlign: "center",
+						lineHeight: (40/baseFontSize).toFixed(4)+"rem",
+						color:"rgb(255,255,255)",
+						textDecoration:"none",
+						zIndex:999999
+					},
+					left:{
+						float:"left",
+						width: (128/baseFontSize).toFixed(4)+"rem"
+					},
+					right:{
+						float:"left",
+						marginLeft:(10/baseFontSize).toFixed(4)+"rem",
+						width: ((screen.width-160)/baseFontSize).toFixed(4)+"rem"
+					},
+					photosListItem:{
+						width:(100/2-3).toFixed(2)+"%",
+						height: (124/baseFontSize).toFixed(4)+"rem",
+						float: "left",
+						textAlign: "center",
+						padding:(5/baseFontSize).toFixed(4)+"rem",
+						position:"relative"
+					},
+					photosListItemTitle:{
+						background:"rgba(0,0,0,.6)",
+						color:"rgb(255,255,255)",
+						margin:"0 "+(5/baseFontSize).toFixed(4)+"rem",
+						padding: (5/baseFontSize).toFixed(4)+"rem",
+						textAlign:"left",
+						fontSize:(14/baseFontSize).toFixed(4)+"rem",
+						position:"absolute",
+						bottom:0,
+						left:0,
+						right:0
+					},
+					photosListItemLlink:{
+						display:"block"
+					},
+					photosListItemImg:{
+						width:"100%"
+					},
+					photosList:{
+						padding:"0 0 " +(10/baseFontSize).toFixed(4)+"rem 0",
+						overflow:"hidden"
+					},
+					hide:{
+						display:"none"
+					},
+					modulebox:{
+						position:"fixed",
+						top:0,
+						left:0,
+						right:0,
+						bottom:0,
+						textAlign:"center",
+						background:"rgba(255,255,255,.7)",
+						color:"rgb(255,255,255)",
+						zIndex:999999,
+						display:"block"
+					},
+					moduleboxView:{
+						position:"fixed",
+						top:(screen.height/2/baseFontSize).toFixed(4)+"rem",
+						left:(20/baseFontSize).toFixed(4)+"rem",
+						right:(20/baseFontSize).toFixed(4)+"rem",
+						textAlign:"center",
+						background:"rgba(0,0,0,1)",
+						padding:(10/baseFontSize).toFixed(4)+"rem",
+						borderRadius:(10/baseFontSize).toFixed(4)+"rem",
+						color:"rgb(255,255,255)",
+						fontSize:(20/baseFontSize).toFixed(4)+"rem"
+					},
+					moduleboxViewModule:{
+						position:"fixed",
+						top:(screen.height/3/baseFontSize).toFixed(4)+"rem",
+						left:(20/baseFontSize).toFixed(4)+"rem",
+						right:(20/baseFontSize).toFixed(4)+"rem",
+						textAlign:"center",
+						background:"rgba(0,0,0,1)",
+						padding:(10/baseFontSize).toFixed(4)+"rem",
+						borderRadius:(10/baseFontSize).toFixed(4)+"rem",
+						color:"rgb(255,255,255)",
+						fontSize:(20/baseFontSize).toFixed(4)+"rem"
+					},
+					moduleboxViewModuleTitle:{
+
+					},
+					moduleboxViewModuleContent:{
+						height: (200/baseFontSize).toFixed(4)+"rem",
+						overflow: "auto",
+						overflowX: "hidden",
+						textAlign: "left"
+					},
+					moduleboxViewModuleControl:{
+						textAlign:"center"
+					},
+					moduleboxButton:{
+						background:"rgb(169,169,169)",
+						border:0,
+						borderRadius:(10/baseFontSize).toFixed(4)+"rem",
+						color:"rgb(255,255,255)",
+						margin: "0 "+(10/baseFontSize).toFixed(4)+"rem",
+						fontSize: (20/baseFontSize).toFixed(4)+"rem",
+						padding:(5/baseFontSize).toFixed(4)+"rem "+(10/baseFontSize).toFixed(4)+"rem"
+					},
+					moduleboxButtonActive:{
+						background:"rgb(218,60,60)",
+						border:0,
+						borderRadius:(10/baseFontSize).toFixed(4)+"rem",
+						color:"rgb(255,255,255)",
+						margin: "0 "+(10/baseFontSize).toFixed(4)+"rem",
+						fontSize: (20/baseFontSize).toFixed(4)+"rem",
+						padding:(5/baseFontSize).toFixed(4)+"rem "+(10/baseFontSize).toFixed(4)+"rem"
+					}
+				}),
+				header = pReact.createClass("header", {
+					menuItemClick(e){
+						console.log(e)
+					},
+					showMenuClick(e){
+						let next = this._next(),
+							isShow = next._has(next.style.display, "none");
+						next._set({
+							style: isShow ? styles.showMenu : styles.menu
+						});
+						this._set({
+							text: isShow ? "close" : "menu"
+						});
+					},
+					render(){
+						return (
+							<div style={styles.header} class="header">
+								<span style={styles.logo}>logo</span>
+								<span style={styles.showMenuButton} onclick={showMenuClick}>menu</span>
+								<menu style={styles.menu}>
+									<li>
+										<a href="javascript:;" style={styles.menuButton} onclick={menuItemClick}>test</a>
+									</li>
+									<li>
+										<a href="javascript:;" style={styles.menuButton} onclick={menuItemClick}>test2</a>
+									</li>
+									<li>
+										<a href="javascript:;" style={styles.menuButton} onclick={menuItemClick}>test3</a>
+									</li>
+									<li>
+										<a href="javascript:;" style={styles.menuButton} onclick={menuItemClick}>test4</a>
+									</li>
+									<li>
+										<a href="javascript:;" style={styles.menuButton} onclick={menuItemClick}>test5</a>
+									</li>
+								</menu>
+							</div>
+						);
+					}
+				}),
+				quotali = pReact.createClass("quotali", {
+					handleClick(e){
+						let url = this.getAttribute("data-url");
+						location.href = url;
+					},
+					render(){
+						var b = document.createDocumentFragment(), i=0;
+						[{
+							quotaValue: "0.00",
+							quotaName: "上证指数",
+							quotaRate: "0.00",
+							url: ""
+						},{
+							quotaValue: "0.00",
+							quotaName: "上证指数",
+							quotaRate: "0.00",
+							url: ""
+						},{
+							quotaValue: "0.00",
+							quotaName: "上证指数",
+							quotaRate: "0.00",
+							url: ""
+						}].forEach((n) => {
+							i+=1;
+							b.appendChild(i%2 === 1 ? pReact.tmpl((
+								<li style={styles.quotaInitColor} onclick={handleClick} data-url="{{url}}">
+									{{quotaValue}}<i></i>
+									<p>{{quotaName}} {{quotaRate}}%</p>
+								</li>
+							), n) : pReact.tmpl((
+								<li style={styles.quotaRiseColor} onclick={handleClick} data-url="{{url}}">
+									{{quotaValue}}<i></i>
+									<p>{{quotaName}} {{quotaRate}}%</p>
+								</li>
+							), n))
+						});
+						return b
+					}
+				}),
+				quota = pReact.createClass("quota", {
+					render(){
+						return (
+							<div style={styles.quota}>
+								<ul style={styles.quotaUl}>
+									{quotali.render}
+								</ul>
+							</div>
+						)
+					}
+				}),
+				newsChannel = pReact.createClass("newsChannel", {
+					render(){
+						var b = document.createDocumentFragment(), i=0;
+						[{
+							title: "新闻",
+							url: ""
+						},{
+							title: "新闻",
+							url: ""
+						},{
+							title: "新闻",
+							url: ""
+						},{
+							title: "新闻",
+							url: ""
+						}].forEach((n) => {
+							i+=1;
+							b.appendChild(i=== 1 ? pReact.tmpl((
+								<li style={styles.newsChannelItem}>
+									<a href="{{url}}" style={styles.channelActive}>{{title}}</a> <span class="line">|</span>
+								</li>
+							), n) : i>3 ? pReact.tmpl((
+								<li style={styles.newsChannelItem}>
+									<a href="{{url}}" style={styles.channelTitle}>{{title}}</a>
+								</li>
+							), n) : pReact.tmpl((
+								<li style={styles.newsChannelItem}>
+									<a href="{{url}}" style={styles.channelTitle}>{{title}}</a> <span class="line">|</span>
+								</li>
+							), n))
+						});
+						return b
+					}
+				}),
+				newsList = pReact.createClass("newsList", {
+					getInitData(success, error){
+						success([{
+							title: "证监会发布监管问答 定增基金发行数量或锐减",
+							url: "",
+							img: "https://minimg.hexun.com/i6.hexun.com/2017-02-21/188228660_c162x117.jpg",
+							source: "证券时报",
+							time: "02-21 02:40"
+						},{
+							title: "证监会发布监管问答 定增基金发行数量或锐减",
+							url: "",
+							img: "https://minimg.hexun.com/i0.hexun.com/2014-10-10/169190461_c162x117.jpg",
+							source: "证券时报",
+							time: "02-21 02:40"
+						},{
+							title: "证监会发布监管问答 定增基金发行数量或锐减",
+							url: "",
+							img: "https://minimg.hexun.com/i8.hexun.com/2015-05-11/175706935_c162x117.jpg",
+							source: "证券时报",
+							time: "02-21 02:40"
+						},{
+							title: "证监会发布监管问答 定增基金发行数量或锐减",
+							url: "",
+							img: "https://minimg.hexun.com/i0.hexun.com/2014-10-10/169190461_c162x117.jpg",
+							source: "证券时报",
+							time: "02-21 02:40"
+						},{
+							title: "证监会发布监管问答 定增基金发行数量或锐减",
+							url: "",
+							img: "https://minimg.hexun.com/i0.hexun.com/2014-10-10/169190461_c162x117.jpg",
+							source: "证券时报",
+							time: "02-21 02:40"
+						},{
+							title: "证监会发布监管问答 定增基金发行数量或锐减",
+							url: "",
+							img: "https://minimg.hexun.com/i8.hexun.com/2015-05-11/175706935_c162x117.jpg",
+							source: "证券时报",
+							time: "02-21 02:40"
+						},{
+							title: "证监会发布监管问答 定增基金发行数量或锐减",
+							url: "",
+							img: "https://minimg.hexun.com/i0.hexun.com/2014-10-10/169190461_c162x117.jpg",
+							source: "证券时报",
+							time: "02-21 02:40"
+						},{
+							title: "证监会发布监管问答 定增基金发行数量或锐减",
+							url: "",
+							img: "https://minimg.hexun.com/i9.hexun.com/2017-02-20/188214325_c162x117.jpg",
+							source: "证券时报",
+							time: "02-21 02:40"
+						},{
+							title: "证监会发布监管问答 定增基金发行数量或锐减",
+							url: "",
+							img: "https://minimg.hexun.com/i0.hexun.com/2014-10-10/169190461_c162x117.jpg",
+							source: "证券时报",
+							time: "02-21 02:40"
+						},{
+							title: "证监会发布监管问答 定增基金发行数量或锐减",
+							url: "",
+							img: "https://minimg.hexun.com/i8.hexun.com/2015-05-11/175706935_c162x117.jpg",
+							source: "证券时报",
+							time: "02-21 02:40"
+						}])
+					},
+					render(){
+						var b = document.createDocumentFragment(), i=0;
+						this._data && this._data.forEach((n) => {
+							i+=1;
+							b.appendChild(i=== 1 ? pReact.tmpl((
+								<li style={styles.newsListItem}>
+									<img src="{{img}}" alt="{{title}}" style={styles.left} />
+									<div style={styles.right}>
+										<a href="{{url}}" style={styles.newsListActive}>{{title}}</a>
+										<p style={styles.newsListItemSource}>{{source}} {{time}}</p>
+									</div>
+								</li>
+							), n) : pReact.tmpl((
+								<li style={styles.newsListItem}>
+									<img src="{{img}}" alt="{{title}}" style={styles.left} />
+									<div style={styles.right}>
+										<a href="{{url}}" style={styles.newsListItemTitle}>{{title}}</a>
+										<p style={styles.newsListItemSource}>{{source}} {{time}}</p>
+									</div>
+								</li>
+							), n))
+						});
+						return b
+					}
+				}),
+				news = pReact.createClass("news", {
+					render(){
+						return (
+							<div style={styles.viewItem}>
+								<ul style={styles.newsChannel}>{newsChannel.render}</ul>
+								<div style={styles.newsList} id="{{id}}"></div>
+							</div>
+						);
+					}
+				}),
+				footermenu = pReact.createClass("footermenu", {
+					render(){
+						var b = document.createDocumentFragment(), i=0;
+						[{
+							title: "menuitem",
+							url:""
+						},{
+							title: "menuitem",
+							url:""
+						},{
+							title: "menuitem",
+							url:""
+						}].forEach((n) => {
+							i+=1;
+							b.appendChild(pReact.tmpl((
+								<a href="{{url}}" style={styles.footerMenuItem}>{{title}}</a>
+							),n));
+						});
+						return b;
+					}
+				}),
+				footer = pReact.createClass("footer", {
+					render(){
+						return pReact.tmpl((
+							<div style={styles.footer}>
+								<p style={styles.footerMenu}>{footermenu.render}</p>
+								<button style={styles.footerButton}>{{buttonTitle}}</button>
+								<span style={styles.copyright}>Copyright&copy;{{copyright}}</span>
+							</div>
+						), {buttonTitle: "opinion", copyright: "pReact."});
+					}
+				}),
+				adTongLan = pReact.createClass("adTongLan",{
+					render(){
+						return (
+							<div style={styles.adTongLan}>
+								<span style={styles.adTongLanItem}>ad_tonglan</span>
+							</div>
+						)
+					}
+				}),
+				goTop = pReact.createClass("goTop", {
+					handleClick(e){
+						window.scrollTo(1,1)
+					},
+					render(){
+						return (
+							<a href="javascript:;" onclick={handleClick} style={styles.gotop}>top</a>
+						);
+					}
+				}),
+				search = pReact.createClass("search", {
+					render(){
+						return (
+							<div style={styles.search}>
+								<input type="text" value="" placeholder="{{defaultText}}" style={styles.searchInput} />
+							</div>
+						)
+					}
+				}),
+				photosList = pReact.createClass("photosList", {
+					getInitData(success, error){
+						success([{
+							title: "组图：“中国防务”亮相阿布扎比国际防务展",
+							img: "https://minimg.hexun.com/g0.hexun.com/2017-02-21/188231238_c166x118.jpg",
+							url:""
+						},{
+							title: "组图：“中国防务”亮相阿布扎比国际防务展",
+							img: "https://minimg.hexun.com/g0.hexun.com/2017-02-21/188231238_c166x118.jpg",
+							url:""
+						},{
+							title: "组图：“中国防务”亮相阿布扎比国际防务展",
+							img: "https://minimg.hexun.com/g0.hexun.com/2017-02-21/188231238_c166x118.jpg",
+							url:""
+						},{
+							title: "组图：“中国防务”亮相阿布扎比国际防务展",
+							img: "https://minimg.hexun.com/g0.hexun.com/2017-02-21/188231238_c166x118.jpg",
+							url:""
+						}])
+					},
+					render(){
+						var b = document.createDocumentFragment(), i=0;
+						this._data && this._data.forEach((n) => {
+							i+=1;
+							b.appendChild(pReact.tmpl((
+								<div style={styles.photosListItem}>
+									<a href="{{url}}" style={styles.photosListItemLlink}>
+										<img src="{{img}}" alt="{{title}}" style={styles.photosListItemImg}/>
+									</a>
+									<p style={styles.photosListItemTitle}>{{title}}</p>
+								</div>
+							),n));
+						});
+						return b;
+					}
+				}),
+				photos = pReact.createClass("photos", {
+					render(){
+						return (
+							<div style={styles.viewItem}>
+								<ul style={styles.newsChannel}>{newsChannel.render}</ul>
+								<div style={styles.photosList} id="{{id}}"></div>
+							</div>
+						);
+					}
+				}),
+				page = pReact.createClass("page", {
+					render(){
+						return (
+							<div id="header" class="item"></div>
+							<div id="search" class="item"></div>
+							<div id="quota" class="item"></div>
+							<section>
+								<ul>
+									<li>
+										<div id="adtonglan" class="item"></div>
+										<div id="news" class="item"></div>
+									</li>
+									<li>
+										<div id="adtonglan1" class="item"></div>
+										<div id="shares" class="item"></div>
+									</li>
+									<li>
+										<div id="adtonglan2" class="item"></div>
+										<div id="finan" class="item"></div>
+									</li>
+									<li>
+										<div id="adtonglan3" class="item"></div>
+										<div id="photos" class="item"></div>
+									</li>
+									<li>
+										<div id="adtonglan4" class="item"></div>
+										<div id="blog" class="item"></div>
+									</li>
+								</ul>
+							</section>
+							<div id="footer" class="item"></div>
+						)
+					}
+				}),
+				moduleBox = pReact.createClass("modulebox", {
+					handleAlertClick(e){
+						this._set({
+							style: styles.hide
+						})
+					},
+					handleClick(e){
+						this._parents("#modulebox")._set({
+							style: styles.hide
+						})
+					},
+					handleEnterClick(e){
+						console.log("enter");
+						this._parents("#modulebox")._set({
+							style: styles.hide
+						});
+						pReact.renderDom(
+							<moduleBox context="test" type="alert"  />,
+							document.body
+						);
+					},
+					render(){
+						console.log(this);
+						return this._data && this._data.type == "alert" ? (
+							<div id="modulebox" style={styles.modulebox} onclick={handleAlertClick}>
+								<span style={styles.moduleboxView}>{{context}}</span>
+							</div>
+						) : (
+							<div id="modulebox" style={styles.modulebox}>
+								<article style={styles.moduleboxViewModule}>
+									<header style={styles.moduleboxViewModuleTitle}>{{title}}</header>
+									<article style={styles.moduleboxViewModuleContent}>
+										{{html}}
+									</article>
+									<div style={styles.moduleboxViewModuleControl}>
+										<button style={styles.moduleboxButton} onclick={handleClick}>cancel</button><button style={styles.moduleboxButtonActive} onclick={handleEnterClick}>enter</button>
+									</div>
+								</atricle>
+							</div>
+						);
+					}
+				});
+
+			pReact.renderDom(
+				<page />,
+				document.getElementById("page")
+			);
+			pReact.renderDom(
+				<header />,
+				document.getElementById("header")
+			);
+			pReact.renderDom(
+				<search defaultText="search..."  />,
+				document.getElementById("search")
+			);
+			pReact.renderDom(
+				<quota  />,
+				document.getElementById("quota")
+			);
+			pReact.renderDom(
+				<adTongLan  />,
+				document.getElementById("adtonglan")
+			);
+			pReact.renderDom(
+				<news id="newslist" />,
+				document.getElementById("news")
+			);
+			pReact.renderDom(
+				<newsList />,
+				document.getElementById("newslist")
+			);
+			pReact.renderDom(
+				<adTongLan  />,
+				document.getElementById("adtonglan1")
+			);
+			pReact.renderDom(
+				<news id="shareslist" />,
+				document.getElementById("shares")
+			);
+			pReact.renderDom(
+				<newsList />,
+				document.getElementById("shareslist")
+			);
+			pReact.renderDom(
+				<adTongLan  />,
+				document.getElementById("adtonglan2")
+			);
+			pReact.renderDom(
+				<news id="finanlist"  />,
+				document.getElementById("finan")
+			);
+			pReact.renderDom(
+				<newsList />,
+				document.getElementById("finanlist")
+			);
+			pReact.renderDom(
+				<adTongLan  />,
+				document.getElementById("adtonglan3")
+			);
+			pReact.renderDom(
+				<photos id="photoslist" />,
+				document.getElementById("photos")
+			);
+			pReact.renderDom(
+				<photosList />,
+				document.getElementById("photoslist")
+			);
+			pReact.renderDom(
+				<adTongLan  />,
+				document.getElementById("adtonglan4")
+			);
+			pReact.renderDom(
+				<news id="bloglist"  />,
+				document.getElementById("blog")
+			);
+			pReact.renderDom(
+				<newsList />,
+				document.getElementById("bloglist")
+			);
+			pReact.renderDom(
+				<footer  />,
+				document.getElementById("footer")
+			);
+			pReact.renderDom(
+				<goTop  />,
+				document.body
+			);
+			pReact.renderDom(
+				<moduleBox context="test" type="module" title="module box" html="test html?"  />,
+				document.body
+			);
+		</script>
+		<script>
+			pReact.ready()
+		</script>
+	</body>
+</html>
