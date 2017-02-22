@@ -167,13 +167,17 @@
 			});
 			return frags;
 		},
+		isPlainObject(obj) {
+			return "Object" == null != obj && null != obj.constructor ? Object.prototype.toString.call(obj).slice(8, -1) : ""
+		},
 		isEmptyObject(obj) {
 			var name;
 			for (name in obj) {
 				return false;
 			}
 			return true;
-		}
+		},
+		eventData: []
 	}
 	win.pReact = {};
 	pReact.Class = module.Class;
@@ -325,6 +329,74 @@
 						return !module.is(typeof name, "string") && [].slice.call(name).forEach((e) => {
 							element.setAttribute(e.name, e.value);
 						}) || !module.is(typeof value, "undefined") && then.setAttribute(name, value) || then.getAttribute(name);
+					},
+					_removeAttr(name) {
+						this.removeAttribute(name);
+						return this;
+					},
+					_on(eventName, fn) {
+						var then = this;
+						eventName = eventName.toLowerCase().split(' ');
+						eventName.forEach((ev) => {
+							then[/^on/.test(ev) ? ev : "on" + ev] = ((e) => {
+								fn.call(this, e)
+							});
+							module.eventData.push({
+								element: then,
+								eventName: ev,
+								factory: fn
+							});
+						})
+					},
+					_off(eventName) {
+						var then = this,
+							i = 0;
+						eventName = eventName.toLowerCase().split(' ');
+						eventName.forEach((ev) => {
+							then[/^on/.test(eventName) ? eventName : "on" + eventName] = null;
+							module.eventData.forEach((a) => {
+								i += 1;
+								if (module.is(a.element, then) && module.is(a.eventName, eventName)) module.eventData.splice(i, 1)
+							})
+						})
+					},
+					_remove(element) {
+						element && this.removeChild(element) || this.parentNode && this.parentNode.removeChild(this);
+						return this;
+					},
+					_css(name, value) {
+						var args = arguments,
+							len = args.length;
+						if (len === 0) {
+							return this;
+						} else if (len === 1) {
+							if ("style" in this) {
+								if (module.is(typeof name, "string")) {
+									var f = [],
+										then = this;
+									name.split(' ').forEach((n) => {
+										f.push(then.style[n]);
+									});
+									return f.length > 1 ? f : f.join('');
+								} else if (module.isPlainObject(name)) {
+									for (n in name) {
+										this.style[n] = name[n]
+									}
+									return this;
+								}
+							} else {
+								return this;
+							}
+						} else {
+							this.style[name] = value;
+							return this;
+						}
+					},
+					_offset() {
+						return {
+							top: this.offsetTop,
+							left: this.offsetLeft
+						}
 					},
 					_previous() {
 						return this.previousElementSibling;
@@ -512,16 +584,17 @@
 		var w = "pReact.createDom(\"docmentfragment\",{}," + f(dom).replace(/\)pReact/gim, "),pReact") + ")";
 		return w;
 	})).replace(/renderDom\s*\(\s*(<(\w+)(\s+([a-zA-Z-_0-9]+=["'{][^<>]+["'}]))*\s*\/>)/gim, ((a, b, c, d) => {
-		var temp = document.createElement("div"),attrs;
+		var temp = document.createElement("div"),
+			attrs;
 		temp.innerHTML = a;
 		temp.children[0] && (attrs = temp.children[0].attributes);
-		if (attrs){
-			var f =[];
+		if (attrs) {
+			var f = [];
 			[].slice.call(attrs).forEach((t) => {
-				f.push(t.name+":\""+t.value+"\"")
+				f.push(t.name + ":\"" + t.value + "\"")
 			});
 			a = a.replace(b, c + ",{" + f.join(',') + "}");
-		}else{
+		} else {
 			a = a.replace(b, c + ",{}")
 		}
 		return a;
