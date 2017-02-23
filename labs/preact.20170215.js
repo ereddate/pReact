@@ -1,4 +1,4 @@
-((win, tmpl, translateContent) => {
+((win, tmpl, translateContent, jsonp) => {
 	var doc = win.document;
 	const module = {
 		dir(elem, dir) {
@@ -182,6 +182,7 @@
 	win.pReact = {};
 	pReact.Class = module.Class;
 	pReact.Styles = module.Styles;
+	pReact.jsonp = jsonp;
 
 	module.extend(win.pReact, {
 			extend(a, b) {
@@ -364,6 +365,13 @@
 							element && element.nodeType && this.removeChild(element) || this.parentNode && this.parentNode.removeChild(this);
 							return this;
 						},
+						_append(element) {
+							if (module.is(typeof element, "string")) {
+								this.appendChild(new Function("return " + translateContent("(" + tmpl(element) + ")"))());
+							} else {
+								this.appendChild(element);
+							}
+						},
 						_css(name, value) {
 							var args = arguments,
 								len = args.length;
@@ -463,8 +471,8 @@
 								module.bind(v.join(' '), element);
 								break;
 							default:
-								if (name == "style"){
-									element[name].cssText=""
+								if (name == "style") {
+									element[name].cssText = ""
 								}
 								v.forEach((sv) => {
 									if (/^on/.test(name) || /href/.test(name) && /\{{,1}\s*[^<>}{,]+\s*\}{,1}/.test(sv)) {
@@ -479,9 +487,9 @@
 										module.extend(element._props.handle, a);
 										module.bind(a, element);
 									} else {
-										if (name == "style"){
-											element[name] && (element[name].cssText+=sv);
-										}else{
+										if (name == "style") {
+											element[name] && (element[name].cssText += sv);
+										} else {
 											!/element|tagName/.test(name) && element.setAttribute(name, sv)
 										}
 									}
@@ -548,7 +556,7 @@
 
 		},
 		g = (a, b, e) => {
-			let v = !Object.is(typeof data[b], "undefined") && !Object.is(typeof data[b], "function") && data[b];
+			let v = data && !Object.is(typeof data[b], "undefined") && !Object.is(typeof data[b], "function") && data[b] || false;
 			if (Object.is(v, false)) {
 				if (Object.is(v, false) && !Object.is(pReact.getStyle(b.split('.')[1]), false)) v = pReact.getStyle(b.split('.')[1]);
 				if (Object.is(v, false) && Object.is(typeof obj[b], "string")) v = obj[b];
@@ -565,7 +573,7 @@
 				}))
 			}
 			a = a.replace(/\{+\s*([^<>}{,]+)\s*\}+/gim, ((a, b) => {
-				return g(a, b);
+				return "\"" + g(a, b) + "\"";
 			}));
 			return a;
 		}))
@@ -622,4 +630,70 @@
 		return a;
 	}));
 	return content;
+}, (url, data, ops) => {
+	if (url == "") return;
+	if (!data) data = "";
+
+	var complete = function(result, success, error) {
+			if (result && result.status === 1) {
+				success && success(result.data || result, result.msg || "success.", result.code || 1, result);
+			} else if (result && result.status === 0) {
+				error && error(result.msg || "unknown error.", result.code || 0);
+			} else {
+				success && success(result);
+			}
+		},
+		fail = function(error, msg) {
+			error && error(msg || "unknown error.", 0);
+		},
+		jsonp = function(success, error) {
+			var head = document.getElementsByTagName("head")[0],
+				callback = "preactjsonp_" + (Math.random(10000) + "").replace(".", "");
+			while (window[callback]) {
+				callback = "preactjsonp_" + (Math.random(10000) + "").replace(".", "");
+			}
+			window[callback] = function(data) {
+				window[callback] = null;
+				document.getElementById(callback).parentNode.removeChild(document.getElementById(callback));
+				try {
+					data = data || new Function('return ' + data)();
+					console.log(callback)
+					complete(data, success, error);
+				} catch (e) {
+					fail(error, e.message);
+				}
+			};
+			try {
+				var script = document.createElement("script");
+				head.appendChild(script);
+				script.timeout = setTimeout(function() {
+					if (window[callback] != null) {
+						window[callback] = null;
+						head.removeChild(document.getElementById(callback));
+						fail(error, "timeout " + callback);
+					}
+				}, ops && ops.timeout || 5000);
+				script.id = callback;
+				script.src = url + (/\?/.test(url) ? "&" : "?") + (ops && ops.callback || "callback") + "=" + callback;
+				script.onload = function(a) {
+					//console.log(arguments)
+				};
+				script.onerror = function() {
+					head.removeChild(this);
+					window[callback] = null;
+					fail(error);
+				};
+			} catch (e) {
+				fail(error, e.message);
+			}
+		};
+
+	return {
+		done: function(success, error) {
+			setTimeout(function() {
+				new jsonp(success, error);
+			}, 500);
+			return this;
+		}
+	}
 });

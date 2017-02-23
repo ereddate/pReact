@@ -685,6 +685,12 @@
 						})
 					},
 					handleClick(e){
+						this._append((
+							<div style={styles.a}>
+								<button>111</button>
+							</div>
+						));
+						this._append('<div style={styles.a}><button>111</button></div>');
 						this._parents("#modulebox")._set({
 							style: styles.hide
 						})
