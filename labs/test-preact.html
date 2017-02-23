@@ -285,8 +285,42 @@
 						color:"rgb(255,255,255)",
 						fontSize:(20/baseFontSize).toFixed(4)+"rem"
 					},
+					moduleboxBlock:{
+						background:"rgba(0,0,0,.7)"
+					},
 					moduleboxViewModule:{
 						top:(screen.height/3.5/baseFontSize).toFixed(4)+"rem"
+					},
+					moduleboxViewFullscreen:{
+						top:(5/baseFontSize).toFixed(4)+"rem",
+						left:(5/baseFontSize).toFixed(4)+"rem",
+						right:(5/baseFontSize).toFixed(4)+"rem",
+						bottom:(5/baseFontSize).toFixed(4)+"rem",
+						borderRadius:(5/baseFontSize).toFixed(4)+"rem",
+						background: "rgb(255,255,255)",
+						color:"rgb(0,0,0)"
+					},
+					moduleboxViewBottom:{
+						position:"fixed",
+						left:(5/baseFontSize).toFixed(4)+"rem",
+						right:(5/baseFontSize).toFixed(4)+"rem",
+						bottom:(5/baseFontSize).toFixed(4)+"rem",
+						borderRadius:(5/baseFontSize).toFixed(4)+"rem",
+						textAlign:"center",
+						background:"rgba(0,0,0,1)",
+						padding:(10/baseFontSize).toFixed(4)+"rem",
+						borderRadius:(10/baseFontSize).toFixed(4)+"rem",
+						color:"rgb(255,255,255)",
+						fontSize:(20/baseFontSize).toFixed(4)+"rem"
+					},
+					moduleboxCloseButton:{
+						background:"rgb(0,0,0)",
+						color:"rgb(255,255,255)",
+						top:0,
+						right:0,
+						position:"absolute",
+						borderTopRightRadius:(5/baseFontSize).toFixed(4)+"rem",
+						padding:"0 "+(10/baseFontSize).toFixed(4)+"rem"
 					},
 					moduleboxViewModuleTitle:{
 
@@ -296,6 +330,10 @@
 						overflow: "auto",
 						overflowX: "hidden",
 						textAlign: "left"
+					},
+					moduleboxViewModuleContentBottom:{
+						marginTop:(20/baseFontSize).toFixed(4)+"rem",
+						height: (60/baseFontSize).toFixed(4)+"rem",
 					},
 					moduleboxViewModuleControl:{
 						textAlign:"center"
@@ -726,6 +764,26 @@
 							style: styles.hide
 						});
 						document.getElementById("modulebox")._remove();
+						pReact.renderDom(
+							<moduleBox context="test" type="full"  />,
+							document.body
+						);
+					},
+					handleFullscreenClick(e){
+						this._parents("#modulebox")._set({
+							style: styles.hide
+						});
+						document.getElementById("modulebox")._remove();
+						pReact.renderDom(
+							<moduleBox context="test" type="bottom" html="bottom tip!" />,
+							document.body
+						);
+					},
+					handleBottomClick(e){
+						this._parents("#modulebox")._set({
+							style: styles.hide
+						});
+						document.getElementById("modulebox")._remove();
 					},
 					handleClick(e){
 						this._append((
@@ -756,7 +814,7 @@
 							<div id="modulebox" style={styles.modulebox} onclick={handleAlertClick}>
 								<span style={styles.moduleboxView}>{{context}}</span>
 							</div>
-						) : (
+						) : this._data.type == "module" ? (
 							<div id="modulebox" style={styles.modulebox}{styles.a}>
 								<article style={styles.moduleboxView}{styles.moduleboxViewModule}>
 									<header style={styles.moduleboxViewModuleTitle}>{{title}}</header>
@@ -766,6 +824,20 @@
 									<div style={styles.moduleboxViewModuleControl}>
 										<button style={styles.moduleboxButton} onclick={handleClick}>cancel</button><button style={styles.moduleboxButton}{styles.moduleboxButtonActive} onclick={handleEnterClick}>enter</button>
 									</div>
+								</atricle>
+							</div>
+						) : this._data.type == "full" ? (
+							<div id="modulebox" style={styles.modulebox}{styles.moduleboxBlock}>
+								<article style={styles.moduleboxView}{styles.moduleboxViewFullscreen}>
+									<span onclick={handleFullscreenClick} style={styles.moduleboxCloseButton}>close</span>
+									<article style={styles.moduleboxViewModuleContent} id="moduleboxmain"></article>
+								</atricle>
+							</div>
+						) : (
+							<div id="modulebox" style={styles.modulebox}>
+								<article style={styles.moduleboxViewBottom}>
+									<span onclick={handleBottomClick} style={styles.moduleboxCloseButton}>close</span>
+									<article style={styles.moduleboxViewModuleContent}{styles.moduleboxViewModuleContentBottom} id="moduleboxmain">{{html}}</article>
 								</atricle>
 							</div>
 						);
@@ -861,7 +933,7 @@
 				document.body
 			);
 			pReact.renderDom(
-				<moduleBox context="test" type="module" title="module box" html="test html?"  />,
+				<moduleBox context="test" type="module" title="module box" html=""  />,
 				document.body
 			);
 		</script>
