@@ -320,6 +320,13 @@
 						top:0,
 						right:0,
 						fontSize:(14/baseFontSize).toFixed(4)+"rem"
+					},
+					video:{
+						background: "rgb(0,0,0)",
+						width: "100%",
+						height:(200/baseFontSize).toFixed(4)+"rem",
+						margin: "0 auto",
+						textAlign: "center"
 					}
 				}),
 				header = pReact.createClass("header", {
@@ -458,7 +465,8 @@
 							url: "",
 							img: "https://minimg.hexun.com/i6.hexun.com/2017-02-21/188228660_c162x117.jpg",
 							source: "证券时报",
-							time: "02-21 02:40"
+							time: "02-21 02:40",
+							video: "http://vdata.tool.hexun.com/2017-01-03/187591064_m.mp4"
 						},{
 							title: "证监会发布监管问答 定增基金发行数量或锐减",
 							url: "",
@@ -470,11 +478,12 @@
 							url: "",
 							img: "https://minimg.hexun.com/i8.hexun.com/2015-05-11/175706935_c162x117.jpg",
 							source: "证券时报",
-							time: "02-21 02:40"
+							time: "02-21 02:40",
+							video: "http://vdata.tool.hexun.com/2017-01-03/187591064_m.mp4"
 						},{
 							title: "证监会发布监管问答 定增基金发行数量或锐减",
 							url: "",
-							img: "https://minimg.hexun.com/i0.hexun.com/2014-10-10/169190461_c162x117.jpg",
+							img: "https://minimg.hexun.com/i6.hexun.com/2017-02-21/188228660_c162x117.jpg",
 							source: "证券时报",
 							time: "02-21 02:40"
 						},{
@@ -482,7 +491,8 @@
 							url: "",
 							img: "https://minimg.hexun.com/i0.hexun.com/2014-10-10/169190461_c162x117.jpg",
 							source: "证券时报",
-							time: "02-21 02:40"
+							time: "02-21 02:40",
+							video: "http://vdata.tool.hexun.com/2017-01-03/187591064_m.mp4"
 						},{
 							title: "证监会发布监管问答 定增基金发行数量或锐减",
 							url: "",
@@ -500,7 +510,8 @@
 							url: "",
 							img: "https://minimg.hexun.com/i9.hexun.com/2017-02-20/188214325_c162x117.jpg",
 							source: "证券时报",
-							time: "02-21 02:40"
+							time: "02-21 02:40",
+							video: "http://vdata.tool.hexun.com/2017-01-03/187591064_m.mp4"
 						},{
 							title: "证监会发布监管问答 定增基金发行数量或锐减",
 							url: "",
@@ -515,15 +526,34 @@
 							time: "02-21 02:40"
 						}])
 					},
+					handleVideoClick(e){
+						this.paused ? this.play() : this.pause();
+					},
 					render(){
 						var b = document.createDocumentFragment(), i=0;
 						this._data && this._data.forEach((n) => {
 							i+=1;
-							b.appendChild(i=== 1 ? pReact.tmpl((
+							b.appendChild(i=== 1 ? n.video ? pReact.tmpl((
+								<li style={styles.newsListItem}>
+									<video data-src="{{video}}" style={styles.video} onclick={handleVideoClick} data-poster="{{img}}"></video>
+									<div>
+										<a href="{{url}}" style={styles.newsListActive}>{{title}}</a>
+										<p style={styles.newsListItemSource}>{{source}} {{time}}</p>
+									</div>
+								</li>
+							), n) : pReact.tmpl((
 								<li style={styles.newsListItem}>
 									<img data-src="{{img}}" alt="{{title}}" style={styles.left} />
 									<div style={styles.right}>
 										<a href="{{url}}" style={styles.newsListActive}>{{title}}</a>
+										<p style={styles.newsListItemSource}>{{source}} {{time}}</p>
+									</div>
+								</li>
+							), n) : n.video ? pReact.tmpl((
+								<li style={styles.newsListItem}>
+									<video data-src="{{video}}" style={styles.video} onclick={handleVideoClick} data-poster="{{img}}"></video>
+									<div>
+										<a href="{{url}}" style={styles.newsListItemTitle}>{{title}}</a>
 										<p style={styles.newsListItemSource}>{{source}} {{time}}</p>
 									</div>
 								</li>
@@ -694,7 +724,8 @@
 					handleAlertClick(e){
 						this._set({
 							style: styles.hide
-						})
+						});
+						document.getElementById("modulebox")._remove();
 					},
 					handleClick(e){
 						this._append((
@@ -705,13 +736,15 @@
 						this._append('<div style={styles.a}><button>111</button></div>');
 						this._parents("#modulebox")._set({
 							style: styles.hide
-						})
+						});
+						document.getElementById("modulebox")._remove();
 					},
 					handleEnterClick(e){
 						console.log("enter");
 						this._parents("#modulebox")._set({
 							style: styles.hide
 						});
+						document.getElementById("modulebox")._remove();
 						pReact.renderDom(
 							<moduleBox context="test" type="alert"  />,
 							document.body
@@ -727,7 +760,7 @@
 							<div id="modulebox" style={styles.modulebox}{styles.a}>
 								<article style={styles.moduleboxView}{styles.moduleboxViewModule}>
 									<header style={styles.moduleboxViewModuleTitle}>{{title}}</header>
-									<article style={styles.moduleboxViewModuleContent}>
+									<article style={styles.moduleboxViewModuleContent} id="moduleboxmain">
 										{{html}}
 									</article>
 									<div style={styles.moduleboxViewModuleControl}>

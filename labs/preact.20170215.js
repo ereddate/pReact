@@ -93,8 +93,9 @@
 				parent.forEach((item) => {
 					if (/^#/.test(id) && item.id && item.id == id.replace("#", "")) {
 						parent = [item];
-					}
-					if (/^\./.test(id) && (new RegExp(id.replace(".", ""))).test(item.className)) {
+					}else if (/^\./.test(id) && (new RegExp(id.replace(".", ""))).test(item.className)) {
+						parent = [item];
+					}else if (item.tagName.toLowerCase() == id.toLowerCase()){
 						parent = [item];
 					}
 				});
@@ -339,7 +340,9 @@
 							}) || !module.is(typeof value, "undefined") && then.setAttribute(name, value) || then.getAttribute(name);
 						},
 						_removeAttr(name) {
-							this.removeAttribute(name);
+							name.split(' ').forEach((n) => {
+								this.removeAttribute(n);
+							});
 							return this;
 						},
 						_on(eventName, fn) {
@@ -380,6 +383,7 @@
 							} else {
 								this.appendChild(element);
 							}
+							return this;
 						},
 						_css(name, value) {
 							var args = arguments,
@@ -467,6 +471,7 @@
 								})
 								break;
 							case "src":
+							case "poster":
 								element.setAttribute((/\{+\s*([^<>}{,]+)\s*\}+/.test(v) ? "data-" + name : name), v.join(''));
 								break;
 							case "html":
@@ -537,10 +542,10 @@
 							new RegExp("{{\\s*" + name.toLowerCase() + "\\s*}}").test(a.value.toLowerCase()) && e.setAttribute(a.name, data[name]);
 						}
 						//console.log(a.name);
-						if (/data\-src/.test(a.name.toLowerCase()))
-							(e.setAttribute("src", /\{+\s*([^<>}{,]+)\s*\}+/.test(a.value) ? (a.value = a.value.replace(/\{+\s*([^<>}{,]+)\s*\}+/gim, ((a, b) => {
+						if (/data\-src/.test(a.name.toLowerCase())||/data\-poster/.test(a.name.toLowerCase()))
+							(e.setAttribute(a.name.toLowerCase().replace("data-", ""), /\{+\s*([^<>}{,]+)\s*\}+/.test(a.value) ? (a.value = a.value.replace(/\{+\s*([^<>}{,]+)\s*\}+/gim, ((a, b) => {
 								return g(a, b, e);
-							}))) : a.value), e._removeAttr("data-src"));
+							}))) : a.value), e._removeAttr("data-src data-poster"));
 						else
 							e.setAttribute(a.name, /\{+\s*([^<>}{,]+)\s*\}+/.test(a.value) ? (a.value = a.value.replace(/\{+\s*([^<>}{,]+)\s*\}+/gim, ((a, b) => {
 								return g(a, b, e);
