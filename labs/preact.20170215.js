@@ -410,15 +410,17 @@
 					})
 					module.state.elements.push(element);
 					var f = (v) => {
-						var val = false;
+						var val = [];
 						if (/\{+\s*([^<>}{,]+)\s*\}+/.test(v) && /\./.test(v)) {
-							var r = /\{+\s*([^<>}{,]+)\s*\}+/.exec(v);
-							if (r) {
-								val = pReact.getStyle(r[1].split('.')[1]);
-								if (module.is(val, false)) val = module.Class[r[1].split('.')[0]] && module.Class[r[1].split('.')[0]][r[1].split('.')[1]];
-							}
+							v.replace(/\{+\s*([^<>}{,]+)\s*\}+/gim, function(a, b) {
+								if (b) {
+									var style = pReact.getStyle(b.split('.')[1]);
+									style && val.push(pReact.getStyle(b.split('.')[1]));
+									if (val.length === 0) module.Class[b.split('.')[0]] && val.push(module.Class[b.split('.')[0]][b.split('.')[1]]);
+								}
+							});
 						}
-						if (module.is(val, false)) val = v;
+						if (val.length === 0) val.push(v);
 						return val;
 					};
 					for (name in attrs) {
@@ -427,54 +429,63 @@
 						//console.log(v, name)
 						switch (name) {
 							case "text":
-								if (module.is(typeof v, "string") && module.is(element.nodeType, 3)) {
-									element.textContent = v;
-								} else if (module.is(typeof v, "function")) {
-									v = v();
-									if (module.is(typeof v, "string")) {
-										element.textContent = v;
-									} else if (!module.is(v.nodeType, undefined)) {
-										element = v;
-										var r = /\{+\s*([^<>}{,]+)\s*\}+/.exec(n);
-										if (r) {
-											module.setElementClass(element, r[1].split('.')[0])
+								v.forEach((sv) => {
+									if (module.is(typeof sv, "string") && module.is(element.nodeType, 3)) {
+										element.textContent = sv;
+									} else if (module.is(typeof sv, "function")) {
+										sv = sv();
+										if (module.is(typeof sv, "string")) {
+											element.textContent = sv;
+										} else if (!module.is(sv.nodeType, undefined)) {
+											element = sv;
+											var r = /\{+\s*([^<>}{,]+)\s*\}+/.exec(n);
+											if (r) {
+												module.setElementClass(element, r[1].split('.')[0])
+											}
 										}
+									} else {
+										var textnode = doc.createTextNode(sv);
+										element.appendChild(textnode);
 									}
-								} else {
-									var textnode = doc.createTextNode(v);
-									element.appendChild(textnode);
-								}
+								})
 								break;
 							case "src":
-								element.setAttribute((/\{+\s*([^<>}{,]+)\s*\}+/.test(v) ? "data-" + name : name), v);
+								element.setAttribute((/\{+\s*([^<>}{,]+)\s*\}+/.test(v) ? "data-" + name : name), v.join(''));
 								break;
 							case "html":
-								v = module.is(typeof v, "function") ? v() : v;
-								element.innerHTML = v.nodeType ? v.innerHTML : v;
+								n = module.is(typeof n, "function") ? n() : n;
+								element.innerHTML = n.nodeType ? n.innerHTML : n;
 								break;
 							case "class":
-								element.className += " " + v;
+								element.className += " " + v.join(' ');
 								break;
 							case "handle":
-								module.bind(v, element);
+								module.bind(v.join(' '), element);
 								break;
 							default:
-								if (/^on/.test(name) || /href/.test(name) && /\{{,1}\s*[^<>}{,]+\s*\}{,1}/.test(v)) {
-									!element._props.handle && (element._props.handle = {});
-									let a = {};
-									var fn = v;
-									if (/href/.test(name) && /\{\s*[^{}]+\s*\}/.test(v)) {
-										element.setAttribute(name, "javascript:;");
-										name = "onclick";
-									}
-									a[name.replace("on", "")] = fn;
-									module.extend(element._props.handle, a);
-									module.bind(a, element);
-								} else {
-									//console.log(name, v, element)
-									!/element|tagName/.test(name) && element.setAttribute(name, v);
-									//element.getAttribute && console.log(element.getAttribute(name));
+								if (name == "style"){
+									element[name].cssText=""
 								}
+								v.forEach((sv) => {
+									if (/^on/.test(name) || /href/.test(name) && /\{{,1}\s*[^<>}{,]+\s*\}{,1}/.test(sv)) {
+										!element._props.handle && (element._props.handle = {});
+										let a = {};
+										var fn = sv;
+										if (/href/.test(name) && /\{\s*[^{}]+\s*\}/.test(sv)) {
+											element.setAttribute(name, "javascript:;");
+											name = "onclick";
+										}
+										a[name.replace("on", "")] = fn;
+										module.extend(element._props.handle, a);
+										module.bind(a, element);
+									} else {
+										if (name == "style"){
+											element[name] && (element[name].cssText+=sv);
+										}else{
+											!/element|tagName/.test(name) && element.setAttribute(name, sv)
+										}
+									}
+								})
 								break;
 						}
 					}

@@ -16,6 +16,12 @@
 		<script type="text/pReact">
 			var baseFontSize = baseFontSize || pReact.getBaseFontSize(),
 				styles = pReact.createStyle({
+					hide:{
+						display:"none"
+					},
+					show:{
+						display: "block"
+					},
 					header: {
 						margin:0,
 						background: "rgba(220,220,220,.8)",
@@ -33,8 +39,7 @@
 						left:0,
 						width: "100%",
 						margin:0,
-						padding:0,
-						display:"none"
+						padding:0
 					},
 					showMenu:{
 						listStyle:"none",
@@ -103,14 +108,7 @@
 						lineHeight: (25/baseFontSize).toFixed(4)+"rem"
 					},
 					quotaRiseColor:{
-						backgroundColor: "#f93735",
-						color: "rgb(255,255,255)",
-						textAlign: "center",
-						width: (100/3).toFixed(2)+"%",
-						float: "left",
-						fontSize: (14/baseFontSize).toFixed(4)+"rem",
-						padding: (10/baseFontSize).toFixed(4)+"rem 0",
-						lineHeight: (25/baseFontSize).toFixed(4)+"rem"
+						backgroundColor: "#f93735"
 					},
 					newsChannelItem:{
 						float:"left"
@@ -262,9 +260,6 @@
 						padding:"0 0 " +(10/baseFontSize).toFixed(4)+"rem 0",
 						overflow:"hidden"
 					},
-					hide:{
-						display:"none"
-					},
 					modulebox:{
 						position:"fixed",
 						top:0,
@@ -290,16 +285,7 @@
 						fontSize:(20/baseFontSize).toFixed(4)+"rem"
 					},
 					moduleboxViewModule:{
-						position:"fixed",
-						top:(screen.height/3.5/baseFontSize).toFixed(4)+"rem",
-						left:(20/baseFontSize).toFixed(4)+"rem",
-						right:(20/baseFontSize).toFixed(4)+"rem",
-						textAlign:"center",
-						background:"rgba(0,0,0,1)",
-						padding:(10/baseFontSize).toFixed(4)+"rem",
-						borderRadius:(10/baseFontSize).toFixed(4)+"rem",
-						color:"rgb(255,255,255)",
-						fontSize:(20/baseFontSize).toFixed(4)+"rem"
+						top:(screen.height/3.5/baseFontSize).toFixed(4)+"rem"
 					},
 					moduleboxViewModuleTitle:{
 
@@ -324,12 +310,9 @@
 					},
 					moduleboxButtonActive:{
 						background:"rgb(218,60,60)",
-						border:0,
-						borderRadius:(10/baseFontSize).toFixed(4)+"rem",
-						color:"rgb(255,255,255)",
-						margin: "0 "+(10/baseFontSize).toFixed(4)+"rem",
-						fontSize: (20/baseFontSize).toFixed(4)+"rem",
-						padding:(5/baseFontSize).toFixed(4)+"rem "+(10/baseFontSize).toFixed(4)+"rem"
+					},
+					a:{
+						color:"rgb(0,0,0)"
 					}
 				}),
 				header = pReact.createClass("header", {
@@ -340,7 +323,7 @@
 						let next = this._next(),
 							isShow = next._has(next.style.display, "none");
 						next._set({
-							style: isShow ? styles.showMenu : styles.menu
+							style: isShow ? styles.showMenu : [styles.menu,styles.hide].join(';')
 						});
 						this._set({
 							text: isShow ? "close" : "menu"
@@ -351,7 +334,7 @@
 							<div style={styles.header} class="header">
 								<span style={styles.logo}>logo</span>
 								<span style={styles.showMenuButton} onclick={showMenuClick}>menu</span>
-								<menu style={styles.menu}>
+								<menu style={styles.hide}{styles.menu}>
 									<li>
 										<a href="javascript:;" style={styles.menuButton} onclick={menuItemClick}>test</a>
 									</li>
@@ -402,7 +385,7 @@
 									<p>{{quotaName}} {{quotaRate}}%</p>
 								</li>
 							), n) : pReact.tmpl((
-								<li style={styles.quotaRiseColor} onclick={handleClick} data-url="{{url}}">
+								<li style={styles.quotaInitColor}{styles.quotaRiseColor} onclick={handleClick} data-url="{{url}}">
 									{{quotaValue}}<i></i>
 									<p>{{quotaName}} {{quotaRate}}%</p>
 								</li>
@@ -723,14 +706,14 @@
 								<span style={styles.moduleboxView}>{{context}}</span>
 							</div>
 						) : (
-							<div id="modulebox" style={styles.modulebox}>
-								<article style={styles.moduleboxViewModule}>
+							<div id="modulebox" style={styles.modulebox}{styles.a}>
+								<article style={styles.moduleboxView}{styles.moduleboxViewModule}>
 									<header style={styles.moduleboxViewModuleTitle}>{{title}}</header>
 									<article style={styles.moduleboxViewModuleContent}>
 										{{html}}
 									</article>
 									<div style={styles.moduleboxViewModuleControl}>
-										<button style={styles.moduleboxButton} onclick={handleClick}>cancel</button><button style={styles.moduleboxButtonActive} onclick={handleEnterClick}>enter</button>
+										<button style={styles.moduleboxButton} onclick={handleClick}>cancel</button><button style={styles.moduleboxButton}{styles.moduleboxButtonActive} onclick={handleEnterClick}>enter</button>
 									</div>
 								</atricle>
 							</div>
