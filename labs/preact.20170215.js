@@ -74,7 +74,7 @@
 		},
 		fineNode(element, selector) {
 			var node = element.querySelectorAll(selector);
-			return node;
+			return [].slice.call(node);
 		},
 		bind(handle, element) {
 			for (name in handle) !/element/.test(name) && (element["on" + name] = (e) => {
@@ -183,6 +183,7 @@
 	pReact.Class = module.Class;
 	pReact.Styles = module.Styles;
 	pReact.jsonp = jsonp;
+	pReact.extend = module.extend;
 
 	module.extend(win.pReact, {
 			extend(a, b) {
@@ -321,6 +322,12 @@
 							var then = this;
 							return module.fineNode(then, selector);
 						},
+						_empty(){
+							[].slice.call(this.childNodes).forEach((e) => {
+								e._remove();
+							})
+							return this;
+						},
 						_parents(selector) {
 							var then = this;
 							return module.parents(then, selector);
@@ -347,7 +354,8 @@
 									eventName: ev,
 									factory: fn
 								});
-							})
+							});
+							return this;
 						},
 						_off(eventName) {
 							var then = this,
@@ -359,7 +367,8 @@
 									i += 1;
 									if (module.is(a.element, then) && module.is(a.eventName, eventName)) module.eventData.splice(i, 1)
 								})
-							})
+							});
+							return this;
 						},
 						_remove(element) {
 							element && element.nodeType && this.removeChild(element) || this.parentNode && this.parentNode.removeChild(this);

@@ -92,7 +92,8 @@
 					quota:{
 						marginTop: (10/baseFontSize).toFixed(4)+"rem",
 						display: "flex",
-						flexFlow: "row"
+						flexFlow: "row",
+						position: "relative"
 					},
 					quotaUl:{
 						width:"100%"
@@ -313,6 +314,12 @@
 					},
 					a:{
 						color:"rgb(0,0,0)"
+					},
+					refreshContent:{
+						position:"absolute",
+						top:0,
+						right:0,
+						fontSize:(14/baseFontSize).toFixed(4)+"rem"
 					}
 				}),
 				header = pReact.createClass("header", {
@@ -356,28 +363,31 @@
 					}
 				}),
 				quotali = pReact.createClass("quotali", {
+					getInitData(success, error){
+						success([{
+							quotaValue: (1000 * Math.random(1000)).toFixed(2),
+							quotaName: "上证指数",
+							quotaRate: Math.random(1000).toFixed(2),
+							url: ""
+						},{
+							quotaValue: (1000 * Math.random(1000)).toFixed(2),
+							quotaName: "上证指数",
+							quotaRate: Math.random(1000).toFixed(2),
+							url: ""
+						},{
+							quotaValue: (1000 * Math.random(1000)).toFixed(2),
+							quotaName: "上证指数",
+							quotaRate: Math.random(1000).toFixed(2),
+							url: ""
+						}])
+					},
 					handleClick(e){
 						let url = this.getAttribute("data-url");
 						location.href = url;
 					},
 					render(){
 						var b = document.createDocumentFragment(), i=0;
-						[{
-							quotaValue: "0.00",
-							quotaName: "上证指数",
-							quotaRate: "0.00",
-							url: ""
-						},{
-							quotaValue: "0.00",
-							quotaName: "上证指数",
-							quotaRate: "0.00",
-							url: ""
-						},{
-							quotaValue: "0.00",
-							quotaName: "上证指数",
-							quotaRate: "0.00",
-							url: ""
-						}].forEach((n) => {
+						this._data && this._data.forEach((n) => {
 							i+=1;
 							b.appendChild(i%2 === 1 ? pReact.tmpl((
 								<li style={styles.quotaInitColor} onclick={handleClick} data-url="{{url}}">
@@ -395,12 +405,14 @@
 					}
 				}),
 				quota = pReact.createClass("quota", {
+					handleClick(e){
+						pReact.renderDom(quotali, {}, this.parentNode._findNode("#quotalist")[0]._empty());
+					},
 					render(){
 						return (
-							<div style={styles.quota}>
-								<ul style={styles.quotaUl}>
-									{quotali.render}
-								</ul>
+							<div style={styles.quota} class="quotamain">
+								<span style={styles.refreshContent} onclick={handleClick}>换一换</span>
+								<ul style={styles.quotaUl} id="quotalist"></ul>
 							</div>
 						)
 					}
@@ -742,6 +754,10 @@
 			pReact.renderDom(
 				<quota  />,
 				document.getElementById("quota")
+			);
+			pReact.renderDom(
+				<quotali />,
+				document.getElementById("quotalist")
 			);
 			pReact.renderDom(
 				<adTongLan  />,
