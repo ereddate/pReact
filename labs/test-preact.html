@@ -464,7 +464,35 @@
 						fontSize:(14/baseFontSize).toFixed(4)+"rem",
 						borderTop:(1/baseFontSize).toFixed(4)+"rem solid rgb(220,220,220)",
 						padding:(5/baseFontSize).toFixed(4)+"rem 0"
-					}
+					},
+					buttonGroup:{
+						textAlign:"center",
+						display:"inline-block",
+						verticalAlign: "middle",
+						margin:(5/baseFontSize).toFixed(4)+"rem 0",
+						padding:0
+					},
+					buttonGroupButton:{
+						border: (1/baseFontSize).toFixed(4)+"rem solid rgb(220,220,220)",
+						borderRight:0,
+						background: "rgb(255,255,255)",
+						padding:(6/baseFontSize).toFixed(4)+"rem "+(12/baseFontSize).toFixed(4)+"rem",
+						fontSize:(14/baseFontSize).toFixed(4)+"rem",
+						float:"left"
+					},
+					buttonGroupButtonActive:{
+						background: "#337ab7",
+						color:"rgb(255,255,255)"
+					},
+					buttonGroupButtonFirst:{
+						borderTopLeftRadius:(5/baseFontSize).toFixed(4)+"rem",
+						borderBottomLeftRadius:(5/baseFontSize).toFixed(4)+"rem"
+					},
+					buttonGroupButtonLast:{
+						borderTopRightRadius:(5/baseFontSize).toFixed(4)+"rem",
+						borderBottomRightRadius:(5/baseFontSize).toFixed(4)+"rem",
+						borderRight:(1/baseFontSize).toFixed(4)+"rem solid rgb(220,220,220)"
+					}					
 				}),
 				tools = pReact.createClass("tools", {
 					render(){
@@ -583,8 +611,12 @@
 						p.forEach((e) => {
 							i+=1;
 							let b = Object.is(e,then);
-							e.style = (b ? [styles.tabButton,styles.threeColumnItem, styles.tabButtonActive] : [styles.tabButton,styles.threeColumnItem]).join(';');
-							lis[i].style = (b ? [styles.tabView,styles.show] : [styles.tabView,styles.hide]).join(';')
+							e._set({
+								style: (b ? [styles.tabButton,styles.threeColumnItem, styles.tabButtonActive] : [styles.tabButton,styles.threeColumnItem]).join(';')
+							});
+							lis[i]._set({
+								style: (b ? [styles.tabView,styles.show] : [styles.tabView,styles.hide]).join(';')
+							})
 						});
 					},
 					render(){
@@ -941,6 +973,7 @@
 							<div id="quota" class="item"></div>
 							<div id="tools" class="item"></div>
 							<div id="tabs" class="item"></div>
+							<div id="group" class="item" style="text-align:center"></div>
 							<section>
 								<ul>
 									<li>
@@ -1070,6 +1103,56 @@
 							</div>
 						);
 					}
+				}),
+				buttonGroupList = pReact.createClass("buttonGroupList", {
+					getInitData(success, error){
+						success({
+							list:[{
+								title: "button 1"
+							},{
+								title: "button 2"
+							},{
+								title: "button 3"
+							},{
+								title: "button 4"
+							}]
+						})
+					},
+					handleClick(e){
+						var then = this, i=0,
+						p = this.parentNode._findNode("span");
+						p.forEach((e) => {
+							i+=1;
+							var b = Object.is(e, then),
+								style = b ? [styles.buttonGroupButton, styles.buttonGroupButtonActive] : [styles.buttonGroupButton];
+							i===1 ? style.splice(1, 0, styles.buttonGroupButtonFirst) : i >= p.length ? style.splice(1, 0, styles.buttonGroupButtonLast) : null;
+							e._set({
+								style: style.join(';')
+							})
+						});
+					},
+					render(){
+						var b = document.createDocumentFragment(), i=0;
+						this._data && this._data.list.forEach((n) => {
+							i+=1;
+							b.appendChild(i===1 ? pReact.tmpl((
+								<span style={styles.buttonGroupButton}{styles.buttonGroupButtonFirst}{styles.buttonGroupButtonActive} onclick={handleClick}>{{title}}</span>
+							), n) : i >= this._data.list.length ? pReact.tmpl((
+								<span style={styles.buttonGroupButton}{styles.buttonGroupButtonLast} onclick={handleClick}>{{title}}</span>
+							), n) : pReact.tmpl((
+								<span style={styles.buttonGroupButton} onclick={handleClick}>{{title}}</span>
+							), n))
+						});
+						return b;
+					}
+				}),
+				buttonGroup = pReact.createClass("buttonGroup", {
+					render(){
+						return (
+							<div style={styles.fullColumn}{styles.buttonGroup} id="buttongroup">
+							</div>
+						)
+					}
 				});
 
 			pReact.renderDom(
@@ -1121,6 +1204,16 @@
 			pReact.renderDom(
 				<tab  />,
 				document.getElementById("tabs")
+			);
+			pReact.renderDom(
+				<buttonGroup  />,
+				document.getElementById("group"),
+				(() => {
+					pReact.renderDom(
+						<buttonGroupList  />,
+						document.getElementById("buttongroup")
+					);
+				})
 			);
 			pReact.renderDom(
 				<adTwoLan  />,
