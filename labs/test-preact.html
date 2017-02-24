@@ -34,6 +34,26 @@
 						width:  (100/3).toFixed(2)+"%",
 						float: "left"
 					},
+					button:{
+						padding:(6/baseFontSize).toFixed(4)+"rem "+(12/baseFontSize).toFixed(4)+"rem",
+						background: "rgb(255,255,255)",
+						color:"rgb(0,0,0)",
+						fontSize: (16/baseFontSize).toFixed(4)+"rem",
+						border:(1/baseFontSize).toFixed(4)+"rem solid #ccc",
+						borderRadius:(5/baseFontSize).toFixed(4)+"rem",
+						verticalAlign:"middle",
+						minWidth:(70/baseFontSize).toFixed(4)+"rem",
+					},
+					marginSpanRight:{
+						marginRight: (5/baseFontSize).toFixed(4)+"rem"
+					},
+					marginSpanLeft:{
+						marginLeft: (5/baseFontSize).toFixed(4)+"rem"
+					},
+					buttonActive:{
+						background: "rgb(51,122,183)",
+						color:"rgb(255,255,255)"
+					},
 					dropdown:{
 						display:"inline-block",
 						position:"relative",
@@ -41,7 +61,7 @@
 						margin:"0 "+(5/baseFontSize).toFixed(4)+"rem"
 					},
 					dropdownButton:{
-						padding:(5/baseFontSize).toFixed(4)+"rem "+(12/baseFontSize).toFixed(4)+"rem",
+						padding:(6/baseFontSize).toFixed(4)+"rem "+(12/baseFontSize).toFixed(4)+"rem",
 						border:(1/baseFontSize).toFixed(4)+"rem solid #ccc",
 						background: "rgb(255,255,255)",
 						borderRadius:(5/baseFontSize).toFixed(4)+"rem",
@@ -53,7 +73,7 @@
 					    clear: "left",
 					    left: 0,
 					    zIndex: 999998,
-						padding:(5/baseFontSize).toFixed(4)+"rem "+(12/baseFontSize).toFixed(4)+"rem",
+						padding:(6/baseFontSize).toFixed(4)+"rem "+(12/baseFontSize).toFixed(4)+"rem",
 						border:(1/baseFontSize).toFixed(4)+"rem solid #ccc",
 						background: "rgb(255,255,255)",
 						borderRadius:(5/baseFontSize).toFixed(4)+"rem",
@@ -70,8 +90,8 @@
 					},
 					dropbuttonListItem:{
 						textDecoration:"none",
-						display:"block",
-						padding:(5/baseFontSize).toFixed(4)+"rem 0",
+						display:"inline-block",
+						padding:(6/baseFontSize).toFixed(4)+"rem 0",
 						color:"rgb(0,0,0)",
 						fontSize:(16/baseFontSize).toFixed(4)+"rem"
 					},
@@ -122,7 +142,7 @@
 					menuButton:{
 						fontSize: (20/baseFontSize).toFixed(4)+"rem",
 						lineHeight: (30/baseFontSize).toFixed(4)+"rem",
-						padding: "0 "+(10/baseFontSize).toFixed(4)+"rem",
+						padding: "0 "+(12/baseFontSize).toFixed(4)+"rem",
 						display: "block",
 						background: "rgba(128,128,128,1)",
 						color: "rgb(255,255,255)",
@@ -134,7 +154,7 @@
 					tools:{
 						marginTop: (10/baseFontSize).toFixed(4)+"rem",
 						background: "rgb(255,255,255)",
-						padding:(5/baseFontSize).toFixed(4)+"rem 0"
+						padding:(6/baseFontSize).toFixed(4)+"rem 0"
 					},
 					search:{
 						textAlign: "center",
@@ -423,6 +443,24 @@
 					moduleboxButtonActive:{
 						background:"rgb(218,60,60)",
 					},
+					moduleboxWarn:{
+						top:(5/baseFontSize).toFixed(4)+"rem",
+						left:(5/baseFontSize).toFixed(4)+"rem",
+						right:(5/baseFontSize).toFixed(4)+"rem",
+						background:"rgba(242,222,222,.8)",
+						color:"rgb(169,68,66)",
+						border:(1/baseFontSize).toFixed(4)+"rem solid rgb(242,222,222)",
+						borderRadius:(5/baseFontSize).toFixed(4)+"rem",
+						fontSize: (16/baseFontSize).toFixed(4)+"rem",
+						textAlign: "left"
+					},
+					moduleboxCloseX:{
+						position:"absolute",
+						top:(10/baseFontSize).toFixed(4)+"rem",
+						right:(10/baseFontSize).toFixed(4)+"rem",
+						fontStyle:"normal",
+						fontSize:(10/baseFontSize).toFixed(4)+"rem"
+					},
 					a:{
 						color:"rgb(0,0,0)"
 					},
@@ -452,11 +490,11 @@
 						color:"rgb(0,0,0)",
 						textAlign:"center",
 						fontSize:(14/baseFontSize).toFixed(4)+"rem",
-						padding:(3/baseFontSize).toFixed(4)+"rem 0"
+						padding:(5/baseFontSize).toFixed(4)+"rem 0"
 					},
 					tabButtonActive:{
 						display:"inline-block",
-						background:"#337ab7",
+						background:"rgb(51,122,183)",
 						borderRadius:(5/baseFontSize).toFixed(4)+"rem",
 						color:"rgb(255,255,255)"
 					},
@@ -464,6 +502,16 @@
 						fontSize:(14/baseFontSize).toFixed(4)+"rem",
 						borderTop:(1/baseFontSize).toFixed(4)+"rem solid rgb(220,220,220)",
 						padding:(5/baseFontSize).toFixed(4)+"rem 0"
+					},
+					tabButtonTip:{
+						background:"rgb(169,169,169)",
+						color:"rgb(255,255,255)",
+						borderRadius:(10/baseFontSize).toFixed(4)+"rem",
+						fontStyle:"normal",
+						marginLeft:(5/baseFontSize).toFixed(4)+"rem",
+						padding:"0 "+(5/baseFontSize).toFixed(4)+"rem",
+						display:"inline-block",
+						fontSize:(5/baseFontSize).toFixed(4)+"rem"
 					},
 					buttonGroup:{
 						textAlign:"center",
@@ -481,7 +529,7 @@
 						float:"left"
 					},
 					buttonGroupButtonActive:{
-						background: "#337ab7",
+						background: "rgb(51,122,183)",
 						color:"rgb(255,255,255)"
 					},
 					buttonGroupButtonFirst:{
@@ -505,11 +553,14 @@
 				dropButtonList = pReact.createClass("dropButtonList", {
 					getInitData(success, error){
 						success([{
-							title: "Action"
+							title: "Action",
+							num: "99+"
 						},{
-							title: "Another action"
+							title: "Another action",
+							num: "0"
 						},{
-							title: "Separated link"
+							title: "Separated link",
+							num: "20"
 						}])
 					},
 					handleClick(e){
@@ -623,9 +674,9 @@
 						return (
 							<div style={styles.tab}>
 								<div style={styles.tabButtonControl}{styles.fullColumn}>
-									<span style={styles.tabButton}{styles.threeColumnItem}{styles.tabButtonActive} onclick={handleClick}>1</span>
+									<span style={styles.tabButton}{styles.threeColumnItem}{styles.tabButtonActive} onclick={handleClick}>1<i style={styles.tabButtonTip}>99+</i></span>
 									<span style={styles.tabButton}{styles.threeColumnItem} onclick={handleClick}>2</span>
-									<span style={styles.tabButton}{styles.threeColumnItem} onclick={handleClick}>3</span>
+									<span style={styles.tabButton}{styles.threeColumnItem} onclick={handleClick}>3<i style={styles.tabButtonTip}>99+</i></span>
 								</div>
 								<ul>
 									<li style={styles.tabView}{styles.show}>1
@@ -809,6 +860,7 @@
 									<div>
 										<a href="{{url}}" style={styles.newsListActive}>{{title}}</a>
 										<p style={styles.newsListItemSource}>{{source}} {{time}}</p>
+										<button type="button" style={styles.button}{styles.buttonActive}{styles.marginSpanRight}>点赞</button><button type="button" style={styles.button}>下载</button>
 									</div>
 								</li>
 							), n) : pReact.tmpl((
@@ -1009,7 +1061,7 @@
 						});
 						document.getElementById("modulebox")._remove();
 						pReact.renderDom(
-							<moduleBox context="test" type="full"  />,
+							<moduleBox type="full"  />,
 							document.body
 						);
 					},
@@ -1019,7 +1071,7 @@
 						});
 						document.getElementById("modulebox")._remove();
 						pReact.renderDom(
-							<moduleBox context="test" type="bottom" html="bottom tip!" />,
+							<moduleBox type="bottom" html="bottom tip!" />,
 							document.body
 						);
 					},
@@ -1029,7 +1081,7 @@
 						});
 						document.getElementById("modulebox")._remove();
 						pReact.renderDom(
-							<moduleBox context="test" type="top" html="top tip!" />,
+							<moduleBox type="top" html="top tip!" />,
 							document.body
 						);
 					},
@@ -1038,6 +1090,10 @@
 							style: styles.hide
 						});
 						document.getElementById("modulebox")._remove();
+						pReact.renderDom(
+							<moduleBox context="警告消息提示：......" type="warn"  />,
+							document.body
+						);
 					},
 					handleClick(e){
 						this._append((
@@ -1061,6 +1117,12 @@
 							<moduleBox context="test" type="alert"  />,
 							document.body
 						);
+					},
+					handleWarnClick(e){
+						this._parents("#modulebox")._set({
+							style: styles.hide
+						});
+						document.getElementById("modulebox")._remove();
 					},
 					render(){
 						console.log(this);
@@ -1094,12 +1156,19 @@
 									<article style={styles.moduleboxViewModuleContent}{styles.moduleboxViewModuleContentBottom} id="moduleboxmain">{{html}}</article>
 								</atricle>
 							</div>
-						) : (
+						) : this._data.type == "top" ? (
 							<div id="modulebox" style={styles.modulebox}>
 								<article style={styles.moduleboxViewTop}>
 									<span onclick={handleTopClick} style={styles.moduleboxCloseButton}>close</span>
 									<article style={styles.moduleboxViewModuleContent}{styles.moduleboxViewModuleContentBottom} id="moduleboxmain">{{html}}</article>
 								</atricle>
+							</div>
+						) : (
+							<div id="modulebox" style={styles.modulebox}>
+								<p style={styles.moduleboxView}{styles.moduleboxWarn}>
+									<span>{{context}}</span>
+									<i style={style.moduleboxCloseX} onclick={handleWarnClick}>x</i>
+								</p>
 							</div>
 						);
 					}
