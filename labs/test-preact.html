@@ -8,7 +8,7 @@
 		<style>
 			body{background:#f4f5f7;font-family:微软雅黑;}
 			body,ul, p{list-style:none;padding:0;margin:0;}
-			.item{overflow:hidden;display:block;clear:both;}
+			.item{display:block;clear:both;}
 		</style>
 	</head>
 	<body>
@@ -21,6 +21,59 @@
 					},
 					show:{
 						display: "block"
+					},
+					fullColumn:{
+						display: "flex",
+						flexFlow: "row"
+					},
+					twoColumnItem:{
+						width:  (100/2).toFixed(2)+"%",
+						float: "left"
+					},
+					threeColumnItem:{
+						width:  (100/3).toFixed(2)+"%",
+						float: "left"
+					},
+					dropdown:{
+						display:"inline-block",
+						position:"relative",
+						lineHeight: (20/baseFontSize).toFixed(4)+"rem",
+						margin:"0 "+(5/baseFontSize).toFixed(4)+"rem"
+					},
+					dropdownButton:{
+						padding:(5/baseFontSize).toFixed(4)+"rem "+(12/baseFontSize).toFixed(4)+"rem",
+						border:(1/baseFontSize).toFixed(4)+"rem solid #ccc",
+						background: "rgb(255,255,255)",
+						borderRadius:(5/baseFontSize).toFixed(4)+"rem",
+						fontSize:(16/baseFontSize).toFixed(4)+"rem",
+						width: (150/baseFontSize).toFixed(4)+"rem"
+					},
+					dropbuttonList:{
+					    position: "absolute",
+					    clear: "left",
+					    left: 0,
+					    zIndex: 999998,
+						padding:(5/baseFontSize).toFixed(4)+"rem "+(12/baseFontSize).toFixed(4)+"rem",
+						border:(1/baseFontSize).toFixed(4)+"rem solid #ccc",
+						background: "rgb(255,255,255)",
+						borderRadius:(5/baseFontSize).toFixed(4)+"rem",
+						fontSize:(16/baseFontSize).toFixed(4)+"rem"
+					},
+					dropbuttonListdown:{
+					    top: "100%",
+					    marginTop:(5/baseFontSize).toFixed(4)+"rem"
+					},
+					dropbuttonListup:{
+					    top: "auto",
+					    bottom: "100%",
+					    marginBottom: (5/baseFontSize).toFixed(4)+"rem"
+					},
+					dropbuttonListItem:{
+						textDecoration:"none",
+						display:"block",
+						padding:(5/baseFontSize).toFixed(4)+"rem 0",
+						color:"rgb(0,0,0)",
+						fontSize:(16/baseFontSize).toFixed(4)+"rem"
 					},
 					header: {
 						margin:0,
@@ -75,8 +128,15 @@
 						color: "rgb(255,255,255)",
 						textDecoration: "none"
 					},
+					headerTop:{
+						marginTop: (50/baseFontSize).toFixed(4)+"rem"
+					},
+					tools:{
+						marginTop: (10/baseFontSize).toFixed(4)+"rem",
+						background: "rgb(255,255,255)",
+						padding:(5/baseFontSize).toFixed(4)+"rem 0"
+					},
 					search:{
-						marginTop: (50/baseFontSize).toFixed(4)+"rem",
 						textAlign: "center",
 						height: (40/baseFontSize).toFixed(4)+"rem",
 						background: "rgb(255,255,255)"
@@ -91,8 +151,6 @@
 					},
 					quota:{
 						marginTop: (10/baseFontSize).toFixed(4)+"rem",
-						display: "flex",
-						flexFlow: "row",
 						position: "relative"
 					},
 					quotaUl:{
@@ -102,8 +160,6 @@
 						backgroundColor: "#4eb559",
 						color: "rgb(255,255,255)",
 						textAlign: "center",
-						width:  (100/3).toFixed(2)+"%",
-						float: "left",
 						fontSize: (14/baseFontSize).toFixed(4)+"rem",
 						padding: (10/baseFontSize).toFixed(4)+"rem 0",
 						lineHeight: (25/baseFontSize).toFixed(4)+"rem"
@@ -313,6 +369,19 @@
 						color:"rgb(255,255,255)",
 						fontSize:(20/baseFontSize).toFixed(4)+"rem"
 					},
+					moduleboxViewTop:{
+						position:"fixed",
+						left:(5/baseFontSize).toFixed(4)+"rem",
+						right:(5/baseFontSize).toFixed(4)+"rem",
+						top:(5/baseFontSize).toFixed(4)+"rem",
+						borderRadius:(5/baseFontSize).toFixed(4)+"rem",
+						textAlign:"center",
+						background:"rgba(0,0,0,1)",
+						padding:(10/baseFontSize).toFixed(4)+"rem",
+						borderRadius:(10/baseFontSize).toFixed(4)+"rem",
+						color:"rgb(255,255,255)",
+						fontSize:(20/baseFontSize).toFixed(4)+"rem"
+					},
 					moduleboxCloseButton:{
 						background:"rgb(0,0,0)",
 						color:"rgb(255,255,255)",
@@ -330,6 +399,10 @@
 						overflow: "auto",
 						overflowX: "hidden",
 						textAlign: "left"
+					},
+					moduleboxViewModuleContentFull:{
+						marginTop:(20/baseFontSize).toFixed(4)+"rem",
+						height: ((screen.height-50)/baseFontSize).toFixed(4)+"rem",
 					},
 					moduleboxViewModuleContentBottom:{
 						marginTop:(20/baseFontSize).toFixed(4)+"rem",
@@ -365,6 +438,103 @@
 						height:(200/baseFontSize).toFixed(4)+"rem",
 						margin: "0 auto",
 						textAlign: "center"
+					},
+					tab:{
+						marginTop:(10/baseFontSize).toFixed(4)+"rem",
+						padding:(5/baseFontSize).toFixed(4)+"rem",
+						background:"rgb(255,255,255)"
+					},
+					tabButtonControl:{
+
+					},
+					tabButton:{
+						margin:(5/baseFontSize).toFixed(4)+"rem",
+						color:"rgb(0,0,0)",
+						textAlign:"center",
+						fontSize:(14/baseFontSize).toFixed(4)+"rem",
+						padding:(3/baseFontSize).toFixed(4)+"rem 0"
+					},
+					tabButtonActive:{
+						display:"inline-block",
+						background:"#337ab7",
+						borderRadius:(5/baseFontSize).toFixed(4)+"rem",
+						color:"rgb(255,255,255)"
+					},
+					tabView:{
+						fontSize:(14/baseFontSize).toFixed(4)+"rem",
+						borderTop:(1/baseFontSize).toFixed(4)+"rem solid rgb(220,220,220)",
+						padding:(5/baseFontSize).toFixed(4)+"rem 0"
+					}
+				}),
+				tools = pReact.createClass("tools", {
+					render(){
+						return (
+							<div style={styles.tools}{styles.fullColumn} id="toolsmain">
+							</div>
+						)
+					}
+				}),
+				dropButtonList = pReact.createClass("dropButtonList", {
+					getInitData(success, error){
+						success([{
+							title: "Action"
+						},{
+							title: "Another action"
+						},{
+							title: "Separated link"
+						}])
+					},
+					handleClick(e){
+						console.log(e)
+					},
+					render(){
+						var b = document.createDocumentFragment(), i=0;
+						this._data && this._data.forEach((n) => {
+							i+=1;
+							b.appendChild(pReact.tmpl((
+								<li>
+									<a href="javascript:;" style={styles.dropbuttonListItem} onclick={handleClick}>{{title}}</a>
+								</li>
+							),n))
+						});
+						return b;
+					}
+				}),
+				dropButton = pReact.createClass("dropbutton", {
+					handleClick(e){
+						console.log(e);
+						let p = this.parentNode._findNode("ul")[0];
+						if (/none/.test(p.style.display))
+							p._empty()._set({
+								style: [styles.show,styles.dropbuttonList, styles["dropbuttonList"+this._data.type]].join(';')
+							});
+						else
+							p._empty()._set({
+								style: [styles.hide,styles.dropbuttonList, styles["dropbuttonList"+this._data.type]].join(';')
+							});
+						pReact.renderDom(
+							<dropButtonList />,
+							document.getElementById("drop"+this._data.type)
+						)
+					},
+					render(){
+						return this._data && this._data.type == "down" ? pReact.tmpl((
+							<div style={styles.dropdown}>
+								<button style={styles.dropdownButton} onclick={handleClick}>
+									{{title}}
+								</button>
+								<ul id="dropdown" style={styles.hide}{styles.dropbuttonList}{styles.dropbuttonListdown}>
+								</ul>
+							</div>
+						), this._data) : pReact.tmpl((
+							<div style={styles.dropdown}{styles.dropup}>
+								<button style={styles.dropdownButton}{styles.dropupButton} onclick={handleClick}>
+									{{title}}
+								</button>
+								<ul id="dropup" style={styles.hide}{styles.dropbuttonList}{styles.dropbuttonListup}>
+								</ul>
+							</div>
+						), this._data)
 					}
 				}),
 				header = pReact.createClass("header", {
@@ -407,6 +577,36 @@
 						);
 					}
 				}),
+				tab = pReact.createClass("tab", {
+					handleClick(e){
+						var p =this.parentNode._findNode("span"), then = this,i=-1, lis = this.parentNode._next()._findNode("li");
+						p.forEach((e) => {
+							i+=1;
+							let b = Object.is(e,then);
+							e.style = (b ? [styles.tabButton,styles.threeColumnItem, styles.tabButtonActive] : [styles.tabButton,styles.threeColumnItem]).join(';');
+							lis[i].style = (b ? [styles.tabView,styles.show] : [styles.tabView,styles.hide]).join(';')
+						});
+					},
+					render(){
+						return (
+							<div style={styles.tab}>
+								<div style={styles.tabButtonControl}{styles.fullColumn}>
+									<span style={styles.tabButton}{styles.threeColumnItem}{styles.tabButtonActive} onclick={handleClick}>1</span>
+									<span style={styles.tabButton}{styles.threeColumnItem} onclick={handleClick}>2</span>
+									<span style={styles.tabButton}{styles.threeColumnItem} onclick={handleClick}>3</span>
+								</div>
+								<ul>
+									<li style={styles.tabView}{styles.show}>1
+									</li>
+									<li style={styles.tabView}{styles.hide}>2
+									</li>
+									<li style={styles.tabView}{styles.hide}>3
+									</li>
+								</ul>
+							</div>
+						)
+					}
+				}),
 				quotali = pReact.createClass("quotali", {
 					getInitData(success, error){
 						success([{
@@ -435,12 +635,12 @@
 						this._data && this._data.forEach((n) => {
 							i+=1;
 							b.appendChild(i%2 === 1 ? pReact.tmpl((
-								<li style={styles.quotaInitColor} onclick={handleClick} data-url="{{url}}">
+								<li style={styles.threeColumnItem}{styles.quotaInitColor} onclick={handleClick} data-url="{{url}}">
 									{{quotaValue}}<i></i>
 									<p>{{quotaName}} {{quotaRate}}%</p>
 								</li>
 							), n) : pReact.tmpl((
-								<li style={styles.quotaInitColor}{styles.quotaRiseColor} onclick={handleClick} data-url="{{url}}">
+								<li style={styles.threeColumnItem}{styles.quotaInitColor}{styles.quotaRiseColor} onclick={handleClick} data-url="{{url}}">
 									{{quotaValue}}<i></i>
 									<p>{{quotaName}} {{quotaRate}}%</p>
 								</li>
@@ -455,7 +655,7 @@
 					},
 					render(){
 						return (
-							<div style={styles.quota} class="quotamain">
+							<div style={styles.fullColumn}{styles.quota} class="quotamain">
 								<span style={styles.refreshContent} onclick={handleClick}>换一换</span>
 								<ul style={styles.quotaUl} id="quotalist"></ul>
 							</div>
@@ -659,6 +859,15 @@
 						)
 					}
 				}),
+				adTwoLan = pReact.createClass("adTongLan",{
+					render(){
+						return (
+							<div style={styles.fullColumn}{styles.adTongLan}>
+								<span style={styles.twoColumnItem}>ad_tonglan</span><span style={styles.twoColumnItem}>ad_tonglan</span>
+							</div>
+						)
+					}
+				}),
 				goTop = pReact.createClass("goTop", {
 					handleClick(e){
 						window.scrollTo(1,1)
@@ -672,7 +881,7 @@
 				search = pReact.createClass("search", {
 					render(){
 						return (
-							<div style={styles.search}>
+							<div style={styles.headerTop}{styles.search}>
 								<input type="text" value="" placeholder="{{defaultText}}" style={styles.searchInput} />
 							</div>
 						)
@@ -730,6 +939,8 @@
 							<div id="header" class="item"></div>
 							<div id="search" class="item"></div>
 							<div id="quota" class="item"></div>
+							<div id="tools" class="item"></div>
+							<div id="tabs" class="item"></div>
 							<section>
 								<ul>
 									<li>
@@ -784,6 +995,16 @@
 							style: styles.hide
 						});
 						document.getElementById("modulebox")._remove();
+						pReact.renderDom(
+							<moduleBox context="test" type="top" html="top tip!" />,
+							document.body
+						);
+					},
+					handleTopClick(e){
+						this._parents("#modulebox")._set({
+							style: styles.hide
+						});
+						document.getElementById("modulebox")._remove();
 					},
 					handleClick(e){
 						this._append((
@@ -830,13 +1051,20 @@
 							<div id="modulebox" style={styles.modulebox}{styles.moduleboxBlock}>
 								<article style={styles.moduleboxView}{styles.moduleboxViewFullscreen}>
 									<span onclick={handleFullscreenClick} style={styles.moduleboxCloseButton}>close</span>
-									<article style={styles.moduleboxViewModuleContent} id="moduleboxmain"></article>
+									<article style={styles.moduleboxViewModuleContent}{styles.moduleboxViewModuleContentFull} id="moduleboxmain"></article>
+								</atricle>
+							</div>
+						) : this._data.type == "bottom" ? (
+							<div id="modulebox" style={styles.modulebox}>
+								<article style={styles.moduleboxViewBottom}>
+									<span onclick={handleBottomClick} style={styles.moduleboxCloseButton}>close</span>
+									<article style={styles.moduleboxViewModuleContent}{styles.moduleboxViewModuleContentBottom} id="moduleboxmain">{{html}}</article>
 								</atricle>
 							</div>
 						) : (
 							<div id="modulebox" style={styles.modulebox}>
-								<article style={styles.moduleboxViewBottom}>
-									<span onclick={handleBottomClick} style={styles.moduleboxCloseButton}>close</span>
+								<article style={styles.moduleboxViewTop}>
+									<span onclick={handleTopClick} style={styles.moduleboxCloseButton}>close</span>
 									<article style={styles.moduleboxViewModuleContent}{styles.moduleboxViewModuleContentBottom} id="moduleboxmain">{{html}}</article>
 								</atricle>
 							</div>
@@ -853,6 +1081,32 @@
 				document.getElementById("header")
 			);
 			pReact.renderDom(
+				<tools />,
+				document.getElementById("tools"),
+				(() => {
+					pReact.renderDom(
+						<dropButton type="down" title="dropDown Button" />,
+						document.getElementById("toolsmain"),
+						(() => {
+							pReact.renderDom(
+								<dropButtonList />,
+								document.getElementById("dropdown")
+							)
+						})
+					);
+					pReact.renderDom(
+						<dropButton type="up" title="dropUp Button" />,
+						document.getElementById("toolsmain"),
+						(() => {
+							pReact.renderDom(
+								<dropButtonList />,
+								document.getElementById("dropup")
+							)
+						})
+					)
+				})
+			);
+			pReact.renderDom(
 				<search defaultText="search..."  />,
 				document.getElementById("search")
 			);
@@ -865,7 +1119,11 @@
 				document.getElementById("quotalist")
 			);
 			pReact.renderDom(
-				<adTongLan  />,
+				<tab  />,
+				document.getElementById("tabs")
+			);
+			pReact.renderDom(
+				<adTwoLan  />,
 				document.getElementById("adtonglan")
 			);
 			pReact.renderDom(
@@ -933,7 +1191,7 @@
 				document.body
 			);
 			pReact.renderDom(
-				<moduleBox context="test" type="module" title="module box" html=""  />,
+				<moduleBox context="test" type="module" title="module box" html="module tip!"  />,
 				document.body
 			);
 		</script>
