@@ -35,7 +35,7 @@
 					f = then.emit[i];
 				f(() => {
 					then.emit.splice(i, 1)
-					then.done();
+					then.done(callback);
 				});
 			} else {
 				callback && callback.call(then);
@@ -344,7 +344,16 @@
 			getBaseFontSize(num) {
 				return window.baseFontSize || module.setFontSize(num);
 			},
-			ready(callback) {
+			loading(){
+				doc.body.setAttribute("hidden", "hidden");
+			},
+			loaded(){
+				doc.body.removeAttribute("hidden", "hidden");
+			},
+			ready(loading) {
+				loading && (() => {
+					loading(pReact.loading);
+				})();
 				this.toMobile();
 				var script = doc.getElementsByTagName("script");
 				(module.extend([], [].slice.call(script))).forEach((e) => {
@@ -353,7 +362,6 @@
 						e.parentNode.removeChild(e);
 					}
 				});
-				callback && callback();
 				return this;
 			},
 			tmpl(html, data) {

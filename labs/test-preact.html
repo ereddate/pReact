@@ -1544,10 +1544,14 @@
 						done()
 					})
 				);
-			}).done();
+			}).done(() => {
+				pReact.loaded();
+			});
 		</script>
 		<script>
-			pReact.ready()
+			pReact.ready((loading) => {
+				loading();
+			})
 		</script>
 	</body>
 </html>
