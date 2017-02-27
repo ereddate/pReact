@@ -1,5 +1,60 @@
 ((win, tmpl, translateContent, jsonp) => {
 	var doc = win.document;
+	class Callbacks {
+		constructor() {
+			let args = arguments && [].slice.call(arguments) || [],
+				len = args.length,
+				then = this;
+			then.emit = [];
+			len > 0 && args.forEach((a) => {
+				then.emit.push(a)
+			});
+		}
+		add(callback) {
+			var then = this;
+			then.emit.push((done) => {
+				setTimeout(() => {
+					callback && callback.call(then, done);
+				}, 100)
+			});
+			return then;
+		}
+		delay(time, callback) {
+			var then = this;
+			then.emit.push((done) => {
+				setTimeout(() => {
+					callback && callback.call(then, done) || done();
+				}, time || 1000);
+			});
+			return then;
+		}
+		done(callback) {
+			var then = this;
+			if (!Object.is(then.emit.length, 0)) {
+				var i = 0,
+					f = then.emit[i];
+				f(() => {
+					then.emit.splice(i, 1)
+					then.done();
+				});
+			} else {
+				callback && callback.call(then);
+			}
+			return then;
+		}
+	}
+
+	/*let callbacks = new Callbacks((done) => {
+		done()
+	}, (done) => {
+		done()
+	});
+	callbacks.add((done) => {
+		done()
+	}).delay(1000).add((done) => {
+		done()
+	}).done();*/
+
 	const module = {
 		dir(elem, dir) {
 			var matched = [];
@@ -93,9 +148,9 @@
 				parent.forEach((item) => {
 					if (/^#/.test(id) && item.id && item.id == id.replace("#", "")) {
 						parent = [item];
-					}else if (/^\./.test(id) && (new RegExp(id.replace(".", ""))).test(item.className)) {
+					} else if (/^\./.test(id) && (new RegExp(id.replace(".", ""))).test(item.className)) {
 						parent = [item];
-					}else if (item.tagName.toLowerCase() == id.toLowerCase()){
+					} else if (item.tagName.toLowerCase() == id.toLowerCase()) {
 						parent = [item];
 					}
 				});
@@ -185,6 +240,15 @@
 	pReact.Styles = module.Styles;
 	pReact.jsonp = jsonp;
 	pReact.extend = module.extend;
+	pReact.Callbacks = function() {
+		let args = arguments && [].slice.call(arguments) || [],
+			len = args.length,
+			callback = new Callbacks();
+		if (len > 0) args.forEach((a) => {
+			callback.add(a);
+		});
+		return callback;
+	};
 
 	module.extend(win.pReact, {
 			extend(a, b) {
@@ -323,7 +387,7 @@
 							var then = this;
 							return module.fineNode(then, selector);
 						},
-						_empty(){
+						_empty() {
 							[].slice.call(this.childNodes).forEach((e) => {
 								e._remove();
 							})
@@ -542,7 +606,7 @@
 							new RegExp("{{\\s*" + name.toLowerCase() + "\\s*}}").test(a.value.toLowerCase()) && e.setAttribute(a.name, data[name]);
 						}
 						//console.log(a.name);
-						if (/data\-src/.test(a.name.toLowerCase())||/data\-poster/.test(a.name.toLowerCase()))
+						if (/data\-src/.test(a.name.toLowerCase()) || /data\-poster/.test(a.name.toLowerCase()))
 							(e.setAttribute(a.name.toLowerCase().replace("data-", ""), /\{+\s*([^<>}{,]+)\s*\}+/.test(a.value) ? (a.value = a.value.replace(/\{+\s*([^<>}{,]+)\s*\}+/gim, ((a, b) => {
 								return g(a, b, e);
 							}))) : a.value), e._removeAttr("data-src data-poster"));
@@ -598,6 +662,16 @@
 }, (content) => {
 	content = content.replace(/\s{2,}/gim, " ").replace(/((\()\s*<(\w+)(\s+([a-zA-Z-_0-9]+=["'{][^<>]+["'}]))*\s*>[\r\n]*[^\)]+[\r\n]*<\/\w+>\s*(\)))/gim, ((a, b, c, d, e, f, g) => {
 		b = b.replace(c, "").replace(new RegExp("\\" + g + "$"), "").replace(/>\s+</gim, "><");
+		/*.replace(/<code\s*([a-zA-Z-_0-9]+=["'{][^<>]+["'}])*\s*>(.+)<\/code>/gim, ((a,b,c) => {
+			if (c){
+
+				let d = c.replace(/[<>"':;]/gim, ((a) => {
+					console.log(a)
+				}));
+				//a = a.replace(c, d);
+			}
+			return a;
+		}));*/
 		var dom = document.createElement("div");
 		dom.innerHTML = b;
 		var f = (dom) => {

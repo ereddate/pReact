@@ -540,7 +540,38 @@
 						borderTopRightRadius:(5/baseFontSize).toFixed(4)+"rem",
 						borderBottomRightRadius:(5/baseFontSize).toFixed(4)+"rem",
 						borderRight:(1/baseFontSize).toFixed(4)+"rem solid rgb(220,220,220)"
-					}					
+					},
+					listView:{
+						margin:"0 "+(10/baseFontSize).toFixed(4)+"rem",
+						border:(1/baseFontSize).toFixed(4)+"rem solid rgb(220,220,220)",
+						borderRadius:(5/baseFontSize).toFixed(4)+"rem",
+						padding:(10/baseFontSize).toFixed(4)+"rem",
+						background:"rgb(255,255,255)",
+						clear:"both"
+					},
+					listviewitem:{
+						borderBottom:(1/baseFontSize).toFixed(4)+"rem solid rgb(220,220,220)",
+						fontSize:(16/baseFontSize).toFixed(4)+"rem",
+						padding:(6/baseFontSize).toFixed(4)+"rem "+(12/baseFontSize).toFixed(4)+"rem",
+						clear:"both"
+					},
+					listviewitemlast:{
+						border:0
+					},
+					listviewitemtitle:{
+						display:"inline-block",
+						verticalAlign: "middle",
+						width:"90%"
+					},
+					listviewitemicon:{
+						display:"inline-block",
+						verticalAlign: "middle",
+						fontSize:(6/baseFontSize).toFixed(4)+"rem",
+						fontStyle:"normal",
+						textAlign:"right",
+						width:"10%",
+						fontWeight:700
+					}
 				}),
 				tools = pReact.createClass("tools", {
 					render(){
@@ -1026,6 +1057,7 @@
 							<div id="tools" class="item"></div>
 							<div id="tabs" class="item"></div>
 							<div id="group" class="item" style="text-align:center"></div>
+							<div id="listview" class="item"></div>
 							<section>
 								<ul>
 									<li>
@@ -1222,140 +1254,297 @@
 							</div>
 						)
 					}
+				}),
+				listView = pReact.createClass("listview", {
+					render(){
+						return (
+							<div style={styles.listView}>
+								<ul id="listviewitems"></ul>
+							</div>
+						)
+					}
+				}),
+				listViewItems = pReact.createClass("listviewitems", {
+					getInitData(success, error){
+						success([{
+							title:"listview item",
+							url:"1"
+						},{
+							title:"listview item",
+							url:"2"
+						},{
+							title:"listview item",
+							url:"3"
+						},{
+							title:"listview item",
+							url:"4"
+						},{
+							title:"listview item",
+							url:"5"
+						}])
+					},
+					handleClick(e){
+						console.log(this._attr("data-url"));
+						console.log(e)
+					},
+					render(){
+						var then = this;
+						var b = document.createDocumentFragment(), i=0;
+						then._data && then._data.forEach((n) => {
+							i+=1;
+							b.appendChild(i === then._data.length ? pReact.tmpl((
+								<li style={styles.listviewitem}{styles.listviewitemlast} onclick={handleClick} data-url="{{url}}">
+									<span style={styles.listviewitemtitle}>{{title}}</span>
+									<i style={styles.listviewitemicon}></i>
+								</li>
+							), n) : pReact.tmpl((
+								<li style={styles.listviewitem} onclick={handleClick} data-url="{{url}}">
+									<span style={styles.listviewitemtitle}>{{title}}</span>
+									<i style={styles.listviewitemicon}></i>
+								</li>
+							), n))
+						});
+						return b;
+					}
 				});
 
-			pReact.renderDom(
-				<page />,
-				document.getElementById("page")
-			);
-			pReact.renderDom(
-				<header />,
-				document.getElementById("header")
-			);
-			pReact.renderDom(
-				<tools />,
-				document.getElementById("tools"),
-				(() => {
-					pReact.renderDom(
-						<dropButton type="down" title="dropDown Button" />,
-						document.getElementById("toolsmain"),
-						(() => {
-							pReact.renderDom(
-								<dropButtonList />,
-								document.getElementById("dropdown")
-							)
-						})
-					);
-					pReact.renderDom(
-						<dropButton type="up" title="dropUp Button" />,
-						document.getElementById("toolsmain"),
-						(() => {
-							pReact.renderDom(
-								<dropButtonList />,
-								document.getElementById("dropup")
-							)
-						})
-					)
-				})
-			);
-			pReact.renderDom(
-				<search defaultText="search..."  />,
-				document.getElementById("search")
-			);
-			pReact.renderDom(
-				<quota  />,
-				document.getElementById("quota")
-			);
-			pReact.renderDom(
-				<quotali />,
-				document.getElementById("quotalist")
-			);
-			pReact.renderDom(
-				<tab  />,
-				document.getElementById("tabs")
-			);
-			pReact.renderDom(
-				<buttonGroup  />,
-				document.getElementById("group"),
-				(() => {
-					pReact.renderDom(
-						<buttonGroupList  />,
-						document.getElementById("buttongroup")
-					);
-				})
-			);
-			pReact.renderDom(
-				<adTwoLan  />,
-				document.getElementById("adtonglan")
-			);
-			pReact.renderDom(
-				<news id="newslist" />,
-				document.getElementById("news")
-			);
-			pReact.renderDom(
-				<newsList />,
-				document.getElementById("newslist")
-			);
-			pReact.renderDom(
-				<adTongLan  />,
-				document.getElementById("adtonglan1")
-			);
-			pReact.renderDom(
-				<news id="shareslist" />,
-				document.getElementById("shares")
-			);
-			pReact.renderDom(
-				<newsList />,
-				document.getElementById("shareslist")
-			);
-			pReact.renderDom(
-				<adTongLan  />,
-				document.getElementById("adtonglan2")
-			);
-			pReact.renderDom(
-				<news id="finanlist"  />,
-				document.getElementById("finan")
-			);
-			pReact.renderDom(
-				<newsList />,
-				document.getElementById("finanlist")
-			);
-			pReact.renderDom(
-				<adTongLan  />,
-				document.getElementById("adtonglan3")
-			);
-			pReact.renderDom(
-				<photos id="photoslist" />,
-				document.getElementById("photos")
-			);
-			pReact.renderDom(
-				<photosList />,
-				document.getElementById("photoslist")
-			);
-			pReact.renderDom(
-				<adTongLan  />,
-				document.getElementById("adtonglan4")
-			);
-			pReact.renderDom(
-				<news id="bloglist"  />,
-				document.getElementById("blog")
-			);
-			pReact.renderDom(
-				<newsList />,
-				document.getElementById("bloglist")
-			);
-			pReact.renderDom(
-				<footer  />,
-				document.getElementById("footer")
-			);
-			pReact.renderDom(
-				<goTop  />,
-				document.body
-			);
-			pReact.renderDom(
-				<moduleBox context="test" type="module" title="module box" html="module tip!"  />,
-				document.body
-			);
+			pReact.Callbacks((done) => {
+				pReact.renderDom(
+					<page />,
+					document.getElementById("page"),
+					(() => {
+						done()
+					})
+				);
+			}, (done) => {
+				pReact.renderDom(
+					<header />,
+					document.getElementById("header"),
+					(() => {
+						done()
+					})
+				);
+			}, (done) => {
+				pReact.renderDom(
+					<footer  />,
+					document.getElementById("footer"),
+					(() => {
+						done()
+					})
+				);
+			}).add((done) => {
+				pReact.renderDom(
+					<tools />,
+					document.getElementById("tools"),
+					(() => {
+						pReact.renderDom(
+							<dropButton type="down" title="dropDown Button" />,
+							document.getElementById("toolsmain"),
+							(() => {
+								pReact.renderDom(
+									<dropButtonList />,
+									document.getElementById("dropdown")
+								)
+							})
+						);
+						pReact.renderDom(
+							<dropButton type="up" title="dropUp Button" />,
+							document.getElementById("toolsmain"),
+							(() => {
+								pReact.renderDom(
+									<dropButtonList />,
+									document.getElementById("dropup")
+								);
+							})
+						);
+						done()
+					})
+				);
+			}).add((done) => {
+				pReact.renderDom(
+					<search defaultText="search..."  />,
+					document.getElementById("search"),
+					(() => {
+						done()
+					})
+				);
+			}).add((done) => {
+				pReact.renderDom(
+					<quota  />,
+					document.getElementById("quota"),
+					(() => {
+						pReact.renderDom(
+							<quotali />,
+							document.getElementById("quotalist"),
+							(() => {
+								done()
+							})
+						);
+					})
+				);
+			}).add((done) => {
+				pReact.renderDom(
+					<tab  />,
+					document.getElementById("tabs"),
+					(() => {
+						done()
+					})
+				);
+			}).add((done) => {
+				pReact.renderDom(
+					<buttonGroup  />,
+					document.getElementById("group"),
+					(() => {
+						pReact.renderDom(
+							<buttonGroupList  />,
+							document.getElementById("buttongroup"),
+							(() => {
+								done()
+							})
+						);
+					})
+				);
+			}).add((done) => {
+				pReact.renderDom(
+					<listView />,
+					document.getElementById("listview"),
+					(() => {
+						pReact.renderDom(
+							<listViewItems  />,
+							document.getElementById("listviewitems"),
+							(() => {
+								done()
+							})
+						);
+					})
+				);
+			}).add((done) => {
+				pReact.renderDom(
+					<adTwoLan  />,
+					document.getElementById("adtonglan"),
+					(() => {
+						done()
+					})
+				);
+			}).add((done) => {
+				pReact.renderDom(
+					<news id="newslist" />,
+					document.getElementById("news"),
+					(() => {
+						pReact.renderDom(
+							<newsList />,
+							document.getElementById("newslist"),
+							(() => {
+								done()
+							})
+						);
+					})
+				);
+			}).add((done) => {
+				pReact.renderDom(
+					<adTongLan  />,
+					document.getElementById("adtonglan1"),
+					(() => {
+						done()
+					})
+				);
+			}).add((done) => {
+				pReact.renderDom(
+					<news id="shareslist" />,
+					document.getElementById("shares"),
+					(() => {
+						pReact.renderDom(
+							<newsList />,
+							document.getElementById("shareslist"),
+							(() => {
+								done()
+							})
+						);
+					})
+				);
+			}).add((done) => {
+				pReact.renderDom(
+					<adTongLan  />,
+					document.getElementById("adtonglan2"),
+					(() => {
+						done()
+					})
+				);
+			}).add((done) => {
+				pReact.renderDom(
+					<news id="finanlist"  />,
+					document.getElementById("finan"),
+					(() => {
+						pReact.renderDom(
+							<newsList />,
+							document.getElementById("finanlist"),
+							(() => {
+								done()
+							})
+						);
+					})
+				);
+			}).add((done) => {
+				pReact.renderDom(
+					<adTongLan  />,
+					document.getElementById("adtonglan3"),
+					(() => {
+						done()
+					})
+				);
+			}).add((done) => {
+				pReact.renderDom(
+					<photos id="photoslist" />,
+					document.getElementById("photos"),
+					(() => {
+						pReact.renderDom(
+							<photosList />,
+							document.getElementById("photoslist"),
+							(() => {
+								done()
+							})
+						);
+					})
+				);
+			}).add((done) => {
+				pReact.renderDom(
+					<adTongLan  />,
+					document.getElementById("adtonglan4"),
+					(() => {
+						done()
+					})
+				);
+			}).add((done) => {
+				pReact.renderDom(
+					<news id="bloglist"  />,
+					document.getElementById("blog"),
+					(() => {
+						pReact.renderDom(
+							<newsList />,
+							document.getElementById("bloglist"),
+							(() => {
+								done()
+							})
+						);
+					})
+				);
+			}).delay(1000, (done) => {
+				pReact.renderDom(
+					<moduleBox context="test" type="module" title="module box" html="module tip!"  />,
+					document.body,
+					(() => {
+						done()
+					})
+				);
+			}).add((done) => {
+				pReact.renderDom(
+					<goTop  />,
+					document.body,
+					(() => {
+						done()
+					})
+				);
+			}).done();
 		</script>
 		<script>
 			pReact.ready()
