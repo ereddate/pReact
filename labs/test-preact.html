@@ -54,6 +54,9 @@
 						background: "rgb(51,122,183)",
 						color:"rgb(255,255,255)"
 					},
+					pageview:{
+						minHeight:(screen.height/baseFontSize).toFixed(4)+"rem"
+					},
 					dropdown:{
 						display:"inline-block",
 						position:"relative",
@@ -1051,38 +1054,40 @@
 				page = pReact.createClass("page", {
 					render(){
 						return (
-							<div id="header" class="item"></div>
-							<div id="search" class="item"></div>
-							<div id="quota" class="item"></div>
-							<div id="tools" class="item"></div>
-							<div id="tabs" class="item"></div>
-							<div id="group" class="item" style="text-align:center"></div>
-							<div id="listview" class="item"></div>
-							<section>
-								<ul>
-									<li>
-										<div id="adtonglan" class="item"></div>
-										<div id="news" class="item"></div>
-									</li>
-									<li>
-										<div id="adtonglan1" class="item"></div>
-										<div id="shares" class="item"></div>
-									</li>
-									<li>
-										<div id="adtonglan2" class="item"></div>
-										<div id="finan" class="item"></div>
-									</li>
-									<li>
-										<div id="adtonglan3" class="item"></div>
-										<div id="photos" class="item"></div>
-									</li>
-									<li>
-										<div id="adtonglan4" class="item"></div>
-										<div id="blog" class="item"></div>
-									</li>
-								</ul>
-							</section>
-							<div id="footer" class="item"></div>
+								<div id="header" class="item"></div>
+								<div id="pageview" style={styles.pageview}>
+									<div id="search" class="item"></div>
+									<div id="quota" class="item"></div>
+									<div id="tools" class="item"></div>
+									<div id="tabs" class="item"></div>
+									<div id="group" class="item" style="text-align:center"></div>
+									<div id="listview" class="item"></div>
+									<section>
+										<ul>
+											<li>
+												<div id="adtonglan" class="item"></div>
+												<div id="news" class="item"></div>
+											</li>
+											<li>
+												<div id="adtonglan1" class="item"></div>
+												<div id="shares" class="item"></div>
+											</li>
+											<li>
+												<div id="adtonglan2" class="item"></div>
+												<div id="finan" class="item"></div>
+											</li>
+											<li>
+												<div id="adtonglan3" class="item"></div>
+												<div id="photos" class="item"></div>
+											</li>
+											<li>
+												<div id="adtonglan4" class="item"></div>
+												<div id="blog" class="item"></div>
+											</li>
+										</ul>
+									</section>
+								</div>
+								<div id="footer" class="item"></div>
 						)
 					}
 				}),
@@ -1549,9 +1554,10 @@
 			});
 		</script>
 		<script>
-			pReact.ready((loading) => {
+			/*pReact.ready((loading) => {
 				loading();
-			})
+			})*/
+			pReact.ready();
 		</script>
 	</body>
 </html>
