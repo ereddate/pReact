@@ -352,7 +352,7 @@
 				doc.body.removeAttribute("hidden", "hidden");
 				return this;
 			},
-			readerPage(loading) {
+			renderPage(loading) {
 				let then = this;
 				loading && (() => {
 					loading(pReact.loading);
@@ -372,7 +372,7 @@
 					completed = () => {
 						doc.removeEventListener("DOMContentLoaded", completed);
 						win.removeEventListener("load", completed);
-						then.readerPage(loading);
+						then.renderPage(loading);
 					};
 				doc.addEventListener("DOMContentLoaded", completed);
 				win.addEventListener("load", completed);
