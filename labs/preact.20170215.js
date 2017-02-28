@@ -15,7 +15,7 @@
 			then.emit.push((done) => {
 				setTimeout(() => {
 					callback && callback.call(then, done);
-				}, 100)
+				}, 25)
 			});
 			return then;
 		}
@@ -319,7 +319,7 @@
 						done(data);
 					}
 				}
-				return parent;
+				return this;
 			},
 			toMobile(num) {
 				var head = doc.getElementsByTagName("head")[0],
@@ -344,17 +344,20 @@
 			getBaseFontSize(num) {
 				return window.baseFontSize || module.setFontSize(num);
 			},
-			loading(){
+			loading() {
 				doc.body.setAttribute("hidden", "hidden");
+				return this;
 			},
-			loaded(){
+			loaded() {
 				doc.body.removeAttribute("hidden", "hidden");
+				return this;
 			},
-			ready(loading) {
+			readerPage(loading) {
+				let then = this;
 				loading && (() => {
 					loading(pReact.loading);
 				})();
-				this.toMobile();
+				then.toMobile();
 				var script = doc.getElementsByTagName("script");
 				(module.extend([], [].slice.call(script))).forEach((e) => {
 					if (module.is(e.type, "text/pReact")) {
@@ -362,7 +365,18 @@
 						e.parentNode.removeChild(e);
 					}
 				});
-				return this;
+				return then;
+			},
+			ready(loading) {
+				let then = this,
+					completed = () => {
+						doc.removeEventListener("DOMContentLoaded", completed);
+						win.removeEventListener("load", completed);
+						then.readerPage(loading);
+					};
+				doc.addEventListener("DOMContentLoaded", completed);
+				win.addEventListener("load", completed);
+				return then;
 			},
 			tmpl(html, data) {
 				return tmpl(html, data);
