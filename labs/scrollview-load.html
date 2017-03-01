@@ -56,7 +56,7 @@
 									this.timeout && clearTimeout(this.timeout);
 									this.timeout = setTimeout(function() {
 										that.loadMore && that.loadMore.call(that);
-									}, 500);
+									}, 1000);
 								}
 							});
 						};
@@ -136,7 +136,7 @@
 				},
 				iscroll_main_context_refresh:{
 					fontSize: (14/baseFontSize).toFixed(4)+"rem",
-					background:"rgb(220,220,220)",
+					background:"rgb(0,191,255)",
 					color:"rgb(0,0,0)",
 					textAlign:"center",
 					border:0
@@ -152,11 +152,14 @@
 					position: "relative"
 				},
 				iscroll_main_context_li_item_left:{
-					float:"left"
+					background:"rgb(220,220,220)",
+					float:"left",
+					display:"inline-block",
+					width: (128/baseFontSize).toFixed(4)+"rem",
+					height: (92/baseFontSize).toFixed(4)+"rem"
 				},
 				iscroll_main_context_li_item_img:{
 					width: (128/baseFontSize).toFixed(4)+"rem",
-					display:"inline-block"
 				},
 				iscroll_main_context_li_item_img_custom:{
 					float:"left",
@@ -164,6 +167,11 @@
 					padding:(10/baseFontSize).toFixed(4)+"rem 0"
 				},
 				iscroll_main_context_li_item_right:{
+					float:"left",
+					marginRight:(10/baseFontSize).toFixed(4)+"rem",
+					width: ((screen.width-160)/baseFontSize).toFixed(4)+"rem"
+				},
+				iscroll_main_context_li_item_right_b:{
 					float:"left",
 					marginLeft:(10/baseFontSize).toFixed(4)+"rem",
 					width: ((screen.width-160)/baseFontSize).toFixed(4)+"rem"
@@ -221,9 +229,39 @@
 						},{
 							title: "证监会发布监管问答 定增基金发行数量或锐减",
 							url: "",
-							img: "https://minimg.hexun.com/i8.hexun.com/2015-05-11/175706935_c162x117.jpg",
+							img: "https://minimg.hexun.com/i0.hexun.com/2014-10-10/169190461_c162x117.jpg",
 							source: "证券时报",
-							time: "02-21 02:40",
+							type: "news",
+							time: "02-21 02:40"
+						},{
+							title: "证监会发布监管问答 定增基金发行数量或锐减",
+							url: "",
+							img1: "https://minimg.hexun.com/i8.hexun.com/2015-05-11/175706935_c162x117.jpg",
+							img2: "https://minimg.hexun.com/i8.hexun.com/2014-10-10/169190461_c162x117.jpg",
+							img3: "https://minimg.hexun.com/i8.hexun.com/2017-02-20/188214325_c162x117.jpg",
+							type: "picgroup",
+							source: "证券时报",
+							time: "02-21 02:40"
+						},{
+							title: "证监会发布监管问答 定增基金发行数量或锐减",
+							url: "",
+							img: "https://minimg.hexun.com/i0.hexun.com/2014-10-10/169190461_c162x117.jpg",
+							source: "证券时报",
+							type: "news",
+							time: "02-21 02:40"
+						},{
+							title: "证监会发布监管问答 定增基金发行数量或锐减",
+							url: "",
+							img: "https://minimg.hexun.com/i0.hexun.com/2014-10-10/169190461_c162x117.jpg",
+							source: "证券时报",
+							type: "news",
+							time: "02-21 02:40"
+						},{
+							title: "证监会发布监管问答 定增基金发行数量或锐减",
+							url: "",
+							img: "https://minimg.hexun.com/i6.hexun.com/2017-02-21/188228660_c162x117.jpg",
+							source: "证券时报",
+							time: "02-21 02:40 "+(1000*Math.random(1000)).toFixed(2),
 							type: "video",
 							video: "http://vdata.tool.hexun.com/2017-01-03/187591064_m.mp4"
 						},{
@@ -231,33 +269,7 @@
 							url: "",
 							img: "https://minimg.hexun.com/i6.hexun.com/2017-02-21/188228660_c162x117.jpg",
 							source: "证券时报",
-							time: "02-21 02:40"
-						},{
-							title: "证监会发布监管问答 定增基金发行数量或锐减",
-							url: "",
-							img: "https://minimg.hexun.com/i0.hexun.com/2014-10-10/169190461_c162x117.jpg",
-							source: "证券时报",
-							time: "02-21 02:40",
-							type: "video",
-							video: "http://vdata.tool.hexun.com/2017-01-03/187591064_m.mp4"
-						},{
-							title: "证监会发布监管问答 定增基金发行数量或锐减",
-							url: "",
-							img: "https://minimg.hexun.com/i8.hexun.com/2015-05-11/175706935_c162x117.jpg",
-							source: "证券时报",
-							time: "02-21 02:40"
-						},{
-							title: "证监会发布监管问答 定增基金发行数量或锐减",
-							url: "",
-							img: "https://minimg.hexun.com/i0.hexun.com/2014-10-10/169190461_c162x117.jpg",
-							source: "证券时报",
-							time: "02-21 02:40"
-						},{
-							title: "证监会发布监管问答 定增基金发行数量或锐减",
-							url: "",
-							img: "https://minimg.hexun.com/i9.hexun.com/2017-02-20/188214325_c162x117.jpg",
-							source: "证券时报",
-							time: "02-21 02:40",
+							time: "02-21 02:40 "+(1000*Math.random(1000)).toFixed(2),
 							type: "video",
 							video: "http://vdata.tool.hexun.com/2017-01-03/187591064_m.mp4"
 						},{
@@ -265,33 +277,14 @@
 							url: "",
 							img: "https://minimg.hexun.com/i0.hexun.com/2014-10-10/169190461_c162x117.jpg",
 							source: "证券时报",
+							type: "news",
 							time: "02-21 02:40"
 						},{
 							title: "证监会发布监管问答 定增基金发行数量或锐减",
 							url: "",
-							img: "https://minimg.hexun.com/i8.hexun.com/2015-05-11/175706935_c162x117.jpg",
+							img: "https://minimg.hexun.com/i0.hexun.com/2014-10-10/169190461_c162x117.jpg",
 							source: "证券时报",
-							time: "02-21 02:40"
-						},{
-							title: "证监会发布监管问答 定增基金发行数量或锐减",
-							url: "",
-							img1: "https://minimg.hexun.com/i8.hexun.com/2015-05-11/175706935_c162x117.jpg",
-							img2: "https://minimg.hexun.com/i8.hexun.com/2014-10-10/169190461_c162x117.jpg",
-							img3: "https://minimg.hexun.com/i8.hexun.com/2017-02-20/188214325_c162x117.jpg",
-							type: "picgroup",
-							source: "证券时报",
-							time: "02-21 02:40"
-						},{
-							title: "证监会发布监管问答 定增基金发行数量或锐减",
-							url: "",
-							img: "https://minimg.hexun.com/i8.hexun.com/2015-05-11/175706935_c162x117.jpg",
-							source: "证券时报",
-							time: "02-21 02:40"
-						},{
-							title: "证监会发布监管问答 定增基金发行数量或锐减",
-							url: "",
-							img: "https://minimg.hexun.com/i8.hexun.com/2015-05-11/175706935_c162x117.jpg",
-							source: "证券时报",
+							type: "news",
 							time: "02-21 02:40"
 						},{
 							title: "证监会发布监管问答 定增基金发行数量或锐减",
@@ -305,20 +298,46 @@
 						},{
 							title: "证监会发布监管问答 定增基金发行数量或锐减",
 							url: "",
-							img: "https://minimg.hexun.com/i8.hexun.com/2015-05-11/175706935_c162x117.jpg",
+							img: "https://minimg.hexun.com/i0.hexun.com/2014-10-10/169190461_c162x117.jpg",
 							source: "证券时报",
+							type: "news",
 							time: "02-21 02:40"
 						},{
 							title: "证监会发布监管问答 定增基金发行数量或锐减",
 							url: "",
-							img: "https://minimg.hexun.com/i8.hexun.com/2015-05-11/175706935_c162x117.jpg",
+							img: "https://minimg.hexun.com/i0.hexun.com/2014-10-10/169190461_c162x117.jpg",
 							source: "证券时报",
+							type: "news",
 							time: "02-21 02:40"
 						},{
 							title: "证监会发布监管问答 定增基金发行数量或锐减",
 							url: "",
-							img: "https://minimg.hexun.com/i8.hexun.com/2015-05-11/175706935_c162x117.jpg",
+							img: "https://minimg.hexun.com/i6.hexun.com/2017-02-21/188228660_c162x117.jpg",
 							source: "证券时报",
+							time: "02-21 02:40 "+(1000*Math.random(1000)).toFixed(2),
+							type: "video",
+							video: "http://vdata.tool.hexun.com/2017-01-03/187591064_m.mp4"
+						},{
+							title: "证监会发布监管问答 定增基金发行数量或锐减",
+							url: "",
+							img: "https://minimg.hexun.com/i6.hexun.com/2017-02-21/188228660_c162x117.jpg",
+							source: "证券时报",
+							time: "02-21 02:40 "+(1000*Math.random(1000)).toFixed(2),
+							type: "video",
+							video: "http://vdata.tool.hexun.com/2017-01-03/187591064_m.mp4"
+						},{
+							title: "证监会发布监管问答 定增基金发行数量或锐减",
+							url: "",
+							img: "https://minimg.hexun.com/i0.hexun.com/2014-10-10/169190461_c162x117.jpg",
+							source: "证券时报",
+							type: "news",
+							time: "02-21 02:40"
+						},{
+							title: "证监会发布监管问答 定增基金发行数量或锐减",
+							url: "",
+							img: "https://minimg.hexun.com/i0.hexun.com/2014-10-10/169190461_c162x117.jpg",
+							source: "证券时报",
+							type: "news",
 							time: "02-21 02:40"
 						},{
 							title: "证监会发布监管问答 定增基金发行数量或锐减",
@@ -332,78 +351,25 @@
 						},{
 							title: "证监会发布监管问答 定增基金发行数量或锐减",
 							url: "",
-							img: "https://minimg.hexun.com/i8.hexun.com/2015-05-11/175706935_c162x117.jpg",
+							img: "https://minimg.hexun.com/i0.hexun.com/2014-10-10/169190461_c162x117.jpg",
 							source: "证券时报",
+							type: "news",
 							time: "02-21 02:40"
 						},{
 							title: "证监会发布监管问答 定增基金发行数量或锐减",
 							url: "",
-							img: "https://minimg.hexun.com/i8.hexun.com/2015-05-11/175706935_c162x117.jpg",
+							img: "https://minimg.hexun.com/i0.hexun.com/2014-10-10/169190461_c162x117.jpg",
 							source: "证券时报",
+							type: "news",
 							time: "02-21 02:40"
 						},{
 							title: "证监会发布监管问答 定增基金发行数量或锐减",
 							url: "",
-							img1: "https://minimg.hexun.com/i8.hexun.com/2015-05-11/175706935_c162x117.jpg",
-							img2: "https://minimg.hexun.com/i8.hexun.com/2014-10-10/169190461_c162x117.jpg",
-							img3: "https://minimg.hexun.com/i8.hexun.com/2017-02-20/188214325_c162x117.jpg",
-							type: "picgroup",
+							img: "https://minimg.hexun.com/i6.hexun.com/2017-02-21/188228660_c162x117.jpg",
 							source: "证券时报",
-							time: "02-21 02:40"
-						},{
-							title: "证监会发布监管问答 定增基金发行数量或锐减",
-							url: "",
-							img: "https://minimg.hexun.com/i8.hexun.com/2015-05-11/175706935_c162x117.jpg",
-							source: "证券时报",
-							time: "02-21 02:40"
-						},{
-							title: "证监会发布监管问答 定增基金发行数量或锐减",
-							url: "",
-							img: "https://minimg.hexun.com/i8.hexun.com/2015-05-11/175706935_c162x117.jpg",
-							source: "证券时报",
-							time: "02-21 02:40"
-						},{
-							title: "证监会发布监管问答 定增基金发行数量或锐减",
-							url: "",
-							img: "https://minimg.hexun.com/i8.hexun.com/2015-05-11/175706935_c162x117.jpg",
-							source: "证券时报",
-							time: "02-21 02:40"
-						},{
-							title: "证监会发布监管问答 定增基金发行数量或锐减",
-							url: "",
-							img: "https://minimg.hexun.com/i8.hexun.com/2015-05-11/175706935_c162x117.jpg",
-							source: "证券时报",
-							time: "02-21 02:40"
-						},{
-							title: "证监会发布监管问答 定增基金发行数量或锐减",
-							url: "",
-							img: "https://minimg.hexun.com/i8.hexun.com/2015-05-11/175706935_c162x117.jpg",
-							source: "证券时报",
-							time: "02-21 02:40"
-						},{
-							title: "证监会发布监管问答 定增基金发行数量或锐减",
-							url: "",
-							img: "https://minimg.hexun.com/i8.hexun.com/2015-05-11/175706935_c162x117.jpg",
-							source: "证券时报",
-							time: "02-21 02:40"
-						},{
-							title: "证监会发布监管问答 定增基金发行数量或锐减",
-							url: "",
-							img: "https://minimg.hexun.com/i8.hexun.com/2015-05-11/175706935_c162x117.jpg",
-							source: "证券时报",
-							time: "02-21 02:40"
-						},{
-							title: "证监会发布监管问答 定增基金发行数量或锐减",
-							url: "",
-							img: "https://minimg.hexun.com/i8.hexun.com/2015-05-11/175706935_c162x117.jpg",
-							source: "证券时报",
-							time: "02-21 02:40"
-						},{
-							title: "证监会发布监管问答 定增基金发行数量或锐减",
-							url: "",
-							img: "https://minimg.hexun.com/i8.hexun.com/2015-05-11/175706935_c162x117.jpg",
-							source: "证券时报",
-							time: "02-21 02:40"
+							time: "02-21 02:40 "+(1000*Math.random(1000)).toFixed(2),
+							type: "video",
+							video: "http://vdata.tool.hexun.com/2017-01-03/187591064_m.mp4"
 						}]
 					})
 				},
@@ -439,10 +405,18 @@
 								</div>
 								<p style={styles.iscroll_main_context_li_item_aside}>{{source}} {{time}}</p>
 							</li>
+						),n) : i%2 === 0 ? pReact.tmpl((
+							<li style={styles.iscroll_main_context_li}{styles.clearfix} onclick={handleClick} data-href="{{url}}">
+								<div style={styles.iscroll_main_context_li_item_right}>
+									<h2 style={styles.iscroll_main_context_li_item_title}>{{title}}</h2>
+									<p style={styles.iscroll_main_context_li_item_aside}>{{source}} {{time}}</p>
+								</div>
+								<div style={styles.iscroll_main_context_li_item_left}><img data-src="{{img}}" alt="{{title}}" style={styles.iscroll_main_context_li_item_img} /></div>
+							</li>
 						),n) : pReact.tmpl((
 							<li style={styles.iscroll_main_context_li}{styles.clearfix} onclick={handleClick} data-href="{{url}}">
-								<img data-src="{{img}}" alt="{{title}}" style={styles.iscroll_main_context_li_item_left}{styles.iscroll_main_context_li_item_img} />
-								<div style={styles.iscroll_main_context_li_item_right}>
+								<div style={styles.iscroll_main_context_li_item_left}><img data-src="{{img}}" alt="{{title}}" style={styles.iscroll_main_context_li_item_img} /></div>
+								<div style={styles.iscroll_main_context_li_item_right_b}>
 									<h2 style={styles.iscroll_main_context_li_item_title}>{{title}}</h2>
 									<p style={styles.iscroll_main_context_li_item_aside}>{{source}} {{time}}</p>
 								</div>
@@ -478,7 +452,7 @@
 										(() => {
 											setTimeout(function() {
 												loaded();
-											}, 500);
+											}, 1000);
 										})
 									);
 									this.loadMoreCount = 0;
@@ -515,7 +489,7 @@
 													refresh && (refresh.onclick = (e) => {
 														that.clickRefresh.call(that, refresh, e);
 													});
-												}, 500);
+												}, 1000);
 											})
 										);
 									}else{
@@ -541,7 +515,7 @@
 												refresh && (refresh.onclick = (e) => {
 													that.clickRefresh.call(that, refresh, e);
 												});
-											}, 500);
+											}, 1000);
 										})
 									);
 									that.loadMoreCount = 0;
