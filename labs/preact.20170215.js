@@ -145,7 +145,6 @@
 			let i = 0;
 			module.eventData.forEach((a) => {
 				i += 1;
-				console.log(module.is(a.element, oldElement));
 				if (module.is(a.element, oldElement))(then || oldElement)[a.eventName] = ((e) => {
 					a.factory.call(this, e)
 				});
@@ -352,17 +351,18 @@
 							callback && callback();
 						};
 
-					if (module.isEmptyObject(data) || module.is(data, undefined)) {
-						("getInitData" in obj) && (new Promise((resolve, reject) => {
-							obj.getInitData(resolve, reject)
-						}).then((result) => {
-							done(result);
-						}, () => {
-							done({});
-						})) || done({});
-					} else {
-						done(data);
-					}
+					module.is(obj._data, undefined) && (obj._data = {});
+					(!module.is(data, undefined) || module.isPlainObject(data)) && module.extend(obj._data, data);
+					("getInitData" in obj) && (new Promise((resolve, reject) => {
+						obj.getInitData(resolve, reject)
+					}).then((result) => {
+						("length" in result) && /object|array/.test(typeof result) ? module.extend(obj._data, {
+							data: result
+						}) : module.extend(obj._data, result);
+						done(obj._data);
+					}, () => {
+						done({});
+					})) || done(data);
 				}
 				return this;
 			},

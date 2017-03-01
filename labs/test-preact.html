@@ -608,7 +608,7 @@
 					},
 					render(){
 						var b = document.createDocumentFragment(), i=0;
-						this._data && this._data.forEach((n) => {
+						this._data && this._data.data.forEach((n) => {
 							i+=1;
 							b.appendChild(pReact.tmpl((
 								<li>
@@ -755,7 +755,7 @@
 					},
 					render(){
 						var b = document.createDocumentFragment(), i=0;
-						this._data && this._data.forEach((n) => {
+						this._data && this._data.data.forEach((n) => {
 							i+=1;
 							b.appendChild(i%2 === 1 ? pReact.tmpl((
 								<li style={styles.threeColumnItem}{styles.quotaInitColor} onclick={handleClick} data-url="{{url}}">
@@ -892,7 +892,7 @@
 					},
 					render(){
 						var b = document.createDocumentFragment(), i=0;
-						this._data && this._data.forEach((n) => {
+						this._data && this._data.data.forEach((n) => {
 							i+=1;
 							b.appendChild(i=== 1 ? n.video ? pReact.tmpl((
 								<li style={styles.newsListItem}>
@@ -1033,7 +1033,7 @@
 					},
 					render(){
 						var b = document.createDocumentFragment(), i=0;
-						this._data && this._data.forEach((n) => {
+						this._data && this._data.data.forEach((n) => {
 							i+=1;
 							b.appendChild(pReact.tmpl((
 								<div style={styles.photosListItem}>
@@ -1301,7 +1301,7 @@
 					render(){
 						var then = this;
 						var b = document.createDocumentFragment(), i=0;
-						then._data && then._data.forEach((n) => {
+						then._data && then._data.data.forEach((n) => {
 							i+=1;
 							b.appendChild(i === then._data.length ? pReact.tmpl((
 								<li style={styles.listviewitem}{styles.listviewitemlast} onclick={handleClick} data-url="{{url}}">
