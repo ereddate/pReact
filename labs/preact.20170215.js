@@ -132,14 +132,59 @@
 			return [].slice.call(node);
 		},
 		bind(handle, element) {
-			for (name in handle) !/element/.test(name) && (element["on" + name] = (e) => {
+			for (name in handle) !/element/.test(name) && (module.on(element, name, ((e) => {
 				if (module.is(typeof handle[e.type], "string")) {
 					var fnName = handle[e.type].replace(/\s+/gim, "").replace("{", "").replace("}", "");
 					element._factory[fnName].call(element, e);
 				} else {
 					handle[e.type].call(element, e);
 				}
+			})));
+		},
+		cloneHandle(oldElement, then) {
+			let i = 0;
+			module.eventData.forEach((a) => {
+				i += 1;
+				console.log(module.is(a.element, oldElement));
+				if (module.is(a.element, oldElement))(then || oldElement)[a.eventName] = ((e) => {
+					a.factory.call(this, e)
+				});
 			});
+			return this;
+		},
+		on(then, eventName, fn) {
+			eventName = eventName.toLowerCase().split(' ');
+			eventName.forEach((ev) => {
+				ev = /^on/.test(ev) ? ev : "on" + ev;
+				then[ev] = ((e) => {
+					fn.call(this, e)
+				});
+				module.eventData.push({
+					element: then,
+					eventName: ev,
+					factory: fn
+				});
+			});
+			return this;
+		},
+		off(then, eventName) {
+			var i = 0;
+			if (module.is(typeof eventName, "undefined")) {
+				module.eventData.forEach((a) => {
+					i += 1;
+					if (module.is(a.element, then)) module.eventData.splice(i, 1)
+				});
+				return this;
+			}
+			eventName = eventName.toLowerCase().split(' ');
+			eventName.forEach((ev) => {
+				then[/^on/.test(eventName) ? eventName : "on" + eventName] = null;
+				module.eventData.forEach((a) => {
+					i += 1;
+					if (module.is(a.element, then) && module.is(a.eventName, eventName)) module.eventData.splice(i, 1)
+				})
+			});
+			return this;
 		},
 		parents(elem, id) {
 			var parent = null;
@@ -431,32 +476,17 @@
 							});
 							return this;
 						},
+						_clone(bool) {
+							let nE = this.cloneNode(!module.is(typeof bool, "undefined") ? bool : true);
+							bool === true && module.cloneHandle(nE, this);
+							return nE;
+						},
 						_on(eventName, fn) {
-							var then = this;
-							eventName = eventName.toLowerCase().split(' ');
-							eventName.forEach((ev) => {
-								then[/^on/.test(ev) ? ev : "on" + ev] = ((e) => {
-									fn.call(this, e)
-								});
-								module.eventData.push({
-									element: then,
-									eventName: ev,
-									factory: fn
-								});
-							});
+							module.on(this, eventName, fn);
 							return this;
 						},
 						_off(eventName) {
-							var then = this,
-								i = 0;
-							eventName = eventName.toLowerCase().split(' ');
-							eventName.forEach((ev) => {
-								then[/^on/.test(eventName) ? eventName : "on" + eventName] = null;
-								module.eventData.forEach((a) => {
-									i += 1;
-									if (module.is(a.element, then) && module.is(a.eventName, eventName)) module.eventData.splice(i, 1)
-								})
-							});
+							module.off(this, eventName);
 							return this;
 						},
 						_remove(element) {
@@ -465,9 +495,12 @@
 						},
 						_append(element) {
 							if (module.is(typeof element, "string")) {
-								this.appendChild(new Function("return " + translateContent("(" + tmpl(element) + ")"))());
+								element = new Function("return " + translateContent("(" + tmpl(element) + ")"))();
+								this.appendChild(element);
+								module.cloneHandle(element);
 							} else {
 								this.appendChild(element);
+								module.cloneHandle(element);
 							}
 							return this;
 						},
@@ -598,6 +631,31 @@
 						}
 					}
 					element._childrens = childrens
+				} else {
+					module.extend(element, {
+						_findNode(selector) {
+							var then = this;
+							return module.fineNode(then, selector);
+						},
+						_clone(bool) {
+							let nE = this.cloneNode(!module.is(typeof bool, "undefined") ? bool : true);
+							bool === true && module.cloneHandle(nE, this);
+							return nE;
+						},
+						_remove(element) {
+							element && element.nodeType && this.removeChild(element) || this.parentNode && this.parentNode.removeChild(this);
+							return this;
+						},
+						_append(element) {
+							if (module.is(typeof element, "string")) {
+								element = new Function("return " + translateContent("(" + tmpl(element) + ")"))();
+								this.appendChild(element);
+							} else {
+								this.appendChild(element);
+							}
+							return this;
+						}
+					})
 				}
 				childrens.forEach((e) => {
 					if (module.is(typeof e, "function")) {
@@ -621,13 +679,11 @@
 				!e["_factory"] && (e["_factory"] = obj);
 				!e["_data"] && (e["_data"] = data);
 				var attrs = e.attributes && e.attributes.length > 0 && [].slice.call(e.attributes) || false;
-				//console.log(attrs)
 				if (attrs) {
 					attrs.forEach((a) => {
 						for (name in data) {
 							new RegExp("{{\\s*" + name.toLowerCase() + "\\s*}}").test(a.value.toLowerCase()) && e.setAttribute(a.name, data[name]);
 						}
-						//console.log(a.name);
 						if (/data\-src/.test(a.name.toLowerCase()) || /data\-poster/.test(a.name.toLowerCase()))
 							(e.setAttribute(a.name.toLowerCase().replace("data-", ""), /\{+\s*([^<>}{,]+)\s*\}+/.test(a.value) ? (a.value = a.value.replace(/\{+\s*([^<>}{,]+)\s*\}+/gim, ((a, b) => {
 								return g(a, b, e);
@@ -684,16 +740,6 @@
 }, (content) => {
 	content = content.replace(/\s{2,}/gim, " ").replace(/((\()\s*<(\w+)(\s+([a-zA-Z-_0-9]+=["'{][^<>]+["'}]))*\s*>[\r\n]*[^\)]+[\r\n]*<\/\w+>\s*(\)))/gim, ((a, b, c, d, e, f, g) => {
 		b = b.replace(c, "").replace(new RegExp("\\" + g + "$"), "").replace(/>\s+</gim, "><");
-		/*.replace(/<code\s*([a-zA-Z-_0-9]+=["'{][^<>]+["'}])*\s*>(.+)<\/code>/gim, ((a,b,c) => {
-			if (c){
-
-				let d = c.replace(/[<>"':;]/gim, ((a) => {
-					console.log(a)
-				}));
-				//a = a.replace(c, d);
-			}
-			return a;
-		}));*/
 		var dom = document.createElement("div");
 		dom.innerHTML = b;
 		var f = (dom) => {

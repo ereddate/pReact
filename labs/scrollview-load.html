@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+		<script src="preact.20170215.js"></script>
+		<script>
+			pReact.ready();
+		</script>
+		<style>
+			body{background:#f4f5f7;font-family:微软雅黑;}
+			body,ul, p,h1,h2,h3,h4,h5,h6{list-style:none;padding:0;margin:0;}
+		</style>
+	</head>
+	<body>
+		<div id="page"></div>
+		<script>
+			/*!
+			 * pReact & pjs template v1.0.0
+			 * @author yandong
+			 *
+			 * https://github.com/ereddate/pReact
+			 */
+			pReact && ((win, pReact) => {
+				var iscroll = function(elem, options) {
+					return new iscroll.fn.init(elem, options);
+				};
+				iscroll.fn = iscroll.prototype = {
+					init: function(elem, options) {
+						pReact.extend(this, pReact.extend(options, {
+							parent: document.getElementById(elem),
+							content: document.getElementById(options.content),
+							upElem: document.getElementById(options.upElem),
+							downElem: document.getElementById(options.downElem)
+						}));
+						this.topOffset = options.upElemHeight || this.upElem.offsetHeight;
+						this.bottomOffset = options.downElemHeight || this.downElem.offsetHeight;
+						this.maxscroll = this.parent.offsetHeight;
+						this.unit = options.unit || "rem";
+						var that = this;
+						return this;
+					},
+					refresh: function() {
+						//console.log("refresh")
+						this.topOffset = this.upElem.offsetHeight;
+						this.bottomOffset = this.downElem.offsetHeight;
+						this.maxscroll = this.parent.offsetHeight;
+					},
+					done: function(callback) {
+						var that = this;
+						window.onscroll = (e) => {
+							that.scrollFilterCallback && that.scrollFilterCallback(that, function() {
+								var top = this.pageYOffset;
+								if (top + that.maxscroll >= that.parent.scrollHeight) {
+									this.timeout && clearTimeout(this.timeout);
+									this.timeout = setTimeout(function() {
+										that.loadMore && that.loadMore.call(that);
+									}, 500);
+								}
+							});
+						};
+						that.parent.ontouchstart = function(e) {
+							var touch = e.changedTouches[0];
+							this.pointY = touch.pageY - (this.currentY || 0);
+						};
+						that.parent.ontouchmove = function(e) {
+							var touch = e.changedTouches[0];
+							var deltaY = touch.pageY - this.pointY - that.topOffset;
+							this.currentY = touch.pageY + deltaY + that.topOffset;
+							iscroll.animate(that.content, 0, deltaY, 0, that.unit);
+							this.deltaY = deltaY;
+							that.touchMove && that.touchMove.call(that, deltaY);
+						};
+						that.parent.ontouchend = function(e) {
+							if (this.currentY > 0) {
+								that.touchEnd ? that.touchEnd.call(that, this.deltaY, function() {
+									iscroll.animate(that.content, 0, 0, 0, that.unit);
+								}, function() {
+									iscroll.animate(that.content, 0, "-" + that.topOffset, 0, that.unit);
+								}) : iscroll.animate(that.content, 0, "-" + that.topOffset, 0, that.unit);
+								this.currentY = 0;
+							} else if (this.currentY < this.maxscroll) {
+								iscroll.animate(that.content, 0, this.maxscroll, 0, that.unit);
+							}
+						};
+						callback && callback.call(that);
+						return this;
+					}
+				};
+				iscroll.animate = function(elem, x, y, z, unit) {
+					var fz = screen.width / 16;
+					(typeof elem == "string" ? document.getElementById(elem) : elem)._css({
+						transform: "translate(" + x/fz + unit + ", " + y/fz + unit + ") translateZ(" + z/fz + unit + ")"
+					});
+				};
+				iscroll.fn.init.prototype = iscroll.fn;
+				pReact.scroll = iscroll;
+			})(this, pReact);
+		</script>
+		<script type="text/pReact">
+			let baseFontSize = window.baseFontSize || pReact.getBaseFontSize(),
+			style = pReact.createStyle({
+				iscroll_main:{
+					zIndex: 1
+				},
+				iscroll_main_context:{
+					marginTop:0,
+					zIndex: 1,
+					transform: "translate(0, -"+(77.64/baseFontSize).toFixed(4)+"rem) translateZ(0)",
+					"-webkit-tap-highlight-color": "rgba(0, 0, 0, 0)"
+				},
+				iscroll_main_context_ul:{
+					listStyle: "none",
+					padding: 0,
+					margin: 0,
+					width: "100%",
+					textAlign: "left"
+				},
+				iscroll_main_context_li:{
+					fontSize: (16/baseFontSize).toFixed(4)+"rem",
+					padding: "0 "+(16/baseFontSize).toFixed(4)+"rem",
+					height: (64/baseFontSize).toFixed(4)+"rem",
+					lineHeight: (64/baseFontSize).toFixed(4)+"rem",
+					borderBottom: (1/baseFontSize).toFixed(4)+"rem solid #ccc",
+					borderTop: (1/baseFontSize).toFixed(4)+"rem solid #fff",
+					backgroundColor: "#fafafa"
+				},
+				pullDown:{
+					height: (77.64/baseFontSize).toFixed(4)+"rem",
+					lineHeight: (77.64/baseFontSize).toFixed(4)+"rem",
+					fontWeight: "bold",
+					fontSize: (16/baseFontSize).toFixed(4)+"rem",
+					color: "#888",
+					textAlign: "center",
+					display: "block",
+					position: "relative"
+				},
+				iscroll_main_context_reload:{
+					background:"red"
+				}
+			});
+			let scrollView = pReact.createClass("scrollView", {
+				handleReloadClick(e){
+					console.log(e)
+				},
+				render(){
+					return (
+						<div style={styles.iscroll_main} id="wrapper">
+							<div style={styles.iscroll_main_context} id="scroller">
+								<span id="pullDown" style={styles.pullDown}>下拉刷新</span>
+								<ul style={styles.iscroll_main_context_ul} id="scrollerView">
+								</ul>
+								<span id="pullUp" style={styles.pullDown}>正在加载...</span>
+							</div>
+						</div>
+					)
+				}
+			}),
+			scrollViewList = pReact.createClass("scrollViewList", {
+				getInitData(success, error){
+					success([{
+						title: "scrollViewList Item"
+					},{
+						title: "scrollViewList Item"
+					},{
+						title: "scrollViewList Item"
+					},{
+						title: "scrollViewList Item"
+					},{
+						title: "scrollViewList Item"
+					},{
+						title: "scrollViewList Item"
+					},{
+						title: "scrollViewList Item"
+					},{
+						title: "scrollViewList Item"
+					},{
+						title: "scrollViewList Item"
+					},{
+						title: "scrollViewList Item"
+					},{
+						title: "scrollViewList Item"
+					},{
+						title: "scrollViewList Item"
+					},{
+						title: "scrollViewList Item"
+					}])
+				},
+				handleClick(e){
+					console.log(e)
+				},
+				render(){
+					let a = pReact.createDom("docmentfragment", {}), i=0;
+					this._data && this._data.forEach((n) => {
+						i+=1;
+						a._append(i===1 ? pReact.tmpl((
+							<li style={styles.iscroll_main_context_li}{styles.iscroll_main_context_reload} id="clickRefresh" onclick={handleClick}>click refresh!</li>
+						),n) : pReact.tmpl((
+							<li style={styles.iscroll_main_context_li} onclick={handleClick}>{{title}}</li>
+						),n));
+					});
+					return a;
+				}
+			});
+			pReact.renderDom(
+				<scrollView />,
+				document.getElementById("page"),
+				(() => {
+					pReact.renderDom(
+						<scrollViewList />,
+						document.getElementById("scrollerView"),
+						(() => {
+							pReact.scroll("wrapper", {
+								content: "scroller",
+								upElem: "pullDown",
+								downElem: "pullUp",
+								scrollFilterCallback: function(that, done){
+									done();
+								},
+								refreshData: function(loading, loaded) {
+									this.upElem.innerHTML = "正在加载...";
+									loading();
+									setTimeout(function() {
+										loaded();
+									}, 1000);
+								},
+								touchMove: function(y) {
+									if (y >= 50) {
+										this.upElem.innerHTML = "松开刷新";
+									} else {
+										this.upElem.innerHTML = "下拉刷新";
+									}
+								},
+								touchEnd: function(y, loading, loaded) {
+									if (y >= 50) {
+										this.refreshData(loading, loaded);
+									} else {
+										this.upElem.innerHTML = "下拉刷新";
+										loaded();
+									}
+								},
+								loadMore: function() {
+									var then = this,
+										a = this.content._findNode("li");
+									a.forEach((e) => {
+										then.content._findNode("ul")[0]._append(e.cloneNode(true));
+									})
+								}
+							}).done(function() {
+								var that = this;
+								document.getElementById("clickRefresh").onclick = (e) => {
+									window.scrollTo(0,0);
+									that.upElem.innerHTML = "正在加载...";
+									pReact.scroll.animate(that.content, 0, 0, 0, that.unit);
+									setTimeout(function(){
+										pReact.scroll.animate(that.content, 0, "-"+that.topOffset, 0, that.unit);
+										that.upElem.innerHTML = "下拉刷新";
+									}, 1000);
+								};
+							});
+						})
+					);
+				})
+			)
+		</script>
+	</body>
+</html>
