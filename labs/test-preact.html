@@ -580,6 +580,26 @@
 						textAlign:"right",
 						width:"10%",
 						fontWeight:700
+					},
+					progress:{
+						padding:(5/baseFontSize).toFixed(4)+"rem",
+						overflow:"hidden",
+						background:"rgb(255,255,255)"
+					},
+					progressView:{
+						background:"rgb(245, 245, 245)",
+						borderRadius:(5/baseFontSize).toFixed(4)+"rem",
+						boxShadow:"inset 0 "+(1/baseFontSize).toFixed(4)+"rem "+(2/baseFontSize).toFixed(4)+"rem rgba(0,0,0,.1)",
+						overflow:"hidden"
+					},
+					progressload:{
+						background:"rgb(51,122,183)",
+						textAlign:"center",
+						fontSize:(14/baseFontSize).toFixed(4)+"rem",
+						color:"rgb(255,255,255)",
+						display:"block",
+						overflow:"hidden",
+						minWidth:"8%"
 					}
 				}),
 				tools = pReact.createClass("tools", {
@@ -621,25 +641,24 @@
 				}),
 				dropButton = pReact.createClass("dropbutton", {
 					handleClick(e){
-						console.log(e);
-						let p = this.parentNode._findNode("ul")[0];
+						let p = this.parentNode._findNode("ul")[0], type =this._attr("data-type");
 						if (/none/.test(p.style.display))
 							p._empty()._set({
-								style: [styles.show,styles.dropbuttonList, styles["dropbuttonList"+this._data.type]].join(';')
+								style: [styles.show,styles.dropbuttonList, styles["dropbuttonList"+type]].join(';')
 							});
 						else
 							p._empty()._set({
-								style: [styles.hide,styles.dropbuttonList, styles["dropbuttonList"+this._data.type]].join(';')
+								style: [styles.hide,styles.dropbuttonList, styles["dropbuttonList"+type]].join(';')
 							});
 						pReact.renderDom(
 							<dropButtonList />,
-							document.getElementById("drop"+this._data.type)
+							document.getElementById("drop"+type)
 						)
 					},
 					render(){
-						return this._data && this._data.type == "down" ? pReact.tmpl((
+						let a = this._data && this._data.type == "down" ? pReact.tmpl((
 							<div style={styles.dropdown}>
-								<button style={styles.dropdownButton} onclick={handleClick}>
+								<button style={styles.dropdownButton} onclick={handleClick} data-type="{{type}}">
 									{{title}}
 								</button>
 								<ul id="dropdown" style={styles.hide}{styles.dropbuttonList}{styles.dropbuttonListdown}>
@@ -647,13 +666,14 @@
 							</div>
 						), this._data) : pReact.tmpl((
 							<div style={styles.dropdown}{styles.dropup}>
-								<button style={styles.dropdownButton}{styles.dropupButton} onclick={handleClick}>
+								<button style={styles.dropdownButton}{styles.dropupButton} onclick={handleClick} data-type="{{type}}">
 									{{title}}
 								</button>
 								<ul id="dropup" style={styles.hide}{styles.dropbuttonList}{styles.dropbuttonListup}>
 								</ul>
 							</div>
-						), this._data)
+						), this._data);
+						return a;
 					}
 				}),
 				header = pReact.createClass("header", {
@@ -942,6 +962,23 @@
 						);
 					}
 				}),
+				progress = pReact.createClass("progress", {
+					render(){
+						this._data = this._data && pReact.extend(this._data, {
+							style: styles.progressload
+						}) || {
+							style: styles.progressload
+						};
+						let a = pReact.tmpl((
+							<div style={styles.progress}>
+								<div style={styles.progressView}>
+									<span style={styles.progressload} data-style="width:{{value}};">{{value}}</span>
+								</div>
+							</div>
+						), this._data);
+						return a;
+					}
+				}),
 				footermenu = pReact.createClass("footermenu", {
 					render(){
 						var b = document.createDocumentFragment(), i=0;
@@ -1003,10 +1040,20 @@
 					}
 				}),
 				search = pReact.createClass("search", {
+					handleKeyUp(e){
+						console.log(this.value);
+					},
+					handleKeyDown(e){
+						console.log(e);
+						if (!/[a-zA-Z0-9]/.test(e.key)){
+							e.preventDefault();
+							return false;
+						}
+					},
 					render(){
 						return (
 							<div style={styles.headerTop}{styles.search}>
-								<input type="text" value="" placeholder="{{defaultText}}" style={styles.searchInput} />
+								<input type="text" value="" placeholder="{{defaultText}}" style={styles.searchInput} onkeyup={handleKeyUp} onkeydown={handleKeyDown} />
 							</div>
 						)
 					}
@@ -1068,6 +1115,7 @@
 									<div id="tabs" class="item"></div>
 									<div id="group" class="item" style="text-align:center"></div>
 									<div id="listview" class="item"></div>
+									<div id="progress" class="item"></div>
 									<section>
 										<ul>
 											<li>
@@ -1303,7 +1351,7 @@
 						var b = document.createDocumentFragment(), i=0;
 						then._data && then._data.data.forEach((n) => {
 							i+=1;
-							b.appendChild(i === then._data.length ? pReact.tmpl((
+							b.appendChild(i === then._data.data.length ? pReact.tmpl((
 								<li style={styles.listviewitem}{styles.listviewitemlast} onclick={handleClick} data-url="{{url}}">
 									<span style={styles.listviewitemtitle}>{{title}}</span>
 									<i style={styles.listviewitemicon}></i>
@@ -1429,6 +1477,38 @@
 						);
 					})
 				);
+			}).add((done) => {
+				pReact.renderDom(
+					<progress value="50%" />,
+					document.getElementById("progress"),
+					(() => {
+						pReact.renderDom(
+							<progress value="80%" />,
+							document.getElementById("progress"),
+							(() => {
+								pReact.renderDom(
+									<progress value="30%" />,
+									document.getElementById("progress"),
+									(() => {
+										pReact.renderDom(
+											<progress value="90%" />,
+											document.getElementById("progress"),
+											(() => {
+												pReact.renderDom(
+													<progress value="1%" />,
+													document.getElementById("progress"),
+													(() => {
+														done()
+													})
+												)
+											})
+										)
+									})
+								)
+							})
+						)
+					})
+				)
 			}).add((done) => {
 				pReact.renderDom(
 					<adTwoLan  />,

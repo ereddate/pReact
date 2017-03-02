@@ -557,7 +557,7 @@
 							v.replace(/\{+\s*([^<>}{,]+)\s*\}+/gim, function(a, b) {
 								if (b) {
 									var style = pReact.getStyle(b.split('.')[1]);
-									style && val.push(pReact.getStyle(b.split('.')[1]));
+									style && val.push(style);
 									if (val.length === 0) module.Class[b.split('.')[0]] && val.push(module.Class[b.split('.')[0]][b.split('.')[1]]);
 								}
 							});
@@ -683,12 +683,15 @@
 				if (attrs) {
 					attrs.forEach((a) => {
 						for (name in data) {
-							new RegExp("{{\\s*" + name.toLowerCase() + "\\s*}}").test(a.value.toLowerCase()) && e.setAttribute(a.name, data[name]);
+							let reg = new RegExp("{{\\s*" + name.toLowerCase() + "\\s*}}", "gim");
+							reg.test(a.value.toLowerCase()) && e.setAttribute(a.name, a.value.replace(reg, data[name]));
 						}
 						if (/data\-src/.test(a.name.toLowerCase()) || /data\-poster/.test(a.name.toLowerCase()))
 							(e.setAttribute(a.name.toLowerCase().replace("data-", ""), /\{+\s*([^<>}{,]+)\s*\}+/.test(a.value) ? (a.value = a.value.replace(/\{+\s*([^<>}{,]+)\s*\}+/gim, ((a, b) => {
 								return g(a, b, e);
 							}))) : a.value), e._removeAttr("data-src data-poster"));
+						else if (/data-style/.test(a.name.toLowerCase()))
+							(e.setAttribute(a.name.toLowerCase().replace("data-", ""), e.getAttribute(a.name.toLowerCase().replace("data-", ""))+a.value), e._removeAttr("data-style"));
 						else
 							e.setAttribute(a.name, /\{+\s*([^<>}{,]+)\s*\}+/.test(a.value) ? (a.value = a.value.replace(/\{+\s*([^<>}{,]+)\s*\}+/gim, ((a, b) => {
 								return g(a, b, e);
@@ -714,7 +717,7 @@
 		g = (a, b, e) => {
 			let v = data && !Object.is(typeof data[b], "undefined") && !Object.is(typeof data[b], "function") && data[b] || false;
 			if (Object.is(v, false)) {
-				if (Object.is(v, false) && !Object.is(pReact.getStyle(b.split('.')[1]), false)) v = pReact.getStyle(b.split('.')[1]);
+				if (Object.is(v, false) && !Object.is(pReact.getStyle(b.split('.')[1]), false)) (v = pReact.getStyle(b.split('.')[1]));
 				if (Object.is(v, false) && Object.is(typeof obj[b], "string")) v = obj[b];
 				if (Object.is(v, false) && Object.is(typeof obj[b], "function")) v = obj[b]();
 				if (Object.is(v, false)) v = a;
