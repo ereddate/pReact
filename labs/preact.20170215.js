@@ -449,6 +449,7 @@
 						_set(options) {
 							var then = this;
 							module.set(then, options);
+							return this;
 						},
 						_findNode(selector) {
 							var then = this;
