@@ -111,6 +111,22 @@
 					display: "flex",
 					flexFlow: "row"
 				},
+				textCenter:{
+					textAlign:"center"
+				},
+				positionRelative:{
+					position:"relative"
+				},
+				button:{
+					padding:(6/baseFontSize).toFixed(4)+"rem "+(12/baseFontSize).toFixed(4)+"rem",
+					background: "rgb(255,255,255)",
+					color:"rgb(0,0,0)",
+					fontSize: (16/baseFontSize).toFixed(4)+"rem",
+					border:(1/baseFontSize).toFixed(4)+"rem solid #ccc",
+					borderRadius:(5/baseFontSize).toFixed(4)+"rem",
+					verticalAlign:"middle",
+					minWidth:(70/baseFontSize).toFixed(4)+"rem",
+				},
 				iscroll_main:{
 					zIndex: 1
 				},
@@ -133,6 +149,9 @@
 					borderBottom: (1/baseFontSize).toFixed(4)+"rem solid rgb(220,220,220)",
 					borderTop: (1/baseFontSize).toFixed(4)+"rem solid #fff",
 					backgroundColor: "#fafafa"
+				},
+				iscroll_main_context_li_shop:{
+					padding:(5/baseFontSize).toFixed(4)+"rem"
 				},
 				iscroll_main_context_refresh:{
 					fontSize: (14/baseFontSize).toFixed(4)+"rem",
@@ -159,7 +178,12 @@
 					height: (92/baseFontSize).toFixed(4)+"rem"
 				},
 				iscroll_main_context_li_item_img:{
-					width: (128/baseFontSize).toFixed(4)+"rem",
+					width: (128/baseFontSize).toFixed(4)+"rem"
+				},
+				iscroll_main_context_li_item_shop_img:{
+					width: "100%",
+					textAlign:"center",
+					borderBottom:(1/baseFontSize).toFixed(4)+"rem solid #ccc"
 				},
 				iscroll_main_context_li_item_img_custom:{
 					float:"left",
@@ -182,9 +206,17 @@
 					fontSize:(20/baseFontSize).toFixed(4)+"rem",
 					fontWeight:400
 				},
+				iscroll_main_context_li_item_shop_title:{
+					height:(26/baseFontSize).toFixed(4)+"rem",
+					overflow:"hidden"
+				},
 				iscroll_main_context_li_item_aside:{
 					fontSize:(12/baseFontSize).toFixed(4)+"rem",
 					color:"rgb(169,169,169)"
+				},
+				iscroll_main_context_li_item_shop_aside:{
+					height:(18/baseFontSize).toFixed(4)+"rem",
+					overflow:"hidden"
 				},
 				iscroll_main_context_li_item_video:{
 					background: "rgb(0,0,0)",
@@ -192,6 +224,37 @@
 					height:(200/baseFontSize).toFixed(4)+"rem",
 					margin: "0 auto",
 					textAlign: "center"
+				},
+				iscroll_main_context_li_item_shop_price:{
+					color:"rgb(255,96,0)",
+					fontSize:(26/baseFontSize).toFixed(4)+"rem",
+					paddingBottom: (10/baseFontSize).toFixed(4)+"rem"
+				},
+				iscroll_main_context_li_item_shop_unit:{
+					fontSize:(12/baseFontSize).toFixed(4)+"rem"
+				},
+				iscroll_main_context_li_item_shopgroup:{
+					float:"left",
+					width: (100/2).toFixed(4)+"%",
+					overflow:"hidden",
+					margin: (5/baseFontSize).toFixed(4)+"rem 0",
+				},
+				iscroll_main_context_li_item_shop_buybutton:{
+					background:"rgb(255,87,34)",
+					color: "rgb(255,255,255)",
+					border:0,
+					marginRight:(5/baseFontSize).toFixed(4)+"rem"
+				},
+				iscroll_main_context_li_item_shop_icon_new:{
+					position:"absolute",
+					top:0,
+					left:0,
+					background:"rgb(154,205,50)",
+					color:"rgb(255,255,255)",
+					fontSize:(10/baseFontSize).toFixed(4)+"rem",
+					fontStyle:"normal",
+					padding:"0 "+(10/baseFontSize).toFixed(4)+"rem",
+					borderBottomRightRadius:(5/baseFontSize).toFixed(4)+"rem"
 				}
 			});
 			let scrollView = pReact.createClass("scrollView", {
@@ -264,6 +327,51 @@
 							time: "02-21 02:40 "+(1000*Math.random(1000)).toFixed(2),
 							type: "video",
 							video: "http://vdata.tool.hexun.com/2017-01-03/187591064_m.mp4"
+						},{
+							shops:[{
+								title: "智能摄像机AABBCC",
+								desc: "随时看护家的温暖与安全",
+								url: "",
+								img: "https://i8.mifile.cn/v1/a1/85a78a1a-ff71-dab4-8e7d-8119dfce798b.webp?width=360&height=360",
+								source: "外网商城",
+								price: 22.22
+							},{
+								title: "支架式自拍杆AABBCC",
+								desc: "随时看护家的温暖与安全",
+								url: "",
+								img: "https://i8.mifile.cn/v1/a1/9f575eab-237d-d341-c69d-b212b01117e7.webp?width=360&height=360",
+								source: "外网商城",
+								price: 22.22
+							},{
+								title: "支架式自拍杆AABBCC",
+								desc: "随时看护家的温暖与安全",
+								url: "",
+								img: "https://i8.mifile.cn/v1/a1/9f575eab-237d-d341-c69d-b212b01117e7.webp?width=360&height=360",
+								source: "外网商城",
+								price: 22.22
+							},{
+								title: "智能摄像机AABBCC",
+								desc: "随时看护家的温暖与安全",
+								url: "",
+								img: "https://i8.mifile.cn/v1/a1/85a78a1a-ff71-dab4-8e7d-8119dfce798b.webp?width=360&height=360",
+								source: "外网商城",
+								price: 22.22
+							},{
+								title: "智能摄像机AABBCC",
+								desc: "随时看护家的温暖与安全",
+								url: "",
+								img: "https://i8.mifile.cn/v1/a1/85a78a1a-ff71-dab4-8e7d-8119dfce798b.webp?width=360&height=360",
+								source: "外网商城",
+								price: 22.22
+							},{
+								title: "支架式自拍杆AABBCC",
+								desc: "随时看护家的温暖与安全",
+								url: "",
+								img: "https://i8.mifile.cn/v1/a1/9f575eab-237d-d341-c69d-b212b01117e7.webp?width=360&height=360",
+								source: "外网商城",
+								price: 22.22
+							}],
+							type: "shop"
 						},{
 							title: "证监会发布监管问答 定增基金发行数量或锐减",
 							url: "",
@@ -381,6 +489,12 @@
 				handleVideoClick(e){
 					console.log(e)
 				},
+				handleBuyClick(e){
+					console.log(e)
+				},
+				handleColClick(e){
+					console.log(e)
+				},
 				render(){
 					let a = pReact.createDom("docmentfragment", {}), i=0, then = this;
 					this._data.data && this._data.data.forEach((n) => {
@@ -405,7 +519,30 @@
 								</div>
 								<p style={styles.iscroll_main_context_li_item_aside}>{{source}} {{time}}</p>
 							</li>
-						),n) : i%2 === 0 ? pReact.tmpl((
+						),n) : n.type == "shop" ? (pReact.tmpl((
+							<li style={styles.iscroll_main_context_li}{styles.clearfix}{styles.iscroll_main_context_li_shop} id="shopgroup">
+							</li>
+						),n))._findNode("#shopgroup")[0]._append(((e) => {
+							n.shops.forEach((b) => {
+								e.appendChild(pReact.tmpl((
+									<div style={styles.iscroll_main_context_li_item_shopgroup}{styles.positionRelative}>
+										<i style={styles.iscroll_main_context_li_item_shop_icon_new}>新品</i>
+										<a href="{{url}}" style={styles.clearfix}{styles.textCenter}>
+											<img data-src="{{img}}" alt="{{title}}" style={styles.iscroll_main_context_li_item_img}{styles.iscroll_main_context_li_item_shop_img} />
+										</a>
+										<h2 style={styles.iscroll_main_context_li_item_title}{styles.iscroll_main_context_li_item_shop_title}>{{title}}</h2>
+										<p style={styles.iscroll_main_context_li_item_aside}{styles.iscroll_main_context_li_item_shop_aside}>
+											<span>{{desc}}<span>-<span>{{source}}</span>
+										</p>
+										<p style={styles.iscroll_main_context_li_item_shop_price}>
+											<label style={styles.iscroll_main_context_li_item_shop_unit}>￥</label><span>{{price}}</span>
+										</p>
+										<button style={styles.button}{styles.iscroll_main_context_li_item_shop_buybutton} onclick={handleBuyClick}>购买</button><button style={styles.button} onclick={handleColClick}>收藏</button>
+									</div>
+								), b))
+							});
+							return e;
+						})) : i%2 === 0 ? pReact.tmpl((
 							<li style={styles.iscroll_main_context_li}{styles.clearfix} onclick={handleClick} data-href="{{url}}">
 								<div style={styles.iscroll_main_context_li_item_right}>
 									<h2 style={styles.iscroll_main_context_li_item_title}>{{title}}</h2>

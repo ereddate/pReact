@@ -498,6 +498,8 @@
 								element = new Function("return " + translateContent("(" + tmpl(element) + ")"))();
 								this.appendChild(element);
 								module.cloneHandle(element);
+							} else if (module.is(typeof element, "function")) {
+								element(this);
 							} else {
 								this.appendChild(element);
 								module.cloneHandle(element);
@@ -674,7 +676,6 @@
 		//console.log(module.state)
 })(this, (element, data, obj) => {
 	var f = (element) => {
-
 			element && ("length" in element ? Object.is(element.nodeType, 11) ? [].slice.call(element.childNodes) : [].slice.call(element) : [element]).forEach((e) => {
 				!e["_factory"] && (e["_factory"] = obj);
 				!e["_data"] && (e["_data"] = data);
@@ -709,7 +710,6 @@
 				});
 				e.childNodes.length > 0 && f(e.childNodes);
 			})
-
 		},
 		g = (a, b, e) => {
 			let v = data && !Object.is(typeof data[b], "undefined") && !Object.is(typeof data[b], "function") && data[b] || false;
