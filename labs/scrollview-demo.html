@@ -136,7 +136,7 @@
 				},
 				render(){
 					let a = document.createDocumentFragment(), i=0, then = this;
-					then._data && then._data.forEach((n) => {
+					then._data && then._data.data.forEach((n) => {
 						i+=1;
 						a.appendChild(i == then._data.length ? pReact.tmpl((
 							<li style={styles.clearfix}{styles.scrollViewItems}{styles.scrollViewItemsLast}>
