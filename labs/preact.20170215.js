@@ -300,8 +300,8 @@
 				return a;
 			},
 			createClass(name, classObject) {
-				module.Class[name] = module.extend(classObject, {
-					_className: name
+				module.Class[name.toLowerCase()] = module.extend(classObject, {
+					_className: name.toLowerCase()
 				});
 				return classObject;
 			},
@@ -678,47 +678,78 @@
 })(this, (element, data, obj) => {
 	var f = (element) => {
 			element && ("length" in element ? Object.is(element.nodeType, 11) ? [].slice.call(element.childNodes) : [].slice.call(element) : [element]).forEach((e) => {
-				!e["_factory"] && (e["_factory"] = obj);
-				!e["_data"] && (e["_data"] = data);
-				var attrs = e.attributes && e.attributes.length > 0 && [].slice.call(e.attributes) || false;
-				if (attrs) {
-					attrs.forEach((a) => {
-						for (name in data) {
-							let reg = new RegExp("{{\\s*" + name.toLowerCase() + "\\s*}}", "gim");
-							reg.test(a.value.toLowerCase()) && e.setAttribute(a.name, a.value.replace(reg, data[name]));
-						}
-						if (/data\-src/.test(a.name.toLowerCase()) || /data\-poster/.test(a.name.toLowerCase()))
-							(e.setAttribute(a.name.toLowerCase().replace("data-", ""), /\{+\s*([^<>}{,]+)\s*\}+/.test(a.value) ? (a.value = a.value.replace(/\{+\s*([^<>}{,]+)\s*\}+/gim, ((a, b) => {
+				if (e.tagName && !Object.is(pReact.Class[e.tagName.toLowerCase()], undefined)) {
+					let parent = e.parentNode;
+					var attrs = e.attributes && e.attributes.length > 0 && [].slice.call(e.attributes) || false,
+						options = {};
+					if (attrs) {
+						attrs.forEach((a) => {
+							for (name in data) {
+								let reg = new RegExp("{{\\s*" + name.toLowerCase() + "\\s*}}", "gim");
+								reg.test(a.value.toLowerCase()) && (options[a.name] = a.value.replace(reg, data[name]));
+							}
+							if (/data\-src/.test(a.name.toLowerCase()) || /data\-poster/.test(a.name.toLowerCase()))
+								options[a.name.toLowerCase().replace("data-", "")] = /\{+\s*([^<>}{,]+)\s*\}+/.test(a.value) ? a.value.replace(/\{+\s*([^<>}{,]+)\s*\}+/gim, ((a, b) => {
+									return g(a, b, e);
+								})) : a.value;
+							else if (/data-style/.test(a.name.toLowerCase()))
+								options[a.name.toLowerCase().replace("data-", "")] = e.getAttribute(a.name.toLowerCase().replace("data-", "")) + a.value;
+							else
+								options[a.name] = /\{+\s*([^<>}{,]+)\s*\}+/.test(a.value) ? a.value = a.value.replace(/\{+\s*([^<>}{,]+)\s*\}+/gim, ((a, b) => {
+									return g(a, b, e);
+								})) : a.value;
+						})
+					}
+					e.childNodes.length > 0 && f(e.childNodes);
+					e._remove();
+					pReact.renderDom(
+						pReact.Class[e.tagName.toLowerCase()],
+						options,
+						parent
+					);
+				} else {
+					!e["_factory"] && (e["_factory"] = obj);
+					!e["_data"] && (e["_data"] = data);
+					var attrs = e.attributes && e.attributes.length > 0 && [].slice.call(e.attributes) || false;
+					if (attrs) {
+						attrs.forEach((a) => {
+							for (name in data) {
+								let reg = new RegExp("{{\\s*" + name.toLowerCase() + "\\s*}}", "gim");
+								reg.test(a.value.toLowerCase()) && e.setAttribute(a.name, a.value.replace(reg, data[name]));
+							}
+							if (/data\-src/.test(a.name.toLowerCase()) || /data\-poster/.test(a.name.toLowerCase()))
+								(e.setAttribute(a.name.toLowerCase().replace("data-", ""), /\{+\s*([^<>}{,]+)\s*\}+/.test(a.value) ? (a.value = a.value.replace(/\{+\s*([^<>}{,]+)\s*\}+/gim, ((a, b) => {
+									return g(a, b, e);
+								}))) : a.value), e._removeAttr("data-src data-poster"));
+							else if (/data-style/.test(a.name.toLowerCase()))
+								(e.setAttribute(a.name.toLowerCase().replace("data-", ""), e.getAttribute(a.name.toLowerCase().replace("data-", "")) + a.value), e._removeAttr("data-style"));
+							else
+								e.setAttribute(a.name, /\{+\s*([^<>}{,]+)\s*\}+/.test(a.value) ? (a.value = a.value.replace(/\{+\s*([^<>}{,]+)\s*\}+/gim, ((a, b) => {
+									return g(a, b, e);
+								}))) : a.value);
+						})
+					}
+					["text", "nodeValue"].forEach((text) => {
+						e[text] && (e[text] = e[text].replace(/\{+\s*[^<>}{,]+\s*\}+/gim, ((a) => {
+							for (name in data) {
+								a = a.replace(new RegExp("{{\\s*" + name + "\\s*}}", "gim"), ((a) => {
+									return data[name];
+								}))
+							}
+							a = a.replace(/\{+\s*([^<>}{,]+)\s*\}+/gim, ((a, b) => {
 								return g(a, b, e);
-							}))) : a.value), e._removeAttr("data-src data-poster"));
-						else if (/data-style/.test(a.name.toLowerCase()))
-							(e.setAttribute(a.name.toLowerCase().replace("data-", ""), e.getAttribute(a.name.toLowerCase().replace("data-", ""))+a.value), e._removeAttr("data-style"));
-						else
-							e.setAttribute(a.name, /\{+\s*([^<>}{,]+)\s*\}+/.test(a.value) ? (a.value = a.value.replace(/\{+\s*([^<>}{,]+)\s*\}+/gim, ((a, b) => {
-								return g(a, b, e);
-							}))) : a.value);
-					})
+							}));
+							return a;
+						})))
+					});
+					e.childNodes.length > 0 && f(e.childNodes);
 				}
-				["text", "nodeValue"].forEach((text) => {
-					e[text] && (e[text] = e[text].replace(/\{+\s*[^<>}{,]+\s*\}+/gim, ((a) => {
-						for (name in data) {
-							a = a.replace(new RegExp("{{\\s*" + name + "\\s*}}", "gim"), ((a) => {
-								return data[name];
-							}))
-						}
-						a = a.replace(/\{+\s*([^<>}{,]+)\s*\}+/gim, ((a, b) => {
-							return g(a, b, e);
-						}));
-						return a;
-					})))
-				});
-				e.childNodes.length > 0 && f(e.childNodes);
 			})
 		},
 		g = (a, b, e) => {
 			let v = data && !Object.is(typeof data[b], "undefined") && !Object.is(typeof data[b], "function") && data[b] || false;
 			if (Object.is(v, false)) {
-				if (Object.is(v, false) && !Object.is(pReact.getStyle(b.split('.')[1]), false)) (v = pReact.getStyle(b.split('.')[1]));
+				if (Object.is(v, false) && !Object.is(pReact.getStyle(b.split('.')[1]), false))(v = pReact.getStyle(b.split('.')[1]));
 				if (Object.is(v, false) && Object.is(typeof obj[b], "string")) v = obj[b];
 				if (Object.is(v, false) && Object.is(typeof obj[b], "function")) v = obj[b]();
 				if (Object.is(v, false)) v = a;
@@ -772,6 +803,7 @@
 			return p.join('');
 		};
 		var w = "pReact.createDom(\"docmentfragment\",{}," + f(dom).replace(/\)pReact/gim, "),pReact") + ")";
+		dom = null;
 		return w;
 	})).replace(/renderDom\s*\(\s*(<(\w+)(\s+([a-zA-Z-_0-9]+=["'{][^<>]+["'}]))*\s*\/>)/gim, ((a, b, c, d) => {
 		var temp = document.createElement("div"),

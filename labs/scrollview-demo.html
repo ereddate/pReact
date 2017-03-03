@@ -82,12 +82,13 @@
 					return (
 						<div style={styles.clearfix}{styles.scrollView}>
 							<ul id="{{id}}">
+								<scrollview_items></scrollview_items>
 							</ul>
 						</div>
 					);
 				}
 			}),
-			scrollViewItems = pReact.createClass("scrollViewItems", {
+			scrollview_items = pReact.createClass("scrollview_items", {
 				getInitData(success, error){
 					success([{
 						title: "央行：外商投资企业可以正常办理利润汇出",
@@ -174,43 +175,19 @@
 
 			pReact.renderDom(
 				<scrollView id="scrollviewitems"/>,
-				document.getElementById("page"),
-				(() => {
-					pReact.renderDom(
-						<scrollViewItems />,
-						document.getElementById("scrollviewitems")
-					)
-				})
+				document.getElementById("page")
 			);
 			pReact.renderDom(
-				<scrollView id="scrollviewitemsa"/>,
-				document.getElementById("page"),
-				(() => {
-					pReact.renderDom(
-						<scrollViewItems />,
-						document.getElementById("scrollviewitemsa")
-					)
-				})
+				<scrollView id="scrollviewitems"/>,
+				document.getElementById("page")
 			);
 			pReact.renderDom(
-				<scrollView id="scrollviewitemsb"/>,
-				document.getElementById("page"),
-				(() => {
-					pReact.renderDom(
-						<scrollViewItems />,
-						document.getElementById("scrollviewitemsb")
-					)
-				})
+				<scrollView id="scrollviewitems"/>,
+				document.getElementById("page")
 			);
 			pReact.renderDom(
-				<scrollView id="scrollviewitemsc"/>,
-				document.getElementById("page"),
-				(() => {
-					pReact.renderDom(
-						<scrollViewItems />,
-						document.getElementById("scrollviewitemsc")
-					)
-				})
+				<scrollView id="scrollviewitems"/>,
+				document.getElementById("page")
 			);
 		</script>
 	</body>

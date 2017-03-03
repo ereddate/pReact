@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+		<script src="preact.20170215.js"></script>
+		<script>
+			pReact.ready();
+		</script>
+		<style>
+			body{background:#f4f5f7;font-family:微软雅黑;}
+			body,ul, p,h1,h2,h3,h4,h5,h6{list-style:none;padding:0;margin:0;}
+		</style>
+	</head>
+	<body>
+		<div id="page"></div>
+		<script type="text/pReact">
+			let a = pReact.createClass("a", {
+				render(){
+					return (
+						<div>111
+							<ta id="test_ta"></ta>
+							<tb id="test_tb"></tb>
+						</div>
+					)
+				}
+			}),
+			ta = pReact.createClass("ta", {
+				handleClick(e){
+					console.log(e)
+				},
+				render(){
+					return (
+						<div id="{{id}}">222
+							<ul>
+								<li onclick={handleClick}>11111</li>
+								<li>11111</li>
+								<li>11111</li>
+								<li>11111</li>
+								<li>11111</li>
+							</ul>
+							{{id}}
+						</div>
+					)
+				}
+			}),
+			tb = pReact.createClass("tb", {
+				handleClick(e){
+					console.log(e)
+				},
+				render(){
+					return (
+						<div id="{{id}}">333
+							<ul>
+								<li onclick={handleClick}>11111</li>
+								<li>11111</li>
+								<li>11111</li>
+								<li>11111</li>
+								<li>11111</li>
+							</ul>
+							{{id}}
+						</div>
+					)
+				}
+			});
+			pReact.renderDom(
+				<a />,
+				document.getElementById("page")
+			)
+		</script>
+	</body>
+</html>

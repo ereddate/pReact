@@ -116,6 +116,9 @@
 					show:{
 						display: "block"
 					},
+					red:{
+						color:"red"
+					},
 					fullColumn:{
 						display: "flex",
 						flexFlow: "row"
@@ -688,6 +691,55 @@
 						display:"block",
 						overflow:"hidden",
 						minWidth:"8%"
+					},
+					topbanner:{
+						overflow:"hidden",
+						width:(screen.width/baseFontSize).toFixed(4)+"rem",
+						height:(screen.width/1.9714/baseFontSize).toFixed(4)+"rem"
+					},
+					topbannerItems:{
+						width:(screen.width*3/baseFontSize).toFixed(4)+"rem",
+						display:"block"
+					},
+					topbannerItem:{
+						float:"left",
+						width:(screen.width/baseFontSize).toFixed(4)+"rem",
+						height:(screen.width/1.9714/baseFontSize).toFixed(4)+"rem",
+						overflow:"hidden",
+						position:"relative"
+					},
+					topbannerItemLink:{
+						display:"block"
+					},
+					topbannerItemImg:{
+						width:"100%"
+					},
+					topbannerItemAside:{
+						padding:(10/baseFontSize).toFixed(4)+"rem",
+						fontSize:(16/baseFontSize).toFixed(4)+"rem",
+						background:"rgba(0,0,0,.5)",
+						color:"rgb(255,255,255)",
+						position:"absolute",
+						bottom:0,
+						left:0,
+						right:0
+					},
+					topbannerItemAsideTitle:{
+						padding:0,
+						margin:0,
+						fontSize:(16/baseFontSize).toFixed(4)+"rem",
+						fontWeight:400
+					},
+					topbannerItemAsideDesc:{
+						fontSize:(12/baseFontSize).toFixed(4)+"rem"
+					},
+					topbannerItemCount:{
+						position:"absolute",
+						top:(10/baseFontSize).toFixed(4)+"rem",
+						right:(10/baseFontSize).toFixed(4)+"rem"
+					},
+					topbannerItemCountNum:{
+						fontStyle:"normal"
 					}
 				}),
 				tools = pReact.createClass("tools", {
@@ -1198,6 +1250,9 @@
 								<div id="header" class="item"></div>
 								<div id="pageview" style={styles.pageview}>
 									<div id="search" class="item"></div>
+									<div id="topbanner" class="item">
+										<topbanner></topbanner>
+									</div>
 									<div id="quota" class="item"></div>
 									<div id="tools" class="item"></div>
 									<div id="tabs" class="item"></div>
@@ -1467,6 +1522,114 @@
 							), n))
 						});
 						return b;
+					}
+				}),
+				topbanner = pReact.createClass("topbanner", {
+					calculateAngle(startPoint, endPoint){
+						var x = startPoint.x - endPoint.x;
+						var y = endPoint.y - startPoint.y;
+						var r = Math.atan2(y, x);
+						var angle = Math.round(r * 180 / Math.PI);
+						if (angle < 0) {
+							angle = 360 - Math.abs(angle);
+						}
+						return angle;
+					},
+					calculateDirection(startPoint, endPoint){
+						var angle = this.calculateAngle(startPoint, endPoint);
+
+						if ((angle <= 45) && (angle >= 0)) {
+							return "left";
+						} else if ((angle <= 360) && (angle >= 315)) {
+							return "left";
+						} else if ((angle >= 135) && (angle <= 225)) {
+							return "right";
+						} else if ((angle > 45) && (angle < 135)) {
+							return "down";
+						} else {
+							return "up";
+						}
+					},
+					handleTouchStart(e){
+						var touches = e.touches[0];
+						this.start = {
+							x: touches.pageX,
+							y: touches.pageY
+						};
+						this.delta = {};
+					},
+					handleTouchMove(e){
+						if (e.touches.length > 1 || e.scale && e.scale !== 1) {
+							return
+						}
+						if (options.disableScroll) {
+							e.preventDefault()
+						}
+						var touches = e.touches[0];
+						this.end = {
+							x: touches.pageX,
+							y: touches.pageY
+						};
+						this.delta = {
+							x: touches.pageX - this.start.x,
+							y: touches.pageY - this.start.y
+						};
+					},
+					handleTouchEnd(e){
+						var direction = this.calculateDirection(start, this.end);
+						var a = 150;
+						alert(direction)
+					},
+					render(){
+						return (
+							<div style={styles.topbanner} ontouchstart={handleTouchStart} ontouchmove={handleTouchMove} ontouchend={handleTouchEnd}>
+								<ul style={styles.topbannerItems}>
+									<topbanner_list></topbanner_list>
+								</ul>
+							</div>
+						)
+					}
+				}),
+				topbanner_list = pReact.createClass("topbanner_list", {
+					getInitData(success, error){
+						success([{
+							img: "http://img1.126.net/channel19/026334/750380_0224.jpg",
+							url: "",
+							title: "广告：比速M3/T3 售6.19万起",
+							desc: "广告：比速M3/T3 售6.19万起"
+						},{
+							img: "http://cms-bucket.nosdn.127.net/8fd4f54a0440499b8126bcfb530c3eb420170303101010.jpeg?imageView&thumbnail=750y380&quality=45&type=webp&interlace=1&enlarge=1",
+							url: "",
+							title: "金正恩视察革命学院 李雪主陪同植树",
+							desc: "金正恩视察革命学院 李雪主陪同植树"
+						},{
+							img: "http://cms-bucket.nosdn.127.net/0d18f9bb17a2493585ad8669f65a78c620170303112206.jpeg?imageView&thumbnail=750y380&quality=45&type=webp&interlace=1&enlarge=1",
+							url: "",
+							title: "云南货车与大巴相撞现场 致10死38伤",
+							desc: "云南货车与大巴相撞现场 致10死38伤"
+						}])
+					},
+					render(){
+						let a = document.createDocumentFragment(), i=0, then = this;
+						this._data && this._data.data.forEach((n) => {
+							i+=1;
+							a.appendChild(pReact.tmpl((
+								<li style={styles.topbannerItem}>
+									<a style={styles.topbannerItemLink}>
+										<img data-src="{{img}}" alt="{{title}}" style={styles.topbannerItemImg} />
+									</a>
+									<atricle style={styles.topbannerItemAside}>
+										<h2 style={styles.topbannerItemAsideTitle}>{{title}}</h2>
+										<p style={styles.topbannerItemAsideDesc}>{{desc}}</p>
+										<span style={styles.topbannerItemCount}><i style={styles.topbannerItemCountNum}{styles.red}>{{current}}</i>/<i style={styles.topbannerItemCountNum}>{{count}}</i></span>
+									</atricle>
+								</li>
+							), pReact.extend(n, {
+								current: i,
+								count: then._data.data.length
+							})))
+						});
+						return a;
 					}
 				});
 
