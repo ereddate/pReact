@@ -699,7 +699,9 @@
 					},
 					topbannerItems:{
 						width:(screen.width*3/baseFontSize).toFixed(4)+"rem",
-						display:"block"
+						display:"block",
+						transform: "translate3d(0px, 0px, 0px)",
+						transitionDuration:"0.5s"
 					},
 					topbannerItem:{
 						float:"left",
@@ -1525,31 +1527,6 @@
 					}
 				}),
 				topbanner = pReact.createClass("topbanner", {
-					calculateAngle(startPoint, endPoint){
-						var x = startPoint.x - endPoint.x;
-						var y = endPoint.y - startPoint.y;
-						var r = Math.atan2(y, x);
-						var angle = Math.round(r * 180 / Math.PI);
-						if (angle < 0) {
-							angle = 360 - Math.abs(angle);
-						}
-						return angle;
-					},
-					calculateDirection(startPoint, endPoint){
-						var angle = this.calculateAngle(startPoint, endPoint);
-
-						if ((angle <= 45) && (angle >= 0)) {
-							return "left";
-						} else if ((angle <= 360) && (angle >= 315)) {
-							return "left";
-						} else if ((angle >= 135) && (angle <= 225)) {
-							return "right";
-						} else if ((angle > 45) && (angle < 135)) {
-							return "down";
-						} else {
-							return "up";
-						}
-					},
 					handleTouchStart(e){
 						var touches = e.touches[0];
 						this.start = {
@@ -1562,9 +1539,6 @@
 						if (e.touches.length > 1 || e.scale && e.scale !== 1) {
 							return
 						}
-						if (options.disableScroll) {
-							e.preventDefault()
-						}
 						var touches = e.touches[0];
 						this.end = {
 							x: touches.pageX,
@@ -1576,13 +1550,39 @@
 						};
 					},
 					handleTouchEnd(e){
-						var direction = this.calculateDirection(start, this.end);
-						var a = 150;
-						alert(direction)
+						var direction = pReact.calculateDirection(this.start, this.end);
+						var a = 150,parent =this._findNode("ul"), fz = screen.width / 16, transvalue = screen.width/fz,start = parseInt(this._attr("data-start")) || 0,
+						len = parent[0]._findNode("li").length;
+						switch(direction){
+							case "left":
+								start+=1;
+								start+1>len && (start = 0);
+								this._attr("data-start", start);
+								transvalue = start * transvalue;
+								parent[0]._css({
+									transform: "translate3d(-" + transvalue + "rem, 0, 0)",
+									transitionDuration:"0.5s"
+								});
+								break;
+							case "right":
+								start-=1;
+								start<0 && (start = len-1);
+								this._attr("data-start", start);
+								transvalue = start * transvalue;
+								parent[0]._css({
+									transform: "translate3d(-" + transvalue + "rem, 0, 0)",
+									transitionDuration:"0.5s"
+								});
+								break;
+							case "top":
+								break;
+							case "bottom":
+								break;
+						}
 					},
 					render(){
 						return (
-							<div style={styles.topbanner} ontouchstart={handleTouchStart} ontouchmove={handleTouchMove} ontouchend={handleTouchEnd}>
+							<div style={styles.topbanner} ontouchstart={handleTouchStart} ontouchmove={handleTouchMove} ontouchend={handleTouchEnd} data-start="0">
 								<ul style={styles.topbannerItems}>
 									<topbanner_list></topbanner_list>
 								</ul>
@@ -1593,17 +1593,17 @@
 				topbanner_list = pReact.createClass("topbanner_list", {
 					getInitData(success, error){
 						success([{
-							img: "http://img1.126.net/channel19/026334/750380_0224.jpg",
+							img: "1.jpg",
 							url: "",
 							title: "广告：比速M3/T3 售6.19万起",
 							desc: "广告：比速M3/T3 售6.19万起"
 						},{
-							img: "http://cms-bucket.nosdn.127.net/8fd4f54a0440499b8126bcfb530c3eb420170303101010.jpeg?imageView&thumbnail=750y380&quality=45&type=webp&interlace=1&enlarge=1",
+							img: "1.jpg",
 							url: "",
 							title: "金正恩视察革命学院 李雪主陪同植树",
 							desc: "金正恩视察革命学院 李雪主陪同植树"
 						},{
-							img: "http://cms-bucket.nosdn.127.net/0d18f9bb17a2493585ad8669f65a78c620170303112206.jpeg?imageView&thumbnail=750y380&quality=45&type=webp&interlace=1&enlarge=1",
+							img: "1.jpg",
 							url: "",
 							title: "云南货车与大巴相撞现场 致10死38伤",
 							desc: "云南货车与大巴相撞现场 致10死38伤"

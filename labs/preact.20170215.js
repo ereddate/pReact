@@ -151,6 +151,30 @@
 			});
 			return this;
 		},
+		calculateAngle(startPoint, endPoint) {
+			var x = startPoint.x - endPoint.x;
+			var y = endPoint.y - startPoint.y;
+			var r = Math.atan2(y, x);
+			var angle = Math.round(r * 180 / Math.PI);
+			if (angle < 0) {
+				angle = 360 - Math.abs(angle);
+			}
+			return angle;
+		},
+		calculateDirection(startPoint, endPoint) {
+			var angle = module.calculateAngle(startPoint, endPoint);
+			if ((angle <= 45) && (angle >= 0)) {
+				return "left";
+			} else if ((angle <= 360) && (angle >= 315)) {
+				return "left";
+			} else if ((angle >= 135) && (angle <= 225)) {
+				return "right";
+			} else if ((angle > 45) && (angle < 135)) {
+				return "down";
+			} else {
+				return "up";
+			}
+		},
 		on(then, eventName, fn) {
 			eventName = eventName.toLowerCase().split(' ');
 			eventName.forEach((ev) => {
@@ -284,6 +308,7 @@
 	pReact.Styles = module.Styles;
 	pReact.jsonp = jsonp;
 	pReact.extend = module.extend;
+	pReact.calculateDirection = module.calculateDirection;
 	pReact.Callbacks = function() {
 		let args = arguments && [].slice.call(arguments) || [],
 			len = args.length,
