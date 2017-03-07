@@ -318,6 +318,22 @@
 		});
 		return callback;
 	};
+	pReact.tmplThesaurus = {};
+	pReact.is = (b, a) => {
+		if (typeof b == "string") switch (b) {
+			case "number":
+			case "string":
+			case "object":
+				return Object.is(typeof a, b);
+				break;
+			case "array":
+				var len = typeof a != "string" && ("length" in a) && a.length,
+					c = (typeof a).toLowerCase();
+				return "array" === c || 0 === len || "number" == typeof len && len > 0 && len - 1 in a
+				break;
+		}
+		return module.is(a, b);
+	};
 
 	module.extend(win.pReact, {
 			extend(a, b) {
@@ -710,8 +726,16 @@
 					if (attrs) {
 						attrs.forEach((a) => {
 							for (name in data) {
-								let reg = new RegExp("{{\\s*" + name.toLowerCase() + "\\s*}}", "gim");
-								reg.test(a.value.toLowerCase()) && (options[a.name] = a.value.replace(reg, data[name]));
+								let reg = new RegExp("{{\\s*" + name.toLowerCase() + "\\s*(\\|\\s*([^<>,]+)\\s*)*}}", "gim"),
+									v = reg.exec(a.value.toLowerCase());
+								if (v) {
+									if (v[2]) {
+										v = v[2].split(':');
+										pReact.tmplThesaurus[v[0].replace(/\s+/gim, "")] && (options[a.name] = pReact.tmplThesaurus[v[0].replace(/\s+/gim, "")](data[name], v[1]));
+									} else {
+										options[a.name] = a.value.replace(reg, data[name])
+									}
+								}
 							}
 							if (/data\-src/.test(a.name.toLowerCase()) || /data\-poster/.test(a.name.toLowerCase()))
 								options[a.name.toLowerCase().replace("data-", "")] = /\{+\s*([^<>}{,]+)\s*\}+/.test(a.value) ? a.value.replace(/\{+\s*([^<>}{,]+)\s*\}+/gim, ((a, b) => {
@@ -739,8 +763,16 @@
 					if (attrs) {
 						attrs.forEach((a) => {
 							for (name in data) {
-								let reg = new RegExp("{{\\s*" + name.toLowerCase() + "\\s*}}", "gim");
-								reg.test(a.value.toLowerCase()) && e.setAttribute(a.name, a.value.replace(reg, data[name]));
+								let reg = new RegExp("{{\\s*" + name.toLowerCase() + "\\s*(\\|\\s*([^<>,]+)\\s*)*}}", "gim"),
+									v = reg.exec(a.value.toLowerCase());
+								if (v) {
+									if (v[2]) {
+										v = v[2].split(':');
+										pReact.tmplThesaurus[v[0].replace(/\s+/gim, "")] && e.setAttribute(a.name, pReact.tmplThesaurus[v[0].replace(/\s+/gim, "")](data[name], v[1]));
+									} else {
+										e.setAttribute(a.name, a.value.replace(reg, data[name]));
+									}
+								}
 							}
 							if (/data\-src/.test(a.name.toLowerCase()) || /data\-poster/.test(a.name.toLowerCase()))
 								(e.setAttribute(a.name.toLowerCase().replace("data-", ""), /\{+\s*([^<>}{,]+)\s*\}+/.test(a.value) ? (a.value = a.value.replace(/\{+\s*([^<>}{,]+)\s*\}+/gim, ((a, b) => {
@@ -757,7 +789,11 @@
 					["text", "nodeValue"].forEach((text) => {
 						e[text] && (e[text] = e[text].replace(/\{+\s*[^<>}{,]+\s*\}+/gim, ((a) => {
 							for (name in data) {
-								a = a.replace(new RegExp("{{\\s*" + name + "\\s*}}", "gim"), ((a) => {
+								a = a.replace(new RegExp("{{\\s*" + name + "\\s*(\\|\\s*([^<>,]+)\\s*)*}}", "gim"), ((a, b, c) => {
+									if (c) {
+										let v = c.split(':');
+										return pReact.tmplThesaurus[v[0].replace(/\s+/gim, "")] && pReact.tmplThesaurus[v[0].replace(/\s+/gim, "")](data[name], v[1]) || data[name];
+									}
 									return data[name];
 								}))
 							}
@@ -784,7 +820,11 @@
 	if (Object.is(typeof element, "string")) {
 		element = element.replace(/\{+\s*[^<>}{,]+\s*\}+/gim, ((a) => {
 			for (name in data) {
-				a = a.replace(new RegExp("{{\\s*" + name + "\\s*}}", "gim"), ((a) => {
+				a = a.replace(new RegExp("{{\\s*" + name + "\\s*(\\|\\s*([^<>,]+)\\s*)*}}", "gim"), ((a, b, c) => {
+					if (c) {
+						let v = c.split(':');
+						return pReact.tmplThesaurus[v[0].replace(/\s+/gim, "")] && pReact.tmplThesaurus[v[0].replace(/\s+/gim, "")](data[name], v[1]) || data[name];
+					}
 					return data[name];
 				}))
 			}
@@ -914,3 +954,296 @@
 		}
 	}
 });
+
+pReact && ((pReact) => {
+	let stringify = (obj) => {
+			if (null == obj)
+				return "null";
+			if ("string" != typeof obj && obj.toJSON)
+				return obj.toJSON();
+			var type = typeof obj;
+			switch (type) {
+				case "string":
+					return '"' + obj.replace(/[\"\r\n\t\\]+/gim, ((a) => {
+						return "\\\\" + a
+					})) + '"';
+				case "number":
+					var ret = obj.toString();
+					return /N/.test(ret) ? "null" : ret;
+				case "boolean":
+					return obj.toString();
+				case "date":
+					return "new Date(" + obj.getTime() + ")";
+				case "array":
+					for (var ar = [], i = 0; i < obj.length; i++)
+						ar[i] = stringify(obj[i]);
+					return "[" + ar.join(",") + "]";
+				case "object":
+					if (pReact.isPlainObject(obj)) {
+						ar = [];
+						for (i in obj)
+							ar.push('"' + i.replace(/[\"\r\n\t\\]+/gim, ((a) => {
+								return "\\\\" + a
+							})) + '":' + stringify(obj[i]));
+						return "{" + ar.join(",") + "}"
+					}
+			}
+			return "null"
+		},
+		_tmplFilterVal = (val, filterCondition) => {
+			if (typeof filterCondition == "function") {
+				return filterCondition(val);
+			} else if (typeof filterCondition == "object") {
+				if (pReact.isPlainObject(filterCondition)) {
+					for (name in filterCondition) {
+						var oval = filterCondition[name];
+						var oreg = new RegExp(oval, "igm");
+						if (oreg.test(val)) {
+							return val.replace(oreg, "");
+						}
+					}
+				}
+			}
+			var strRegex = new RegExp(filterCondition, "igm");
+			return (val + "").replace(strRegex, "");
+		},
+		getLen = (str, type) => {
+			var str = (str + "").replace(/\r|\n/ig, ""),
+				temp1 = str.replace(/([^\x00-\xff]|[A-Z])/g, "**"),
+				temp2 = temp1.substring(0),
+				x_length = !type ? (temp2.split("\*").length - 1) / 2 + (temp1.replace(/\*/ig, "").length) : temp2.length;
+			return x_length;
+		},
+		textFix = (name, num) => {
+			var max = num ? num : 16;
+			return getLen(name, true) >= max ? _getText(name, max) : name;
+		},
+		_getText = (text, max) => {
+			var strs = [],
+				n = 0,
+				len = text.length,
+				vtext = "";
+			for (var i = 0; i < len; i++) {
+				vtext = text.substr(i, 1).replace("“", " ").replace("”", " ");
+				if (/([^\x00-\xff]|[A-Z])/.test(vtext)) {
+					n += 2;
+				} else {
+					n += 1;
+				}
+				if (n <= max) {
+					strs.push(vtext);
+				}
+			}
+			return strs.join('');
+		},
+		_capitalize = (val) => {
+			return val[0].toUpperCase() + val.substr(1);
+		},
+		_date = (d, pattern) => {
+			d = d ? new Date(d) : new Date();
+			pattern = pattern || 'yyyy-MM-dd';
+			var y = d.getFullYear().toString(),
+				o = {
+					M: d.getMonth() + 1, //month
+					d: d.getDate(), //day
+					h: d.getHours(), //hour
+					m: d.getMinutes(), //minute
+					s: d.getSeconds() //second
+				};
+			pattern = pattern.replace(/(y+)/ig, function(a, b) {
+				return y.substr(4 - Math.min(4, b.length));
+			});
+			for (var i in o) {
+				pattern = pattern.replace(new RegExp('(' + i + '+)', 'g'), function(a, b) {
+					return (o[i] < 10 && b.length > 1) ? '0' + o[i] : o[i];
+				});
+			}
+			return pattern;
+		},
+		_currency = (val, symbol) => {
+			var places, thousand, decimal;
+			places = 2;
+			symbol = symbol !== undefined ? symbol : "$";
+			thousand = ",";
+			decimal = ".";
+			var number = val,
+				negative = number < 0 ? "-" : "",
+				i = parseInt(number = Math.abs(+number || 0).toFixed(places), 10) + "",
+				j = (j = i.length) > 3 ? j % 3 : 0;
+			return symbol + negative + (j ? i.substr(0, j) + thousand : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + thousand) + (places ? decimal + Math.abs(number - i).toFixed(places).slice(2) : "");
+		};
+
+	(pReact.tmplThesaurus || !pReact.tmplThesaurus && (pReact.tmplThesaurus = {})) && pReact.extend(pReact.tmplThesaurus, {
+		filter(val, filterCondition) {
+			return _tmplFilterVal(val, filterCondition);
+		},
+		json(val, filterCondition) {
+			return stringify(val);
+		},
+		limitToCharacter(val, filterCondition) {
+			if (pReact.is("string", val)) {
+				return textFix(val, parseInt(filterCondition));
+			}
+			return val;
+		},
+		limitTo(val, filterCondition) {
+			if (pReact.is("array", val)) {
+				var a = [];
+				val.forEach(function(n) {
+					a.push(n);
+				});
+				return stringify(a.splice(0, parseInt(filterCondition)));
+			} else if (pReact.is("string", val)) {
+				return val.substr(0, parseInt(filterCondition)); //textFix(val, parseInt(filterCondition));
+			} else if (pReact.is("number", val) && /\./.test(val + "")) {
+				return val.toFixed(filterCondition);
+			} else if (pReact.is("number", val)) {
+				var len = (val + "").length;
+				return parseInt((val + "").substr(len - parseInt(filterCondition), filterCondition));
+			}
+			return val;
+		},
+		indexOf(val, filterCondition) {
+			var index = -1,
+				i;
+			if (pReact.is("array", val)) {
+				for (i = 0; i < val.length; i++) {
+					if (val[i] == filterCondition) {
+						index = i;
+						break;
+					}
+				}
+			}
+			if (pReact.is("string", val)) {
+				index = val.indexOf(filterCondition);
+			}
+			return index;
+		},
+		lowercase(val, filterCondition) {
+			return val.toLowerCase();
+		},
+		uppercase(val, filterCondition) {
+			return val.toUpperCase();
+		},
+		toRem(val, filterCondition) {
+			return (parseFloat(val) / parseFloat(filterCondition)).toFixed(4);
+		},
+		orderBy(val, filterCondition) {
+			if (pReact.is("array", val) && /reverse|sort/.test(filterCondition.toLowerCase())) {
+				return val[filterCondition.toLowerCase()]();
+			}
+			return val;
+		},
+		date(val, filterCondition) {
+			return _date(val, filterCondition);
+		},
+		currency(val, filterCondition) {
+			return _currency(val);
+		},
+		empty(val, filterCondition) {
+			return (typeof val == "string" && $.trim(val) == "" || val == null || typeof val == "undefined" || pReact.is("object", val) && pReact.isEmptyObject(val) || pReact.is("array", val) && val.length == 0) && filterCondition || "";
+		},
+		passcard(val, filterCondition) {
+			var num = filterCondition || 4,
+				exp = new RegExp("(\\d{" + num + "})(\\d{" + num + "})(\\d{" + num + "})(\\d{" + num + "})(\\d{0,})"),
+				regex = exp.exec(val);
+			return regex && regex.splice(1, regex.length - 1).join(' ') || val;
+		},
+		encodeURI(val, filterCondition) {
+			return encodeURIComponent(val);
+		},
+		decodeURI(val, filterCondition) {
+			return decodeURIComponent(val);
+		},
+		toString(val, filterCondition) {
+			return stringify(val);
+		},
+		cssPrefix(val, filterCondition) {
+			val = val.replace(/["']*/gi, "");
+			var toAda = [];
+			var a = document.createElement("div").style;
+			pReact.each(["", "webkit", "o", "ms", "moz"], function(i, name) {
+				var valname = val.replace(/\s*/gi, "").split(':')[0];
+				valname = valname.split('-');
+				if (name != "" && (name + (valname.length > 1 ? _capitalize(valname[0]) + _capitalize(valname[1]) : _capitalize(valname[0])) in a)) {
+					toAda.push("-" + name + "-" + val);
+				} else if (name == "") {
+					toAda.push(val);
+				}
+			});
+			return toAda.join(';') + ";";
+		},
+		rgbToHex(val, filterCondition) {
+			var reg = /^#([0-9a-fA-f]{3}|[0-9a-fA-f]{6})$/,
+				that = val;
+			if (/^(rgb|RGB)/.test(that)) {
+				var aColor = that.replace(/(?:||rgb|RGB)*/g, "").replace(/\s*/gi, "").split(",");
+				var strHex = "#";
+				for (var i = 0; i < aColor.length; i++) {
+					var hex = Number(aColor[i]).toString(16);
+					if (hex === "0") {
+						hex += hex;
+					}
+					strHex += hex;
+				}
+				if (strHex.length !== 7) {
+					strHex = that;
+				}
+				return strHex;
+			} else if (reg.test(that)) {
+				var aNum = that.replace(/#/, "").split("");
+				if (aNum.length === 6) {
+					return that;
+				} else if (aNum.length === 3) {
+					var numHex = "#";
+					for (var i = 0; i < aNum.length; i += 1) {
+						numHex += (aNum[i] + aNum[i]);
+					}
+					return numHex;
+				}
+			} else {
+				return that;
+			}
+		},
+		hexToRgb(val, filterCondition) {
+			var reg = /^#([0-9a-fA-f]{3}|[0-9a-fA-f]{6})$/,
+				sColor = val.toLowerCase();
+			if (sColor && reg.test(sColor)) {
+				if (sColor.length === 4) {
+					var sColorNew = "#";
+					for (var i = 1; i < 4; i += 1) {
+						sColorNew += sColor.slice(i, i + 1).concat(sColor.slice(i, i + 1));
+					}
+					sColor = sColorNew;
+				}
+				var sColorChange = [];
+				for (var i = 1; i < 7; i += 2) {
+					sColorChange.push(parseInt("0x" + sColor.slice(i, i + 2)));
+				}
+				return sColorChange.join(",");
+			} else {
+				return sColor;
+			}
+		},
+		capitalize(val, filterCondition) {
+			switch (filterCondition) {
+				case 0:
+					return _capitalize(val);
+					break;
+				default:
+					var start = filterCondition - 1,
+						end = filterCondition + 1,
+						list = [];
+					val.split('').forEach(function(str, i) {
+						if (i == filterCondition) {
+							list.push(str.toUpperCase())
+						} else {
+							list.push(str);
+						}
+					});
+					return list.length > 0 ? list.join('') : val;
+					break;
+			}
+		}
+	});
+})(pReact);

@@ -1235,7 +1235,7 @@
 									<a href="{{url}}" style={styles.photosListItemLlink}>
 										<img data-src="{{img}}" alt="{{title}}" style={styles.photosListItemImg}/>
 									</a>
-									<p style={styles.photosListItemTitle}>{{title}}</p>
+									<p style={styles.photosListItemTitle}>{{title | limitTo : 5}}</p>
 								</div>
 							),n));
 						});
