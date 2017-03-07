@@ -653,7 +653,7 @@
 					listviewitem:{
 						borderBottom:(1/baseFontSize).toFixed(4)+"rem solid rgb(220,220,220)",
 						fontSize:(16/baseFontSize).toFixed(4)+"rem",
-						padding:(6/baseFontSize).toFixed(4)+"rem "+(12/baseFontSize).toFixed(4)+"rem",
+						padding: (6/baseFontSize).toFixed(4)+"rem "+(12/baseFontSize).toFixed(4)+"rem",
 						clear:"both"
 					},
 					listviewitemlast:{
@@ -662,7 +662,10 @@
 					listviewitemtitle:{
 						display:"inline-block",
 						verticalAlign: "middle",
-						width:"90%"
+						lineHeight:(30/baseFontSize).toFixed(4)+"rem",
+						width:"90%",
+						position:"relative",
+						zIndex:2
 					},
 					listviewitemicon:{
 						display:"inline-block",
@@ -671,7 +674,23 @@
 						fontStyle:"normal",
 						textAlign:"right",
 						width:"10%",
-						fontWeight:700
+						fontWeight:700,
+						position:"relative",
+						zIndex:2
+					},
+					listviewitem_mark:{
+						position:"relative"
+					},
+					listviewitemmark:{
+						background:"rgb(245, 245, 245)",
+						minWidth:"8%",
+						display:"block",
+						height: (42/baseFontSize).toFixed(4)+"rem",
+						position:"absolute",
+						top:0,
+						left:0,
+						bottom:0,
+						zIndex:1
 					},
 					progress:{
 						padding:(5/baseFontSize).toFixed(4)+"rem",
@@ -1496,16 +1515,20 @@
 					getInitData(success, error){
 						success([{
 							title:"listview item",
-							url:"1"
+							url:"1",
+							mark: 100
 						},{
 							title:"listview item",
-							url:"2"
+							url:"2",
+							mark: 5
 						},{
 							title:"listview item",
-							url:"3"
+							url:"3",
+							mark: 45
 						},{
 							title:"listview item",
-							url:"4"
+							url:"4",
+							mark: 80
 						},{
 							title:"listview item",
 							url:"5"
@@ -1523,12 +1546,18 @@
 							b.appendChild(i === then._data.data.length ? pReact.tmpl((
 								<li style={styles.listviewitem}{styles.listviewitemlast} onclick={handleClick} data-url="{{url}}">
 									<span style={styles.listviewitemtitle}>{{title}}</span>
-									<i style={styles.listviewitemicon}></i>
+									<i style={styles.listviewitemicon} class="icon--"></i>
+								</li>
+							), n) : n.mark ? pReact.tmpl((
+								<li style={styles.listviewitem}{styles.listviewitem_mark} onclick={handleClick} data-url="{{url}}" data-mark="{{mark}}">
+									<span style={styles.listviewitemmark} data-style="width:{{mark}}%"></span>
+									<span style={styles.listviewitemtitle}{styles.listviewitemmark_title}>{{title}}</span>
+									<i style={styles.listviewitemicon}{styles.listviewitemmark_icon} class="icon--"></i>
 								</li>
 							), n) : pReact.tmpl((
 								<li style={styles.listviewitem} onclick={handleClick} data-url="{{url}}">
 									<span style={styles.listviewitemtitle}>{{title}}</span>
-									<i style={styles.listviewitemicon}></i>
+									<i style={styles.listviewitemicon} class="icon--"></i>
 								</li>
 							), n))
 						});
