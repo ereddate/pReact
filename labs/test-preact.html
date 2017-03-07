@@ -983,6 +983,7 @@
 				}),
 				newsList = pReact.createClass("newsList", {
 					getInitData(success, error){
+						setTimeout(() => {
 						success([{
 							title: "证监会发布监管问答 定增基金发行数量或锐减",
 							url: "",
@@ -1048,6 +1049,7 @@
 							source: "证券时报",
 							time: "02-21 02:40"
 						}])
+						}, 2000)
 					},
 					handleVideoClick(e){
 						this.paused ? this.play() : this.pause();
@@ -1098,7 +1100,9 @@
 					render(){
 						return (
 							<div style={styles.viewItem}>
-								<ul style={styles.newsChannel}>{newsChannel.render}</ul>
+								<ul style={styles.newsChannel}>
+									<newschannel></newschannel>
+								</ul>
 								<div style={styles.newsList} id="{{id}}"></div>
 							</div>
 						);
@@ -1202,23 +1206,25 @@
 				}),
 				photosList = pReact.createClass("photosList", {
 					getInitData(success, error){
-						success([{
-							title: "组图：“中国防务”亮相阿布扎比国际防务展",
-							img: "https://minimg.hexun.com/g0.hexun.com/2017-02-21/188231238_c166x118.jpg",
-							url:""
-						},{
-							title: "组图：“中国防务”亮相阿布扎比国际防务展",
-							img: "https://minimg.hexun.com/g0.hexun.com/2017-02-21/188231238_c166x118.jpg",
-							url:""
-						},{
-							title: "组图：“中国防务”亮相阿布扎比国际防务展",
-							img: "https://minimg.hexun.com/g0.hexun.com/2017-02-21/188231238_c166x118.jpg",
-							url:""
-						},{
-							title: "组图：“中国防务”亮相阿布扎比国际防务展",
-							img: "https://minimg.hexun.com/g0.hexun.com/2017-02-21/188231238_c166x118.jpg",
-							url:""
-						}])
+						setTimeout(() => {
+							success([{
+								title: "组图：“中国防务”亮相阿布扎比国际防务展",
+								img: "https://minimg.hexun.com/g0.hexun.com/2017-02-21/188231238_c166x118.jpg",
+								url:""
+							},{
+								title: "组图：“中国防务”亮相阿布扎比国际防务展",
+								img: "https://minimg.hexun.com/g0.hexun.com/2017-02-21/188231238_c166x118.jpg",
+								url:""
+							},{
+								title: "组图：“中国防务”亮相阿布扎比国际防务展",
+								img: "https://minimg.hexun.com/g0.hexun.com/2017-02-21/188231238_c166x118.jpg",
+								url:""
+							},{
+								title: "组图：“中国防务”亮相阿布扎比国际防务展",
+								img: "https://minimg.hexun.com/g0.hexun.com/2017-02-21/188231238_c166x118.jpg",
+								url:""
+							}])
+						}, 2000)
 					},
 					render(){
 						var b = document.createDocumentFragment(), i=0;
@@ -1240,7 +1246,9 @@
 					render(){
 						return (
 							<div style={styles.viewItem}>
-								<ul style={styles.newsChannel}>{newsChannel.render}</ul>
+								<ul style={styles.newsChannel}>
+									<newschannel></newschannel>
+								</ul>
 								<div style={styles.photosList} id="{{id}}"></div>
 							</div>
 						);
