@@ -1081,6 +1081,18 @@
 						)
 					}
 				}),
+				xvideo = pReact.createClass("xvideo", {
+					handleVideoClick(e){
+
+					},
+					render(){
+						return (
+							<div>
+								<video data-src="{{src}}" style={styles.video} onclick={handleVideoClick} data-poster="{{poster}}"></video>
+							</div>
+						)
+					}
+				}),
 				newsChannel = pReact.createClass("newsChannel", {
 					render(){
 						var b = document.createDocumentFragment(), i=0;
@@ -1194,7 +1206,9 @@
 							i+=1;
 							b.appendChild(i=== 1 ? n.video ? pReact.tmpl((
 								<li style={styles.newsListItem}>
-									<video data-src="{{video}}" style={styles.video} onclick={handleVideoClick} data-poster="{{img}}"></video>
+									<div>
+										<xvideo src="{{video}}" poster="{{img}}"></xvideo>
+									</div>
 									<div>
 										<a href="{{url}}" style={styles.newsListActive}>{{title}}</a>
 										<p style={styles.newsListItemSource}>{{source}} {{time}}</p>
