@@ -13,96 +13,102 @@
 			pReact.ready();
 		</script>
 		<style>
-			body{background:#f4f5f7;font-family:微软雅黑;}
-			body,ul, p{list-style:none;padding:0;margin:0;}
-			.item{display:block;clear:both;}
+			body {
+				background: #f4f5f7;
+				font-family: 微软雅黑;
+			}
+			body, ul, p {
+				list-style: none;
+				padding: 0;
+				margin: 0;
+			}
+			.item {
+				display: block;
+				clear: both;
+			}
 			.page_loading {
-			  position: fixed;
-			  top: 0;
-			  left: 0;
-			  right: 0;
-			  bottom: 0;
-			  background-color: rgba(0, 0, 0, 0.5);
-			  z-index: 99999;
+				position: fixed;
+				top: 0;
+				left: 0;
+				right: 0;
+				bottom: 0;
+				background-color: rgba(0, 0, 0, 0.5);
+				z-index: 99999;
 			}
 			.page_loading .spinner {
-			  margin: 75% auto 0 auto;
-			  width: 6.25em;
-			  height: 2.75em;
-			  text-align: center;
-			  font-size: 0.625em;
+				margin: 75% auto 0 auto;
+				width: 6.25em;
+				height: 2.75em;
+				text-align: center;
+				font-size: 0.625em;
 			}
-			@media (height: 480px) {
-			  .page_loading .spinner {
-			    margin-top: 60%;
-			  }
+			@media (height:480px) {
+				.page_loading .spinner {
+					margin-top: 60%;
+				}
 			}
 			.page_loading .spinner div {
-			  background-color: #ffffff;
-			  height: 100%;
-			  width: 0.3125em;
-			  display: inline-block;
-			  -webkit-animation: stretchdelay 1.2s infinite ease-in-out;
-			  animation: stretchdelay 1.2s infinite ease-in-out;
-			  margin: 0 0.125em;
+				background-color: #ffffff;
+				height: 100%;
+				width: 0.3125em;
+				display: inline-block;
+				-webkit-animation: stretchdelay 1.2s infinite ease-in-out;
+				animation: stretchdelay 1.2s infinite ease-in-out;
+				margin: 0 0.125em;
 			}
 			.page_loading .spinner .rect2 {
-			  -webkit-animation-delay: -1.1s;
-			  animation-delay: -1.1s;
+				-webkit-animation-delay: -1.1s;
+				animation-delay: -1.1s;
 			}
 			.page_loading .spinner .rect3 {
-			  -webkit-animation-delay: -1s;
-			  animation-delay: -1s;
+				-webkit-animation-delay: -1s;
+				animation-delay: -1s;
 			}
 			.page_loading .spinner .rect4 {
-			  -webkit-animation-delay: -0.9s;
-			  animation-delay: -0.9s;
+				-webkit-animation-delay: -0.9s;
+				animation-delay: -0.9s;
 			}
 			.page_loading .spinner .rect5 {
-			  -webkit-animation-delay: -0.8s;
-			  animation-delay: -0.8s;
+				-webkit-animation-delay: -0.8s;
+				animation-delay: -0.8s;
 			}
 			.page_loading .spinner .rect6 {
-			  -webkit-animation-delay: -0.8s;
-			  animation-delay: -0.7s;
+				-webkit-animation-delay: -0.8s;
+				animation-delay: -0.7s;
 			}
 			.page_loading .spinner .rect7 {
-			  -webkit-animation-delay: -0.8s;
-			  animation-delay: -0.6s;
+				-webkit-animation-delay: -0.8s;
+				animation-delay: -0.6s;
 			}
 			.page_loading .spinner .rect8 {
-			  -webkit-animation-delay: -0.8s;
-			  animation-delay: -0.5s;
+				-webkit-animation-delay: -0.8s;
+				animation-delay: -0.5s;
 			}
 			.page_loading .spinner .rect9 {
-			  -webkit-animation-delay: -0.8s;
-			  animation-delay: -0.4s;
+				-webkit-animation-delay: -0.8s;
+				animation-delay: -0.4s;
 			}
 			.page_loading .spinner .rect10 {
-			  -webkit-animation-delay: -0.8s;
-			  animation-delay: -0.3s;
+				-webkit-animation-delay: -0.8s;
+				animation-delay: -0.3s;
 			}
 			@-webkit-keyframes stretchdelay {
-			  0%,
-			  40%,
-			  100% {
-			    -webkit-transform: scaleY(0.4);
-			  }
-			  20% {
-			    -webkit-transform: scaleY(1);
-			  }
+				0%, 40%, 100% {
+					-webkit-transform: scaleY(0.4);
+				}
+				20% {
+					-webkit-transform: scaleY(1);
+				}
 			}
 			@keyframes stretchdelay {
-			  0%,
-			  40%,
-			  100% {
-			    transform: scaleY(0.4);
-			    -webkit-transform: scaleY(0.4);
-			  }
-			  20% {
-			    transform: scaleY(1);
-			    -webkit-transform: scaleY(1);
-			  }
+				0%, 40%, 100% {
+					transform: scaleY(0.4);
+					-webkit-transform: scaleY(0.4);
+				}
+				20% {
+					transform: scaleY(1);
+					-webkit-transform: scaleY(1);
+				}
 			}
 		</style>
 	</head>
@@ -111,6 +117,12 @@
 		<script type="text/pReact">
 			var baseFontSize = baseFontSize || pReact.getBaseFontSize(),
 				styles = pReact.createStyle({
+					clearfix:{
+					    content: ".",
+					    display: "block",
+					    clear: "both",
+					    overflow:"hidden"
+					},
 					hide:{
 						display:"none"
 					},
@@ -762,6 +774,108 @@
 					},
 					topbannerItemCountNum:{
 						fontStyle:"normal"
+					},
+					xform:{
+						fontSize:(16/baseFontSize).toFixed(4)+"rem",
+						background:"rgb(255,255,255)",
+						marginTop:(10/baseFontSize).toFixed(4)+"rem",
+						padding:(10/baseFontSize).toFixed(4)+"rem"
+					},
+					xGroup:{
+						padding:(5/baseFontSize).toFixed(4)+"rem 0",
+						margin:(5/baseFontSize).toFixed(4)+"rem 0"
+					},
+					xinput:{
+					},
+					xinputTitle:{
+						display:"block",
+						lineHeight:(30/baseFontSize).toFixed(4)+"rem"
+					},
+					xinputInput:{
+						padding:(6/baseFontSize).toFixed(4)+"rem "+(12/baseFontSize).toFixed(4)+"rem",
+						border:(1/baseFontSize).toFixed(4)+"rem solid rgb(204,204,204)",
+						borderRadius:(6/baseFontSize).toFixed(4)+"rem",
+						boxShadow:"inset 0 "+(1/baseFontSize).toFixed(4)+"rem "+(1/baseFontSize).toFixed(4)+"rem rgba(0, 0, 0, 0.075)",
+						transition: "border-color ease-in-out .15s, box-shadow ease-in-out .15s",
+						width:((screen.width-50)/baseFontSize).toFixed(4)+"rem",
+						fontSize:(16/baseFontSize).toFixed(4)+"rem"
+					},
+					xinputInputAuto:{
+						width:(100/baseFontSize).toFixed(4)+"rem"
+					},
+					xinputInputRange:{
+						boxShadow:"inset 0 0",
+						border:0,
+						borderRadius:0,
+					},
+					xradio:{
+						padding:(5/baseFontSize).toFixed(4)+"rem 0",
+						margin:0
+					},
+					xradioInput:{
+						marginRight:(10/baseFontSize).toFixed(4)+"rem",
+						fontSize:(16/baseFontSize).toFixed(4)+"rem"
+					},
+					xcheck:{
+						padding:(5/baseFontSize).toFixed(4)+"rem 0",
+						margin:0
+					},
+					xcheckInput:{
+						marginRight:(10/baseFontSize).toFixed(4)+"rem",
+						fontSize:(16/baseFontSize).toFixed(4)+"rem"
+					},
+					xtextarea:{
+
+					},
+					xtextareaTitle:{
+						display:"block",
+						lineHeight:(30/baseFontSize).toFixed(4)+"rem"
+					},
+					xtextareaInput:{
+						padding:(6/baseFontSize).toFixed(4)+"rem",
+						border:(1/baseFontSize).toFixed(4)+"rem solid rgb(204,204,204)",
+						borderRadius:(6/baseFontSize).toFixed(4)+"rem",
+						boxShadow:"inset 0 "+(1/baseFontSize).toFixed(4)+"rem "+(1/baseFontSize).toFixed(4)+"rem rgba(0, 0, 0, 0.075)",
+						transition: "border-color ease-in-out .15s, box-shadow ease-in-out .15s",
+						minHeight:(100/baseFontSize).toFixed(4)+"rem",
+						width:((screen.width-40)/baseFontSize).toFixed(4)+"rem",
+						fontSize:(16/baseFontSize).toFixed(4)+"rem"
+					},
+					xtextareaTip:{
+						color:"rgb(204,204,204)",
+						fontSize:(14/baseFontSize).toFixed(4)+"rem"
+					},
+					xselect:{
+
+					},
+					xselectTitle:{
+						display:"block",
+						lineHeight:(30/baseFontSize).toFixed(4)+"rem"
+					},
+					xselectInput:{
+						"1-webkit-appearance":"none",
+						padding:(6/baseFontSize).toFixed(4)+"rem "+(12/baseFontSize).toFixed(4)+"rem",
+						border:(1/baseFontSize).toFixed(4)+"rem solid rgb(204,204,204)",
+						borderRadius:(6/baseFontSize).toFixed(4)+"rem",
+						boxShadow:"inset 0 "+(1/baseFontSize).toFixed(4)+"rem "+(1/baseFontSize).toFixed(4)+"rem rgba(0, 0, 0, 0.075)",
+						transition: "border-color ease-in-out .15s, box-shadow ease-in-out .15s",
+						width:((screen.width-20)/baseFontSize).toFixed(4)+"rem",
+						fontSize:(16/baseFontSize).toFixed(4)+"rem"
+					},
+					xbutton:{
+						padding:(6/baseFontSize).toFixed(4)+"rem "+(12/baseFontSize).toFixed(4)+"rem",
+						background: "rgb(255,255,255)",
+						color:"rgb(0,0,0)",
+						fontSize: (16/baseFontSize).toFixed(4)+"rem",
+						border:(1/baseFontSize).toFixed(4)+"rem solid #ccc",
+						borderRadius:(5/baseFontSize).toFixed(4)+"rem",
+						verticalAlign:"middle",
+						minWidth:(70/baseFontSize).toFixed(4)+"rem",
+						display:"inline-block"
+					},
+					xbuttonActive:{
+						background:"rgb(51,122,183)",
+						color:"rgb(255,255,255)"
 					}
 				}),
 				tools = pReact.createClass("tools", {
@@ -1289,6 +1403,9 @@
 									<div id="group" class="item" style="text-align:center"></div>
 									<div id="listview" class="item"></div>
 									<div id="progress" class="item"></div>
+									<div id="form">
+										<xform action="" target="_blank" name="xform"></xform>
+									</div>
 									<section>
 										<ul>
 											<li>
@@ -1668,6 +1785,164 @@
 							})))
 						});
 						return a;
+					}
+				}),
+				xform = pReact.createClass("xform", {
+					render(){
+						return (
+							<form action="{{action}}" target="{{target}}" name="{{name}}" style={styles.xform}>
+								<div style={styles.xGroup}{styles.clearfix}>
+									<xinput title="email" type="email" value="" placeholder="Email..." name="email"></xinput>
+									<xinput title="text" type="text" value="" placeholder="Text..." name="text"></xinput>
+									<xinput title="password" type="password" value="" placeholder="Password..." name="password"></xinput>
+									<xinput title="number" type="number" value="" placeholder="Number..." name="number"></xinput>
+									<xinput title="color" type="color" value="" placeholder="Color..." name="color"></xinput>
+									<xinput title="date" type="date" value="" placeholder="Date..." name="date"></xinput>
+									<xinput title="time" type="time" value="" placeholder="Time..." name="time"></xinput>
+									<xinput title="range" type="range" value="" placeholder="Range..." name="range"></xinput>
+									<xinput title="tel" type="tel" value="" placeholder="Tel..." name="tel"></xinput>
+								</div>
+								<div style={styles.xGroup}{styles.clearfix}>
+									<xradio title="option 1" value="1" name="xradio"></xradio>
+									<xradio title="option 2" value="2" name="xradio"></xradio>
+									<xradio title="option 3" value="3" name="xradio"></xradio>
+								</div>
+								<div style={styles.xGroup}{styles.clearfix}>
+									<xcheck title="checkbox 1" value="1" name="xcheck"></xcheck>
+								</div>
+								<div style={styles.xGroup}{styles.clearfix}>
+									<xtextarea title="xtextarea" value="xtextarea test..." name="xtextarea" tip="xtextarea Tip test, xtextarea Tip test, xtextarea Tip test, xtextarea Tip test..."></xtextarea>
+								</div>
+								<div style={styles.xGroup}{styles.clearfix}>
+									<xselect title="xselect" name="xselect"></xselect>
+								</div>
+								<div style={styles.xGroup}{styles.clearfix}>
+									<xbutton title="取消" type="cancel"></xbutton>
+									<xbutton title="提交" type="submit"></xbutton>
+								</div>
+							</form>
+						)
+					}
+				}),
+				xinput = pReact.createClass("xinput", {
+					handleChange(e){
+						switch(this.type){
+							case "range":
+								this.parentNode._findNode("#rangev")[0].innerHTML = this.value;
+								break;
+						}
+					},
+					render(){
+						return /color/.test(this._data.type) ? (
+							<div style={styles.xinput}>
+								<label style={styles.xinputTitle}>{{title}}</label>
+								<input style={styles.xinputInput}{styles.xinputInputAuto} type="{{type}}" value="{{value}}" placeholder="{{placeholder}}" name="{{name}}" />
+							</div>
+						) : /range/.test(this._data.type) ? (
+							<div style={styles.xinput}>
+								<label style={styles.xinputTitle}><span style={styles.marginSpanRight}>{{title}}:</span><span id="rangev">0</span></label>
+								<input style={styles.xinputInput}{styles.xinputInputRange} type="{{type}}" value="{{value}}" placeholder="{{placeholder}}" name="{{name}}" onchange={handleChange} />
+							</div>
+						) : (
+							<div style={styles.xinput}>
+								<label style={styles.xinputTitle}>{{title}}</label>
+								<input style={styles.xinputInput} type="{{type}}" value="{{value}}" placeholder="{{placeholder}}" name="{{name}}" />
+							</div>
+						);
+					}
+				}),
+				xradio = pReact.createClass("xradio", {
+					render(){
+						return (
+							<div style={styles.xradio}>
+								<label>
+									<input type="radio" name="{{name}}" value="{{value}}" style={styles.xradioInput} />
+									<span style={styles.xradioTitle}>{{title}}</span>
+								</label>
+							</div>
+						)
+					}
+				}),
+				xcheck = pReact.createClass("xcheck", {
+					render(){
+						return (
+							<div style={styles.xcheck}>
+								<label>
+									<input type="checkbox" name="{{name}}" value="{{value}}" style={styles.xcheckInput} />
+									<span style={styles.xcheckTitle}>{{title}}</span>
+								</label>
+							</div>
+						)
+					}
+				}),
+				xtextarea = pReact.createClass("xtextarea", {
+					render(){
+						return (
+							<div style={styles.xtextarea}>
+								<label style={styles.xtextareaTitle}>{{title}}</label>
+								<textarea name="{{name}}" style={styles.xtextareaInput}>
+								{{value}}
+								</textarea>
+								<span style={styles.xtextareaTip}>{{tip}}</span>
+							</div>
+						)
+					}
+				}),
+				xselectlist = pReact.createClass("xselectlist", {
+					getInitData(success, error){
+						success([{
+							title:"1",
+							value: 1
+						},{
+							title:"2",
+							value: 2
+						},{
+							title:"3",
+							value: 3
+						},{
+							title:"4",
+							value: 4
+						},{
+							title:"5",
+							value: 5
+						}])
+					},
+					render(){
+						var d = document.createDocumentFragment(), i=0, select = document.createElement("select");
+						select.name = this._data.name;
+						select.style = this._data.style;
+						this._data && this._data.data.forEach((n) => {
+							select.appendChild(pReact.tmpl((
+								<option value="{{value}}">{{title}}</option>
+							),n))
+						});
+						d.appendChild(select);
+						return d;
+					}
+				}),
+				xselect = pReact.createClass("xselect", {
+					render(){
+						return (
+							<div style={styles.xselect}>
+								<label style={styles.xselectTitle}>{{title}}</label>
+								<xselectlist name="{{name}}" style={styles.xselectInput}></xselectlist>
+							</div>
+						)
+					}
+				}),
+				xbutton = pReact.createClass("xbutton", {
+					handleCancelClick(e){
+						console.log("cancel")
+					},
+					handleSubmitClick(e){
+						console.log("submit")
+					},
+					render(){
+						return this._data.type == "cancel" ? (
+							<button type="button" style={styles.xbutton} onclick={handleCancelClick}>{{title}}</button>
+						) : (
+							<button type="button" style={styles.xbutton}{styles.xbuttonActive} onclick={handleSubmitClick}>{{title}}</button>
+						)
 					}
 				});
 

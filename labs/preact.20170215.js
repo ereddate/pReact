@@ -376,7 +376,7 @@
 						},
 						done = (result) => {
 							obj._data = result;
-							obj.render && (element = obj.render());
+							obj.render && (element = pReact.tmpl(obj.render(), obj._data));
 							if (element) {
 								//console.log(element, parent)
 								if (module.is(typeof element, "object") && "length" in element || module.is(typeof element, "array")) {
@@ -719,7 +719,9 @@
 })(this, (element, data, obj) => {
 	var f = (element) => {
 			element && ("length" in element ? Object.is(element.nodeType, 11) ? [].slice.call(element.childNodes) : [].slice.call(element) : [element]).forEach((e) => {
+				//console.log(e)
 				if (e.tagName && !Object.is(pReact.Class[e.tagName.toLowerCase()], undefined)) {
+					//console.log(e)
 					let parent = e.parentNode;
 					var attrs = e.attributes && e.attributes.length > 0 && [].slice.call(e.attributes) || false,
 						options = {};
@@ -750,6 +752,7 @@
 						})
 					}
 					e.childNodes.length > 0 && f(e.childNodes);
+					//console.log(pReact.Class[e.tagName.toLowerCase()].render.toString())
 					e._remove();
 					pReact.renderDom(
 						pReact.Class[e.tagName.toLowerCase()],
@@ -787,7 +790,7 @@
 						})
 					}
 					["text", "nodeValue"].forEach((text) => {
-						e[text] && (e[text] = e[text].replace(/\{+\s*[^<>}{,]+\s*\}+/gim, ((a) => {
+						e[text] && e[text].replace && (e[text] = e[text].replace(/\{+\s*[^<>}{,]+\s*\}+/gim, ((a) => {
 							for (name in data) {
 								a = a.replace(new RegExp("{{\\s*" + name + "\\s*(\\|\\s*([^<>,]+)\\s*)*}}", "gim"), ((a, b, c) => {
 									if (c) {
@@ -803,6 +806,7 @@
 							return a;
 						})))
 					});
+					//console.log(e && e.childNodes)
 					e.childNodes.length > 0 && f(e.childNodes);
 				}
 			})
