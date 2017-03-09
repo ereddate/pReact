@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+		<script src="../preact.20170215.js"></script>
+		<style>
+			body{background:#f4f5f7;font-family:微软雅黑;}
+			body,ul, p,h1,h2,h3,h4,h5,h6{list-style:none;padding:0;margin:0;}
+			.page_loading {
+				position: fixed;
+				top: 0;
+				left: 0;
+				right: 0;
+				bottom: 0;
+				background-color: rgba(0, 0, 0, 0.5);
+				z-index: 99999;
+			}
+			.page_loading .spinner {
+				margin: 75% auto 0 auto;
+				width: 6.25em;
+				height: 2.75em;
+				text-align: center;
+				font-size: 0.625em;
+			}
+			@media (height:480px) {
+				.page_loading .spinner {
+					margin-top: 60%;
+				}
+			}
+			.page_loading .spinner div {
+				background-color: #ffffff;
+				height: 100%;
+				width: 0.3125em;
+				display: inline-block;
+				-webkit-animation: stretchdelay 1.2s infinite ease-in-out;
+				animation: stretchdelay 1.2s infinite ease-in-out;
+				margin: 0 0.125em;
+			}
+			.page_loading .spinner .rect2 {
+				-webkit-animation-delay: -1.1s;
+				animation-delay: -1.1s;
+			}
+			.page_loading .spinner .rect3 {
+				-webkit-animation-delay: -1s;
+				animation-delay: -1s;
+			}
+			.page_loading .spinner .rect4 {
+				-webkit-animation-delay: -0.9s;
+				animation-delay: -0.9s;
+			}
+			.page_loading .spinner .rect5 {
+				-webkit-animation-delay: -0.8s;
+				animation-delay: -0.8s;
+			}
+			.page_loading .spinner .rect6 {
+				-webkit-animation-delay: -0.8s;
+				animation-delay: -0.7s;
+			}
+			.page_loading .spinner .rect7 {
+				-webkit-animation-delay: -0.8s;
+				animation-delay: -0.6s;
+			}
+			.page_loading .spinner .rect8 {
+				-webkit-animation-delay: -0.8s;
+				animation-delay: -0.5s;
+			}
+			.page_loading .spinner .rect9 {
+				-webkit-animation-delay: -0.8s;
+				animation-delay: -0.4s;
+			}
+			.page_loading .spinner .rect10 {
+				-webkit-animation-delay: -0.8s;
+				animation-delay: -0.3s;
+			}
+			@-webkit-keyframes stretchdelay {
+				0%, 40%, 100% {
+					-webkit-transform: scaleY(0.4);
+				}
+				20% {
+					-webkit-transform: scaleY(1);
+				}
+			}
+			@keyframes stretchdelay {
+				0%, 40%, 100% {
+					transform: scaleY(0.4);
+					-webkit-transform: scaleY(0.4);
+				}
+				20% {
+					transform: scaleY(1);
+					-webkit-transform: scaleY(1);
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<div id="page"></div>
+		<script type="text/pReact">
+			var baseFontSize = baseFontSize || pReact.getBaseFontSize(),
+				styles = pReact.createStyle({
+					clearfix:{
+					    content: ".",
+					    display: "block",
+					    clear: "both",
+					    overflow:"hidden"
+					},
+					hide:{
+						display:"none"
+					},
+					show:{
+						display: "block"
+					},
+					red:{
+						color:"red"
+					},
+					fullColumn:{
+						display: "flex",
+						flexFlow: "row"
+					},
+					twoColumnItem:{
+						width:  (100/2).toFixed(2)+"%",
+						float: "left"
+					},
+					threeColumnItem:{
+						width:  (100/3).toFixed(2)+"%",
+						float: "left"
+					},
+					tab:{
+						background:"rgb(255,255,255)"
+					},
+					tabButtonControl:{
+
+					},
+					tabButton:{
+						margin:(5/baseFontSize).toFixed(4)+"rem",
+						color:"rgb(0,0,0)",
+						textAlign:"center",
+						fontSize:(14/baseFontSize).toFixed(4)+"rem",
+						padding:(5/baseFontSize).toFixed(4)+"rem 0",
+						display:"inline-block",
+						textDecoration: "none"
+					},
+					tabButtonActive:{
+						display:"inline-block",
+						background:"rgb(233,78,78)",
+						borderRadius:(5/baseFontSize).toFixed(4)+"rem",
+						color:"rgb(255,255,255)",
+						textDecoration: "none"
+					},
+					tabView:{
+						fontSize:(14/baseFontSize).toFixed(4)+"rem",
+						borderTop:(1/baseFontSize).toFixed(4)+"rem solid rgb(220,220,220)",
+						padding:(5/baseFontSize).toFixed(4)+"rem 0"
+					},
+					tabButtonTip:{
+						background:"rgb(169,169,169)",
+						color:"rgb(255,255,255)",
+						borderRadius:(10/baseFontSize).toFixed(4)+"rem",
+						fontStyle:"normal",
+						marginLeft:(5/baseFontSize).toFixed(4)+"rem",
+						padding:"0 "+(5/baseFontSize).toFixed(4)+"rem",
+						display:"inline-block",
+						fontSize:(14/baseFontSize).toFixed(4)+"rem"
+					},
+					xform:{
+						fontSize:(16/baseFontSize).toFixed(4)+"rem",
+						background:"rgb(255,255,255)",
+						padding:(10/baseFontSize).toFixed(4)+"rem"
+					},
+					xtextarea:{
+
+					},
+					xtextareaTitle:{
+						display:"block",
+						lineHeight:(30/baseFontSize).toFixed(4)+"rem"
+					},
+					xtextareaInput:{
+						padding:(6/baseFontSize).toFixed(4)+"rem 0",
+						border:(1/baseFontSize).toFixed(4)+"rem solid rgb(204,204,204)",
+						borderRadius:(6/baseFontSize).toFixed(4)+"rem",
+						boxShadow:"inset 0 "+(1/baseFontSize).toFixed(4)+"rem "+(1/baseFontSize).toFixed(4)+"rem rgba(0, 0, 0, 0.075)",
+						transition: "border-color ease-in-out .15s, box-shadow ease-in-out .15s",
+						minHeight:(100/baseFontSize).toFixed(4)+"rem",
+						width:((screen.width-26)/baseFontSize).toFixed(4)+"rem",
+						fontSize:(16/baseFontSize).toFixed(4)+"rem"
+					},
+					xtextareaTip:{
+						color:"rgb(204,204,204)",
+						fontSize:(14/baseFontSize).toFixed(4)+"rem"
+					},
+					xbutton:{
+						padding:(6/baseFontSize).toFixed(4)+"rem "+(12/baseFontSize).toFixed(4)+"rem",
+						background: "rgb(255,255,255)",
+						color:"rgb(0,0,0)",
+						fontSize: (16/baseFontSize).toFixed(4)+"rem",
+						border:(1/baseFontSize).toFixed(4)+"rem solid #ccc",
+						borderRadius:(5/baseFontSize).toFixed(4)+"rem",
+						verticalAlign:"middle",
+						minWidth:(70/baseFontSize).toFixed(4)+"rem",
+						display:"inline-block"
+					},
+					xbuttonActive:{
+						background:"rgb(51,122,183)",
+						color:"rgb(255,255,255)"
+					},
+					xGroup:{
+						padding:(5/baseFontSize).toFixed(4)+"rem 0",
+						margin:(5/baseFontSize).toFixed(4)+"rem 0"
+					},
+					xinput:{
+					},
+					xinputTitle:{
+						display:"block",
+						lineHeight:(30/baseFontSize).toFixed(4)+"rem"
+					},
+					xinputInput:{
+						padding:(6/baseFontSize).toFixed(4)+"rem "+(12/baseFontSize).toFixed(4)+"rem",
+						border:(1/baseFontSize).toFixed(4)+"rem solid rgb(204,204,204)",
+						borderRadius:(6/baseFontSize).toFixed(4)+"rem",
+						boxShadow:"inset 0 "+(1/baseFontSize).toFixed(4)+"rem "+(1/baseFontSize).toFixed(4)+"rem rgba(0, 0, 0, 0.075)",
+						transition: "border-color ease-in-out .15s, box-shadow ease-in-out .15s",
+						width:((screen.width-50)/baseFontSize).toFixed(4)+"rem",
+						fontSize:(16/baseFontSize).toFixed(4)+"rem"
+					},
+					list:{
+						margin:(12/baseFontSize).toFixed(4)+"rem",
+						background:"#fff",
+						fontSize:(16/baseFontSize).toFixed(4)+"rem",
+						padding:(5/baseFontSize).toFixed(4)+"rem"
+					},
+					listDesc:{
+						padding:(10/baseFontSize).toFixed(4)+"rem 0 0"
+					},
+					listreply:{
+						color:"#999",
+						padding:(10/baseFontSize).toFixed(4)+"rem 0",
+						display:"block"
+					},
+					listViewDesc:{
+						margin:(10/baseFontSize).toFixed(4)+"rem 0 0",
+						padding:(10/baseFontSize).toFixed(4)+"rem",
+						background:"#efefef",
+						borderRadius:(10/baseFontSize).toFixed(4)+"rem"
+					},
+					listViewreply:{
+						color:"#999",
+						margin:(10/baseFontSize).toFixed(4)+"rem 0 0",
+						padding:(10/baseFontSize).toFixed(4)+"rem",
+						display:"block",
+						background:"#efefef",
+						borderRadius:(10/baseFontSize).toFixed(4)+"rem"
+					},
+					listview:{
+						padding:"0 0 "+(200/baseFontSize).toFixed(4)+"rem 0",
+					},
+					listTitle:{
+						fontSize:(16/baseFontSize).toFixed(4)+"rem",
+						fontWeight:400
+					},
+					listViewTitle:{
+						fontSize:(20/baseFontSize).toFixed(4)+"rem",
+					},
+					listTitleLink:{
+						fontSize:(16/baseFontSize).toFixed(4)+"rem",
+						textDecoration:"none",
+						color:"rgb(0,0,0)"
+					},
+					modulebox:{
+						position:"fixed",
+						top:0,
+						left:0,
+						right:0,
+						bottom:0,
+						textAlign:"center",
+						background:"rgba(255,255,255,.7)",
+						color:"rgb(255,255,255)",
+						zIndex:999999,
+						display:"block"
+					},
+					moduleboxView:{
+						position:"fixed",
+						top:"45%",
+						left:(20/baseFontSize).toFixed(4)+"rem",
+						right:(20/baseFontSize).toFixed(4)+"rem",
+						textAlign:"center",
+						background:"rgba(0,0,0,1)",
+						padding:(10/baseFontSize).toFixed(4)+"rem",
+						borderRadius:(10/baseFontSize).toFixed(4)+"rem",
+						color:"rgb(255,255,255)",
+						fontSize:(20/baseFontSize).toFixed(4)+"rem"
+					},
+					moduleboxBlock:{
+						background:"rgba(0,0,0,.7)"
+					},
+					moduleboxViewModule:{
+						top:"30%"
+					},
+					moduleboxViewFullscreen:{
+						top:0,
+						left:0,
+						right:0,
+						bottom:0,
+						borderRadius:0,
+						padding:0,
+						background: "rgb(255,255,255)",
+						color:"rgb(0,0,0)"
+					},
+					moduleboxViewBottom:{
+						position:"fixed",
+						left:(5/baseFontSize).toFixed(4)+"rem",
+						right:(5/baseFontSize).toFixed(4)+"rem",
+						bottom:(5/baseFontSize).toFixed(4)+"rem",
+						borderRadius:(5/baseFontSize).toFixed(4)+"rem",
+						textAlign:"center",
+						background:"rgba(0,0,0,1)",
+						padding:(10/baseFontSize).toFixed(4)+"rem",
+						borderRadius:(10/baseFontSize).toFixed(4)+"rem",
+						color:"rgb(255,255,255)",
+						fontSize:(20/baseFontSize).toFixed(4)+"rem"
+					},
+					moduleboxViewTop:{
+						position:"fixed",
+						left:(5/baseFontSize).toFixed(4)+"rem",
+						right:(5/baseFontSize).toFixed(4)+"rem",
+						top:(5/baseFontSize).toFixed(4)+"rem",
+						borderRadius:(5/baseFontSize).toFixed(4)+"rem",
+						textAlign:"center",
+						background:"rgba(0,0,0,1)",
+						padding:(10/baseFontSize).toFixed(4)+"rem",
+						borderRadius:(10/baseFontSize).toFixed(4)+"rem",
+						color:"rgb(255,255,255)",
+						fontSize:(20/baseFontSize).toFixed(4)+"rem"
+					},
+					moduleboxCloseButton:{
+						background:"rgb(0,0,0)",
+						color:"rgb(255,255,255)",
+						top:0,
+						right:0,
+						position:"absolute",
+						padding:"0 "+(10/baseFontSize).toFixed(4)+"rem"
+					},
+					moduleboxViewModuleTitle:{
+
+					},
+					moduleboxViewModuleContent:{
+						height: (200/baseFontSize).toFixed(4)+"rem",
+						overflow: "auto",
+						overflowX: "hidden",
+						textAlign: "left"
+					},
+					moduleboxViewModuleContentFull:{
+						marginTop:(40/baseFontSize).toFixed(4)+"rem",
+						height: ((screen.height-40)/baseFontSize).toFixed(4)+"rem"
+					},
+					moduleboxViewModuleContentBottom:{
+						marginTop:(20/baseFontSize).toFixed(4)+"rem",
+						height: (60/baseFontSize).toFixed(4)+"rem",
+					},
+					moduleboxViewModuleControl:{
+						textAlign:"center"
+					},
+					moduleboxButton:{
+						background:"rgb(169,169,169)",
+						border:0,
+						borderRadius:(10/baseFontSize).toFixed(4)+"rem",
+						color:"rgb(255,255,255)",
+						margin: "0 "+(10/baseFontSize).toFixed(4)+"rem",
+						fontSize: (20/baseFontSize).toFixed(4)+"rem",
+						padding:(5/baseFontSize).toFixed(4)+"rem "+(10/baseFontSize).toFixed(4)+"rem"
+					},
+					moduleboxButtonActive:{
+						background:"rgb(218,60,60)",
+					},
+					moduleboxWarn:{
+						top:(5/baseFontSize).toFixed(4)+"rem",
+						left:(5/baseFontSize).toFixed(4)+"rem",
+						right:(5/baseFontSize).toFixed(4)+"rem",
+						background:"rgba(242,222,222,.8)",
+						color:"rgb(169,68,66)",
+						border:(1/baseFontSize).toFixed(4)+"rem solid rgb(242,222,222)",
+						borderRadius:(5/baseFontSize).toFixed(4)+"rem",
+						fontSize: (16/baseFontSize).toFixed(4)+"rem",
+						textAlign: "left"
+					},
+					moduleboxCloseX:{
+						position:"absolute",
+						top:(10/baseFontSize).toFixed(4)+"rem",
+						right:(10/baseFontSize).toFixed(4)+"rem",
+						fontStyle:"normal",
+						fontSize:(10/baseFontSize).toFixed(4)+"rem"
+					}
+				});
+
+			var page = pReact.createClass("page", {
+				render(){
+					return (
+						<div>
+							<tab taba="投诉专区" tabaurl="disabled" tabb="和讯曝光台" tabburl="disabled" tabc="315真播" tabcurl="http://zhibo.hexun.com/1738/default.html" tabheadid="tab_head" tabaid="taba" tabbid="tabb" tabcid="tabc"></tab>
+						</div>
+					)
+				}
+			}),
+			tab = pReact.createClass("tab", {
+				handleClick(e){
+					if (this._attr("href") == "register"){
+						let a = pReact.storage({type:"cookie"}).get("userToken");
+						if (!a){
+							location.href = "https://reg.hexun.com/h5/login.aspx?gourl="+encodeURIComponent(location.href);
+						}
+						this._attr("href", "disabled")
+					}
+					if (this._attr("href") == "disabled"){
+						var p =this.parentNode._findNode("a"), then = this,i=0, lis = this.parentNode._next().childNodes;
+						p.forEach((e) => {
+							let b = Object.is(e,then);
+							e._attr("style",(b ? [styles.tabButton,styles.threeColumnItem, styles.tabButtonActive] : [styles.tabButton,styles.threeColumnItem]).join(';'));
+							lis[i]._attr("style", (b ? [styles.tabView,styles.show] : [styles.tabView,styles.hide]).join(';'));
+							i+=1;
+						});
+						e.preventDefault();
+					}
+				},
+				render(){
+					return (
+						<div style={styles.tab}>
+							<div style={styles.tabButtonControl}{styles.fullColumn} id="{{tabheadid}}">
+								<a style={styles.tabButton}{styles.threeColumnItem} onclick={handleClick} href="{{tabaurl}}" target="_blank">{{taba}}</a>
+								<a style={styles.tabButton}{styles.threeColumnItem} onclick={handleClick} href="{{tabburl}}" target="_blank">{{tabb}}</a>
+								<a style={styles.tabButton}{styles.threeColumnItem} onclick={handleClick} href="{{tabcurl}}" target="_blank">{{tabc}}</a>
+							</div>
+							<ul>
+								<li style={styles.tabView}{styles.show} id="{{tabaid}}">
+								</li>
+								<li style={styles.tabView}{styles.hide} id="{{tabbid}}">
+								</li>
+								<li style={styles.tabView}{styles.hide} id="{{tabcid}}">
+								</li>
+							</ul>
+						</div>
+					)
+				}
+			}),
+			xform = pReact.createClass("xform", {
+				render(){
+					return (
+						<form action="{{action}}" target="{{target}}" method="{{method}}" name="{{name}}" style={styles.xform} class="xform">
+							<div style={styles.xGroup}{styles.clearfix}>
+								<xinput title="姓名" type="text" value="" placeholder="请输入姓名..." name="txt_name"></xinput>
+								<xinput title="电话" type="text" value="" placeholder="电话号码..." name="txt_tel"></xinput>
+								<xinput title="邮箱" type="text" value="" placeholder="电子邮箱地址..." name="txt_email"></xinput>
+								<xinput title="投诉机构" type="text" value="" placeholder="投诉机构的名称..." name="txt_agency"></xinput>
+								<xinput title="标题" type="text" value="" placeholder="标题..." name="txt_title"></xinput>
+								<input type="hidden" id="txt_ie" name="txt_ie" />
+					            <input type="hidden" id="refer" name="refer" />
+					            <input type="hidden" id="txt_agent" name="txt_agent" />
+							</div>
+							<div style={styles.xGroup}{styles.clearfix}>
+								<xtextarea title="投诉内容" value="" name="txt_content" tip=""></xtextarea>
+							</div>
+							<div style={styles.xGroup}{styles.clearfix}>
+								<xbutton title="提交" type="submit"></xbutton>
+							</div>
+						</form>
+					)
+				}
+			}),
+			xinput = pReact.createClass("xinput", {
+				handleChange(e){
+					switch(this.type){
+						case "range":
+							this.parentNode._findNode("#rangev")[0].innerHTML = this.value;
+							break;
+					}
+				},
+				render(){
+					return /color/.test(this._data.type) ? (
+						<div style={styles.xinput}>
+							<label style={styles.xinputTitle}>{{title}}</label>
+							<input style={styles.xinputInput}{styles.xinputInputAuto} type="{{type}}" value="{{value}}" placeholder="{{placeholder}}" name="{{name}}" />
+						</div>
+					) : /range/.test(this._data.type) ? (
+						<div style={styles.xinput}>
+							<label style={styles.xinputTitle}><span style={styles.marginSpanRight}>{{title}}:</span><span id="rangev">0</span></label>
+							<input style={styles.xinputInput}{styles.xinputInputRange} type="{{type}}" value="{{value}}" placeholder="{{placeholder}}" name="{{name}}" onchange={handleChange} />
+						</div>
+					) : (
+						<div style={styles.xinput}>
+							<label style={styles.xinputTitle}>{{title}}</label>
+							<input style={styles.xinputInput} type="{{type}}" value="{{value}}" placeholder="{{placeholder}}" name="{{name}}" />
+						</div>
+					);
+				}
+			}),
+			tip = (context) => {
+				let tip = document.getElementById("modulebox");
+				tip && tip._remove();
+				pReact.renderDom(
+					moduleBox,
+					{
+						context:context,
+						type:"alert"
+					},
+					document.body,
+					(() => {
+						setTimeout(() => {
+							let tip = document.getElementById("modulebox");
+							tip && tip._remove();
+						}, 1000)
+					})
+				);
+			},
+			isTel = (str) => {
+                var pattern = /^[0-9]{3}(-){0,1}[0-9]+$/;
+                return pattern.test(str);
+            },
+            isEmail = (s) => {
+                var patrn = /(\w+@\w+\.\w+)(\.{0,1}\w*)(\.{0,1}\w*)/i;
+                if (!patrn.test(s))
+                    return false;
+                return true;
+            },
+			xbutton = pReact.createClass("xbutton", {
+				handleSubmitClick(e){
+					e.preventDefault();
+					let a = pReact.storage({type:"cookie"}).get("userToken");
+					if (!a){
+						location.href = "https://reg.hexun.com/h5/login.aspx?gourl="+encodeURIComponent(location.href);
+						return false;
+					}
+					let form = this._parents(".xform");
+	                if (form._findNode("name=txt_name")[0].value == "") {
+	                    tip("请输入姓名");
+	                    return false;
+	                }
+	                if (form._findNode("name=txt_tel")[0].value == "") {
+	                    tip("请输入电话或手机号码");
+	                    return false;
+	                } else {
+	                    if (!isTel(form._findNode("name=txt_tel")[0].value)) {
+	                        tip("请您输入有效的电话或手机号码");
+	                        return false;
+	                    }
+	                }
+	                if (form._findNode("name=txt_email")[0].value == "") {
+	                    tip("请输入邮箱");
+	                    return false;
+	                } else {
+	                    if (!isEmail(form._findNode("name=txt_email")[0].value)) {
+	                        tip("请您输入有效的Email地址");
+	                        return false;
+	                    }
+	                }
+	                if (form._findNode("name=txt_agency")[0].value == "") {
+	                    tip("请输入投诉机构");
+	                    return false;
+	                }
+	                if (form._findNode("name=txt_title")[0].value == "") {
+	                    tip("请输入投诉标题");
+	                    return false;
+	                }
+	                if (form._findNode("name=txt_content")[0].value == "") {
+	                    tip("请输入投诉内容");
+	                    return false;
+	                }
+
+	                pReact.renderDom(
+						<moduleBox type="loading" />,
+						document.body,
+						(() => {
+							setTimeout(() => {
+								let tip = document.getElementById("modulebox");
+								tip && tip._remove();
+							}, 1000)
+						})
+					);
+
+
+	                form.submit();
+
+	                /*var data = pReact.serialize(form);
+	                pReact.post("", data, (result) => {
+                    }, "json");*/
+
+				},
+				render(){
+					return this._data.type == "cancel" ? (
+						<button type="button" style={styles.xbutton} onclick={handleCancelClick}>{{title}}</button>
+					) : (
+						<button type="button" style={styles.xbutton}{styles.xbuttonActive} onclick={handleSubmitClick}>{{title}}</button>
+					)
+				}
+			}),
+			xtextarea = pReact.createClass("xtextarea", {
+				render(){
+					return (
+						<div style={styles.xtextarea}>
+							<label style={styles.xtextareaTitle}>{{title}}</label>
+							<textarea name="{{name}}" style={styles.xtextareaInput}>
+							{{value}}
+							</textarea>
+							<span style={styles.xtextareaTip}>{{tip}}</span>
+						</div>
+					)
+				}
+			}),
+			moduleBox = pReact.createClass("modulebox", {
+				handleAlertClick(e){
+					this._set({
+						style: styles.hide
+					});
+					document.getElementById("modulebox")._remove();
+					/*pReact.renderDom(
+						<moduleBox type="full"  />,
+						document.body
+					);*/
+				},
+				handleFullscreenClick(e){
+					this._parents("#modulebox")._set({
+						style: styles.hide
+					});
+					document.getElementById("modulebox")._remove();
+					document.querySelectorAll("html")[0].style.cssText = document.querySelectorAll("html")[0].style.cssText.replace(/\s+/gim, "").replace("overflow:hidden;width:100%;height:100%;","");
+					document.body.style.cssText = document.body.style.cssText.replace(/\s+/gim, "").replace("overflow:hidden;width:100%;height:100%;","");
+					/*pReact.renderDom(
+						<moduleBox type="bottom" html="bottom tip!" />,
+						document.body
+					);*/
+				},
+				handleBottomClick(e){
+					this._parents("#modulebox")._set({
+						style: styles.hide
+					});
+					document.getElementById("modulebox")._remove();
+					pReact.renderDom(
+						<moduleBox type="top" html="top tip!" />,
+						document.body
+					);
+				},
+				handleTopClick(e){
+					this._parents("#modulebox")._set({
+						style: styles.hide
+					});
+					document.getElementById("modulebox")._remove();
+					pReact.renderDom(
+						<moduleBox context="警告消息提示：......" type="warn"  />,
+						document.body
+					);
+				},
+				handleClick(e){
+					this._append((
+						<div style={styles.a}>
+							<button>111</button>
+						</div>
+					));
+					this._append('<div style={styles.a}><button>111</button></div>');
+					this._parents("#modulebox")._set({
+						style: styles.hide
+					});
+					document.getElementById("modulebox")._remove();
+				},
+				handleEnterClick(e){
+					console.log("enter");
+					this._parents("#modulebox")._set({
+						style: styles.hide
+					});
+					document.getElementById("modulebox")._remove();
+					pReact.renderDom(
+						<moduleBox context="test" type="alert"  />,
+						document.body
+					);
+				},
+				handleWarnClick(e){
+					this._parents("#modulebox")._set({
+						style: styles.hide
+					});
+					document.getElementById("modulebox")._remove();
+					/*pReact.renderDom(
+						<moduleBox type="loading"  />,
+						document.body,
+						(() => {
+							setTimeout(() => {
+								document.getElementById("modulebox")._set({
+									style: styles.hide
+								})._remove();
+							}, 3000)
+						})
+					);*/
+				},
+				render(){
+					if (this._data.type=="full"){
+						document.querySelectorAll("html")[0].style.cssText+= document.body.style.cssText += "overflow:hidden;width:100%;height:100%;"
+					}
+
+					return this._data && this._data.type == "alert" ? (
+						<div id="modulebox" style={styles.modulebox} onclick={handleAlertClick}>
+							<span style={styles.moduleboxView}>{{context}}</span>
+						</div>
+					) : this._data.type == "module" ? (
+						<div id="modulebox" style={styles.modulebox}{styles.a}>
+							<article style={styles.moduleboxView}{styles.moduleboxViewModule}>
+								<header style={styles.moduleboxViewModuleTitle}>{{title}}</header>
+								<article style={styles.moduleboxViewModuleContent} id="moduleboxmain">
+									{{html}}
+								</article>
+								<div style={styles.moduleboxViewModuleControl}>
+									<button style={styles.moduleboxButton} onclick={handleClick}>cancel</button><button style={styles.moduleboxButton}{styles.moduleboxButtonActive} onclick={handleEnterClick}>enter</button>
+								</div>
+							</atricle>
+						</div>
+					) : this._data.type == "full" ? (
+						<div id="modulebox" style={styles.modulebox}{styles.moduleboxBlock}>
+							<article style={styles.moduleboxView}{styles.moduleboxViewFullscreen}>
+								<span onclick={handleFullscreenClick} style={styles.moduleboxCloseButton}>close</span>
+								<article style={styles.moduleboxViewModuleContent}{styles.moduleboxViewModuleContentFull} id="moduleboxmain"></article>
+							</atricle>
+						</div>
+					) : this._data.type == "bottom" ? (
+						<div id="modulebox" style={styles.modulebox}>
+							<article style={styles.moduleboxViewBottom}>
+								<span onclick={handleBottomClick} style={styles.moduleboxCloseButton}>close</span>
+								<article style={styles.moduleboxViewModuleContent}{styles.moduleboxViewModuleContentBottom} id="moduleboxmain">{{html}}</article>
+							</atricle>
+						</div>
+					) : this._data.type == "top" ? (
+						<div id="modulebox" style={styles.modulebox}>
+							<article style={styles.moduleboxViewTop}>
+								<span onclick={handleTopClick} style={styles.moduleboxCloseButton}>close</span>
+								<article style={styles.moduleboxViewModuleContent}{styles.moduleboxViewModuleContentBottom} id="moduleboxmain">{{html}}</article>
+							</atricle>
+						</div>
+					) : this._data.type == "loading" ? (
+						<div id="modulebox" style={styles.modulebox}>
+							<div class="page_loading"><div class="spinner"><div class="rect1"></div><div class="rect2"></div><div class="rect3"></div><div class="rect4"></div><div class="rect5"></div></div></div>
+						</div>
+					) : (
+						<div id="modulebox" style={styles.modulebox}>
+							<p style={styles.moduleboxView}{styles.moduleboxWarn}>
+								<span>{{context}}</span>
+								<i style={style.moduleboxCloseX} onclick={handleWarnClick}>x</i>
+							</p>
+						</div>
+					);
+				}
+			}),
+			list = pReact.createClass("list", {
+				getInitData(success, error){
+					let then = this;
+					if (then._data.type == "item"){
+						success(then._data.data);
+					}else{
+						pReact.get(then._data.url, {}, ((result) => {
+							var a = document.createElement("div");
+							a.innerHTML = result;
+							var contents = [], item=[], isBottom = a.querySelectorAll(".bottom").length > 0,i =0;
+							if (/voteontv/.test(then._data.type)){
+								a.querySelectorAll("li").forEach((e) => {
+									contents.push({
+										title: e.innerText,
+										url: e.childNodes[0].href,
+									});
+								});
+							}else{
+								a.querySelectorAll(".ask,.top,.bottom").forEach((e) => {
+									item.push(e);
+									if ((i + 1) % (isBottom ? 3 : 2) === 0) {
+										contents.push({
+											title: item[0].innerText,
+											desc: item[1].innerText,
+											reply: isBottom ? item[2].innerText : "-"
+										});
+										item.length = 0;
+									}
+									i += 1;
+								});
+							}
+							success(contents);
+						}), "html");
+					}
+				},
+				handleClick(e){
+					let then = this;
+
+					pReact.renderDom(
+						<moduleBox type="full" />,
+						document.body,
+						(() => {
+							pReact.renderDom(
+								list,
+								{
+									type: "item",
+									data: {
+										title: then.querySelectorAll("h1")[0].innerText,
+										desc: then.querySelectorAll("p")[0].innerText,
+										reply: then.querySelectorAll("span")[0].innerText
+									},
+									num: parseInt(then._attr("data-index"))||0
+								},
+								document.getElementById("moduleboxmain")
+							)
+						})
+					)
+				},
+				render(){
+					let a = document.createDocumentFragment(), i=0, then = this;
+					this._data && this._data.type == "item" ? a.appendChild(pReact.tmpl((
+						<article style={styles.list}{styles.listview}>
+							<h1 style={styles.listViewTitle}>{{title | limitTo : 30}}</h1>
+							<p style={styles.listViewDesc}>{{desc}}</p>
+							<span style={styles.listViewreply}>{{reply}}</span>
+						</article>
+					), this._data)) : this._data.data.forEach((n) => {
+						a.appendChild(pReact.tmpl(then._data.type == "newvoteon" ? (
+							<article style={styles.list} onclick={handleClick} data-index="{{index}}">
+								<h1 style={styles.listTitle}>{{title | limitTo : 30}}</h1>
+								<p style={styles.listDesc}{styles.hide}>{{desc}}</p>
+								<span style={styles.listreply}{styles.hide}>{{reply}}</span>
+							</article>
+						) : then._data.type == "overvoteon" ? (
+							<article style={styles.list} onclick={handleClick} data-index="{{index}}">
+								<h1 style={styles.listTitle}>{{title | limitTo : 30}}</h1>
+								<p style={styles.listDesc}{styles.hide}>{{desc}}</p>
+								<span style={styles.listreply}>{{reply}}</span>
+							</article>
+						) : (
+							<article style={styles.list} data-index="{{index}}">
+								<h1 style={styles.listTitle}>
+									<a href="{{url}}" target="_blank" style={styles.listTitleLink}>{{title | limitTo : 30}}</a>
+								</h1>
+							</article>
+						), pReact.extend(n, {
+							index: i
+						})));
+						i+=1;
+					});
+					return a;
+				}
+			});
+
+			pReact.renderDom(
+				<page />,
+				document.getElementById("page"),
+				(() => {
+					pReact.renderDom(
+						<moduleBox type="loading" />,
+						document.body
+					);
+					let a = document.getElementById("tab_head");
+					a.childNodes[0].click();
+					pReact.renderDom(
+						<tab taba="我要投诉" tabaurl="register" tabb="最新投诉" tabburl="disabled" tabc="已解决投诉" tabcurl="disabled" tabheadid="tab_view_head" tabaid="tabaa" tabbid="tabbb" tabcid="tabcc" />,
+						document.getElementById("taba"),
+						(() => {
+							pReact.renderDom(
+								<xform action="" method="post" target="_blank" name="voton"/>,
+								document.getElementById("tabaa")
+							);
+							let a = document.getElementById("tab_view_head");
+							a.childNodes[1].click();
+							pReact.renderDom(
+								<list url="//192.168.10.47/m/preact/preact/labs/demo/t.inc" type="newvoteon" />,
+								document.getElementById("tabbb"),
+								(() => {
+									document.getElementById("modulebox")._remove();
+									pReact.renderDom(
+										<list url="//192.168.10.47/m/preact/preact/labs/demo/t1.inc" type="overvoteon" />,
+										document.getElementById("tabcc"),
+										(() => {
+											pReact.renderDom(
+												<list url="//192.168.10.47/m/preact/preact/labs/demo/t2.inc" type="voteontv" />,
+												document.getElementById("tabb")
+											)
+										})
+									)
+								})
+							);
+						})
+					)
+				})
+			);
+		</script>
+		<script>
+			pReact.ready();
+		</script>
+	</body>
+</html>

@@ -67,6 +67,7 @@
 			return matched;
 		},
 		extend(a, b) {
+			//console.log(a, b)
 			return Object.assign(a, b)
 		},
 		toStyle(val) {
@@ -128,6 +129,12 @@
 			parent.replaceChild(element, oldElement);
 		},
 		fineNode(element, selector) {
+			if (/^name=/.test(selector)) {
+				let children = document.getElementsByName && document.getElementsByName(selector.toLowerCase().replace(/^name=/gim, ""));
+				if (children) {
+					return [].slice.call(children);
+				}
+			}
 			var node = element.querySelectorAll(selector);
 			return [].slice.call(node);
 		},
@@ -304,36 +311,44 @@
 		eventData: []
 	}
 	win.pReact = {};
-	pReact.Class = module.Class;
-	pReact.Styles = module.Styles;
-	pReact.jsonp = jsonp;
+
 	pReact.extend = module.extend;
-	pReact.calculateDirection = module.calculateDirection;
-	pReact.Callbacks = function() {
-		let args = arguments && [].slice.call(arguments) || [],
-			len = args.length,
-			callback = new Callbacks();
-		if (len > 0) args.forEach((a) => {
-			callback.add(a);
-		});
-		return callback;
-	};
-	pReact.tmplThesaurus = {};
-	pReact.is = (b, a) => {
-		if (typeof b == "string") switch (b) {
-			case "number":
-			case "string":
-			case "object":
-				return Object.is(typeof a, b);
-				break;
-			case "array":
-				var len = typeof a != "string" && ("length" in a) && a.length,
-					c = (typeof a).toLowerCase();
-				return "array" === c || 0 === len || "number" == typeof len && len > 0 && len - 1 in a
-				break;
+	pReact.extend(pReact, {
+		trim(str) {
+			return str.replace(/(^\s*)|(\s*$)/g, "");
+		},
+		isPlainObject: module.isPlainObject,
+		isEmptyObject: module.isEmptyObject,
+		Class: module.Class,
+		Styles: module.Styles,
+		jsonp: jsonp,
+		calculateDirection: module.calculateDirection,
+		Callbacks() {
+			let args = arguments && [].slice.call(arguments) || [],
+				len = args.length,
+				callback = new Callbacks();
+			if (len > 0) args.forEach((a) => {
+				callback.add(a);
+			});
+			return callback;
+		},
+		tmplThesaurus: {},
+		is(b, a) {
+			if (typeof b == "string") switch (b) {
+				case "number":
+				case "string":
+				case "object":
+					return Object.is(typeof a, b);
+					break;
+				case "array":
+					var len = typeof a != "string" && ("length" in a) && a.length,
+						c = (typeof a).toLowerCase();
+					return "array" === c || 0 === len || "number" == typeof len && len > 0 && len - 1 in a
+					break;
+			}
+			return module.is(a, b);
 		}
-		return module.is(a, b);
-	};
+	});
 
 	module.extend(win.pReact, {
 			extend(a, b) {
@@ -437,6 +452,25 @@
 			loaded() {
 				doc.body.removeAttribute("hidden", "hidden");
 				return this;
+			},
+			each: function(a, b, c) {
+				var d, e = 0,
+					f = a.length,
+					g = pReact.is("array", a);
+				if (c) {
+					if (g) {
+						for (; f > e; e++)
+							if (d = b.apply(a[e], c), d === !1) break
+					} else
+						for (e in a)
+							if (d = b.apply(a[e], c), d === !1) break
+				} else if (g) {
+					for (; f > e; e++)
+						if (d = b.call(a[e], e, a[e]), d === !1) break
+				} else
+					for (e in a)
+						if (d = b.call(a[e], e, a[e]), d === !1) break;
+				return a
 			},
 			renderPage(loading) {
 				let then = this;
@@ -815,8 +849,8 @@
 			let v = data && !Object.is(typeof data[b], "undefined") && !Object.is(typeof data[b], "function") && data[b] || false;
 			if (Object.is(v, false)) {
 				if (Object.is(v, false) && !Object.is(pReact.getStyle(b.split('.')[1]), false))(v = pReact.getStyle(b.split('.')[1]));
-				if (Object.is(v, false) && Object.is(typeof obj[b], "string")) v = obj[b];
-				if (Object.is(v, false) && Object.is(typeof obj[b], "function")) v = obj[b]();
+				if (Object.is(v, false) && obj && obj[b] && Object.is(typeof obj[b], "string")) v = obj[b];
+				if (Object.is(v, false) && obj && obj[b] && Object.is(typeof obj[b], "function")) v = obj[b]();
 				if (Object.is(v, false)) v = a;
 			}
 			return v;
@@ -959,7 +993,7 @@
 	}
 });
 
-pReact && ((pReact) => {
+pReact && (((pReact) => {
 	let stringify = (obj) => {
 			if (null == obj)
 				return "null";
@@ -1250,4 +1284,221 @@ pReact && ((pReact) => {
 			}
 		}
 	});
-})(pReact);
+})(pReact), ((pReact) => {
+	var $ = pReact;
+	var document = window.document,
+		key,
+		name,
+		jsonType = 'application/json',
+		htmlType = 'text/html',
+		blankRE = /^\s*$/
+
+	function ajaxSuccess(data, xhr, settings) {
+		var context = settings.context,
+			status = 'success'
+		settings.success && settings.success(data, xhr)
+	}
+
+	function ajaxError(error, type, xhr, settings) {
+		var context = settings.context
+		settings.error && settings.error(error, xhr)
+	}
+
+	function empty() {}
+
+	ajaxSettings = {
+		type: 'GET',
+		success: empty,
+		error: empty,
+		context: null,
+		global: true,
+		xhr: function() {
+			return new window.XMLHttpRequest()
+		},
+		accepts: {
+			json: jsonType,
+			html: htmlType,
+			text: 'text/plain'
+		},
+		timeout: 3000,
+		processData: true,
+		cache: true
+	}
+
+	function mimeToDataType(mime) {
+		if (mime) mime = mime.split(';', 2)[0]
+		return mime && (mime == htmlType ? 'html' :
+			mime == jsonType ? 'json' : 'text')
+	}
+
+	function appendQuery(url, query) {
+		if (query == '') return url
+		return (url + '&' + query).replace(/[&?]{1,2}/, '?')
+	}
+
+	function serializeData(options) {
+		if (options.processData && options.data && typeof options.data != "string")
+			options.data = $.serialize(options.data, options.traditional)
+		if (options.data && (!options.type || options.type.toUpperCase() == 'GET'))
+			options.url = appendQuery(options.url, options.data), options.data = undefined
+	}
+
+	var ajax = function(options) {
+		var settings = $.extend({}, options || {})
+		for (key in ajaxSettings)
+			if (settings[key] === undefined) settings[key] = ajaxSettings[key]
+
+		if (!settings.url) settings.url = window.location.toString()
+		serializeData(settings)
+		if (settings.cache === false) settings.url = appendQuery(settings.url, '_=' + Date.now())
+
+		var dataType = settings.dataType
+
+		var mime = ajaxSettings.accepts[dataType],
+			headers = {},
+			setHeader = function(name, value) {
+				name && (headers[name.toLowerCase()] = [name, value])
+			},
+			protocol = /^([\w-]+:)\/\//.test(settings.url) ? RegExp.$1 : window.location.protocol,
+			xhr = ajaxSettings.xhr()
+		xhr.setRequestHeader = setHeader
+		var nativeSetHeader = xhr.setRequestHeader,
+			abortTimeout;
+
+		setHeader('X-Requested-With', 'XMLHttpRequest')
+		setHeader('Accept', mime || '*/*')
+
+		xhr.onreadystatechange = function() {
+			if (xhr.readyState == 4) {
+				xhr.onreadystatechange = empty
+				clearTimeout(abortTimeout)
+				var result, error = false
+				if ((xhr.status >= 200 && xhr.status < 300) || xhr.status == 304 || (xhr.status == 0 && protocol == 'file:')) {
+					dataType = dataType || mimeToDataType(settings.mimeType || xhr.getResponseHeader('content-type'))
+					result = xhr.responseText
+
+					try {
+						if (dataType == 'json') result = blankRE.test(result) ? null : $.sEval("return " + result)();
+					} catch (e) {
+						error = e
+					}
+
+					if (error) ajaxError(error, 'parsererror', xhr, settings)
+					else ajaxSuccess(result, xhr, settings)
+				} else {
+					ajaxError(xhr.statusText || null, xhr.status ? 'error' : 'abort', xhr, settings)
+				}
+			}
+		}
+
+		if (settings.xhrFields)
+			for (name in settings.xhrFields) xhr[name] = settings.xhrFields[name]
+
+		var async = 'async' in settings ? settings.async : true
+		xhr.open(settings.type, settings.url, async, settings.username, settings.password)
+
+		for (name in headers) nativeSetHeader.apply(xhr, headers[name])
+
+		if (settings.timeout > 0) abortTimeout = setTimeout(function() {
+			xhr.onreadystatechange = empty
+			xhr.abort()
+			ajaxError(null, 'timeout', xhr, settings)
+		}, settings.timeout)
+
+		xhr.send(settings.data ? settings.data : null)
+		return xhr
+	}
+
+	$.each(["get", "post"], (i, name) => {
+		$[name] = (url, data, callback, type, options) => {
+			return ajax(!options ? {
+				url: url,
+				type: name,
+				dataType: type,
+				data: data,
+				success: callback
+			} : $.extend({
+				url: url,
+				type: name,
+				dataType: type,
+				data: data,
+				success: callback
+			}, options));
+		}
+	});
+
+	var escape = encodeURIComponent
+
+	function serialize(params, obj, traditional, scope) {
+		var type, array = $.is("array", obj),
+			hash = $.isPlainObject(obj)
+		$.each(obj, function(key, value) {
+			type = typeof value;
+			if (scope) key = traditional ? scope :
+				scope + '[' + (hash || type == 'object' || type == 'array' ? key : '') + ']'
+			if (!scope && array) params.add(value.name, value.value)
+			else if (type == "array" || (!traditional && type == "object"))
+				serialize(params, value, traditional, key)
+			else params.add(key, value)
+		})
+	}
+
+	$.serialize = function(obj, traditional) {
+		var params = []
+		params.add = function(k, v) {
+			this.push(escape(k) + '=' + escape(v))
+		}
+		serialize(params, obj, traditional)
+		return params.join('&').replace(/%20/g, '')
+	}
+})(pReact), ((pReact) => {
+	pReact.storage = (options) => {
+		var type = options.type || 'localStorage';
+		var storage = type == "localStorage" ? window.localStorage : document.cookie;
+		return {
+			set: function(key, value) {
+				if (storage) {
+					switch (type) {
+						case "localStorage":
+							storage.setItem(key, value);
+							break;
+						case "cookie":
+							var exp = new Date();
+							exp.setTime(exp.getTime() + Number(time) * 3600 * 1000);
+							storage = key + "=" + escape(value) + ";expires=" + exp.toGMTString();
+							break;
+					}
+				}
+			},
+			get: function(key) {
+				if (storage) {
+					switch (type) {
+						case "localStorage":
+							return storage.getItem(key) || null;
+							break;
+						case "cookie":
+							var arr, reg = new RegExp("(^| )" + key + "=([^;]*)(;|$)");
+							if (arr = storage.match(reg)) {
+								return (arr[2]);
+							} else {
+								return null;
+							}
+							break;
+					}
+				}
+			},
+			delete: function(key) {
+				if (storage) {
+					switch (type) {
+						case "localStorage":
+							storage.removeItem(key);
+							break;
+						case "cookie":
+							this.set(name, '', '-1');
+							break;
+					}
+				}
+			}
+		};
+	}
+})(pReact));
