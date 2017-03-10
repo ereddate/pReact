@@ -2,16 +2,8 @@
 <html>
 	<head>
 		<meta charset="utf-8">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
 		<script src="preact.20170215.js"></script>
 		<link href="preact.font.css" rel="stylesheet" />
-		<script>
-			/*pReact.ready((loading) => {
-				loading();
-			})*/
-			pReact.ready();
-		</script>
 		<style>
 			body {
 				background: #f4f5f7;
@@ -1217,7 +1209,7 @@
 								</li>
 							), n) : pReact.tmpl((
 								<li style={styles.newsListItem}>
-									<img data-src="{{img}}" alt="{{title}}" style={styles.left} />
+									<img data-src="{{img}}" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" alt="{{title}}" style={styles.left} />
 									<div style={styles.right}>
 										<a href="{{url}}" style={styles.newsListActive}>{{title}}</a>
 										<p style={styles.newsListItemSource}>{{source}} {{time}}</p>
@@ -1233,7 +1225,7 @@
 								</li>
 							), n) : pReact.tmpl((
 								<li style={styles.newsListItem}>
-									<img data-src="{{img}}" alt="{{title}}" style={styles.left} />
+									<img data-src="{{img}}" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" alt="{{title}}" style={styles.left} />
 									<div style={styles.right}>
 										<a href="{{url}}" style={styles.newsListItemTitle}>{{title}}</a>
 										<p style={styles.newsListItemSource}>{{source}} {{time}}</p>
@@ -1381,7 +1373,7 @@
 							b.appendChild(pReact.tmpl((
 								<div style={styles.photosListItem}>
 									<a href="{{url}}" style={styles.photosListItemLlink}>
-										<img data-src="{{img}}" alt="{{title}}" style={styles.photosListItemImg}/>
+										<img data-src="{{img}}" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" alt="{{title}}" style={styles.photosListItemImg}/>
 									</a>
 									<p style={styles.photosListItemTitle}>{{title | limitTo : 5}}</p>
 								</div>
@@ -1785,7 +1777,7 @@
 							a.appendChild(pReact.tmpl((
 								<li style={styles.topbannerItem}>
 									<a style={styles.topbannerItemLink}>
-										<img data-src="{{img}}" alt="{{title}}" style={styles.topbannerItemImg} />
+										<img data-src="{{img}}" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" alt="{{title}}" style={styles.topbannerItemImg} />
 									</a>
 									<atricle style={styles.topbannerItemAside}>
 										<h2 style={styles.topbannerItemAsideTitle}>{{title}}</h2>

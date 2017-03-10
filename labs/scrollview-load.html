@@ -2,12 +2,7 @@
 <html>
 	<head>
 		<meta charset="utf-8">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
 		<script src="preact.20170215.js"></script>
-		<script>
-			pReact.ready();
-		</script>
 		<style>
 			body{background:#f4f5f7;font-family:微软雅黑;}
 			body,ul, p,h1,h2,h3,h4,h5,h6{list-style:none;padding:0;margin:0;}
@@ -513,9 +508,9 @@
 							<li style={styles.iscroll_main_context_li}{styles.clearfix} onclick={handleClick} data-href="{{url}}">
 								<h2 style={styles.iscroll_main_context_li_item_title}>{{title}}</h2>
 								<div style={styles.fullColumn}{styles.clearfix}>
-									<span><img data-src="{{img1}}" alt="{{title}}" style={styles.iscroll_main_context_li_item_img_custom} /></span>
-									<span><img data-src="{{img2}}" alt="{{title}}" style={styles.iscroll_main_context_li_item_img_custom} /></span>
-									<span><img data-src="{{img3}}" alt="{{title}}" style={styles.iscroll_main_context_li_item_img_custom} /></span>
+									<span><img data-src="{{img1}}" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" alt="{{title}}" style={styles.iscroll_main_context_li_item_img_custom} /></span>
+									<span><img data-src="{{img2}}" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" alt="{{title}}" style={styles.iscroll_main_context_li_item_img_custom} /></span>
+									<span><img data-src="{{img3}}" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" alt="{{title}}" style={styles.iscroll_main_context_li_item_img_custom} /></span>
 								</div>
 								<p style={styles.iscroll_main_context_li_item_aside}>{{source}} {{time}}</p>
 							</li>
@@ -528,7 +523,7 @@
 									<div style={styles.iscroll_main_context_li_item_shopgroup}{styles.positionRelative}>
 										<i style={styles.iscroll_main_context_li_item_shop_icon_new}>新品</i>
 										<a href="{{url}}" style={styles.clearfix}{styles.textCenter}>
-											<img data-src="{{img}}" alt="{{title}}" style={styles.iscroll_main_context_li_item_img}{styles.iscroll_main_context_li_item_shop_img} />
+											<img data-src="{{img}}" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" alt="{{title}}" style={styles.iscroll_main_context_li_item_img}{styles.iscroll_main_context_li_item_shop_img} />
 										</a>
 										<h2 style={styles.iscroll_main_context_li_item_title}{styles.iscroll_main_context_li_item_shop_title}>{{title}}</h2>
 										<p style={styles.iscroll_main_context_li_item_aside}{styles.iscroll_main_context_li_item_shop_aside}>
@@ -548,11 +543,11 @@
 									<h2 style={styles.iscroll_main_context_li_item_title}>{{title}}</h2>
 									<p style={styles.iscroll_main_context_li_item_aside}>{{source}} {{time}}</p>
 								</div>
-								<div style={styles.iscroll_main_context_li_item_left}><img data-src="{{img}}" alt="{{title}}" style={styles.iscroll_main_context_li_item_img} /></div>
+								<div style={styles.iscroll_main_context_li_item_left}><img data-src="{{img}}" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" alt="{{title}}" style={styles.iscroll_main_context_li_item_img} /></div>
 							</li>
 						),n) : pReact.tmpl((
 							<li style={styles.iscroll_main_context_li}{styles.clearfix} onclick={handleClick} data-href="{{url}}">
-								<div style={styles.iscroll_main_context_li_item_left}><img data-src="{{img}}" alt="{{title}}" style={styles.iscroll_main_context_li_item_img} /></div>
+								<div style={styles.iscroll_main_context_li_item_left}><img data-src="{{img}}" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" alt="{{title}}" style={styles.iscroll_main_context_li_item_img} /></div>
 								<div style={styles.iscroll_main_context_li_item_right_b}>
 									<h2 style={styles.iscroll_main_context_li_item_title}>{{title}}</h2>
 									<p style={styles.iscroll_main_context_li_item_aside}>{{source}} {{time}}</p>

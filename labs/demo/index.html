@@ -2,8 +2,7 @@
 <html>
 	<head>
 		<meta charset="utf-8">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+		<title>pReact demo</title>
 		<script src="../preact.20170215.js"></script>
 		<style>
 			body{background:#f4f5f7;font-family:微软雅黑;}
@@ -405,9 +404,9 @@
 				handleClick(e){
 					if (this._attr("href") == "register"){
 						let a = pReact.storage({type:"cookie"}).get("userToken");
-						if (!a){
+						/*if (!a){
 							location.href = "https://reg.hexun.com/h5/login.aspx?gourl="+encodeURIComponent(location.href);
-						}
+						}*/
 						this._attr("href", "disabled")
 					}
 					if (this._attr("href") == "disabled"){
@@ -523,11 +522,11 @@
 			xbutton = pReact.createClass("xbutton", {
 				handleSubmitClick(e){
 					e.preventDefault();
-					let a = pReact.storage({type:"cookie"}).get("userToken");
+					/*let a = pReact.storage({type:"cookie"}).get("userToken");
 					if (!a){
 						location.href = "https://reg.hexun.com/h5/login.aspx?gourl="+encodeURIComponent(location.href);
 						return false;
-					}
+					}*/
 					let form = this._parents(".xform");
 	                if (form._findNode("name=txt_name")[0].value == "") {
 	                    tip("请输入姓名");
@@ -878,9 +877,6 @@
 					)
 				})
 			);
-		</script>
-		<script>
-			pReact.ready();
 		</script>
 	</body>
 </html>

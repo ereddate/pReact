@@ -1,5 +1,6 @@
 ((win, tmpl, translateContent, jsonp) => {
 	var doc = win.document;
+	win.pReact = {};
 	class Callbacks {
 		constructor() {
 			let args = arguments && [].slice.call(arguments) || [],
@@ -310,7 +311,6 @@
 		},
 		eventData: []
 	}
-	win.pReact = {};
 
 	pReact.extend = module.extend;
 	pReact.extend(pReact, {
@@ -351,405 +351,444 @@
 	});
 
 	module.extend(win.pReact, {
-			extend(a, b) {
-				a = module.extend(a, b);
-				return a;
-			},
-			createClass(name, classObject) {
-				module.Class[name.toLowerCase()] = module.extend(classObject, {
-					_className: name.toLowerCase()
-				});
-				return classObject;
-			},
-			createStyle(style) {
-				module.extend(module.Styles, (() => {
-					for (name in style) {
-						style[name] = module.toStyle(style[name]);
-					}
-					return style;
-				})());
+		extend(a, b) {
+			a = module.extend(a, b);
+			return a;
+		},
+		createClass(name, classObject) {
+			module.Class[name.toLowerCase()] = module.extend(classObject, {
+				_className: name.toLowerCase()
+			});
+			return classObject;
+		},
+		createStyle(style) {
+			module.extend(module.Styles, (() => {
+				for (name in style) {
+					style[name] = module.toStyle(style[name]);
+				}
 				return style;
-			},
-			renderDom(name, data, parent, callback) {
-				if (!Object.is(parent, null)) {
-					let obj = (module.is(typeof name, "string") ? module.Class[name] : name),
-						element,
-						toElements = (element) => {
-							if (module.is(typeof element, "string")) {
-								var fragment = document.createDocumentFragment(),
-									temp = document.createElement("div");
-								element = tmpl(element, data, obj);
-								temp.innerHTML = element;
-								fragment = module.translateFragment(temp, fragment, obj, data);
-								//parent.innerHTML = "";
-								parent.appendChild(fragment);
+			})());
+			return style;
+		},
+		renderDom(name, data, parent, callback) {
+			if (!Object.is(parent, null)) {
+				let obj = (module.is(typeof name, "string") ? module.Class[name] : name),
+					element,
+					toElements = (element) => {
+						if (module.is(typeof element, "string")) {
+							var fragment = document.createDocumentFragment(),
+								temp = document.createElement("div");
+							element = tmpl(element, data, obj);
+							temp.innerHTML = element;
+							fragment = module.translateFragment(temp, fragment, obj, data);
+							//parent.innerHTML = "";
+							parent.appendChild(fragment);
+						} else {
+							element = tmpl(element, data, obj);
+							//parent.innerHTML = "";
+							parent.appendChild(element);
+						}
+					},
+					done = (result) => {
+						obj._data = result;
+						obj.render && (element = pReact.tmpl(obj.render(), obj._data));
+						if (element) {
+							//console.log(element, parent)
+							if (module.is(typeof element, "object") && "length" in element || module.is(typeof element, "array")) {
+								element.forEach((e) => {
+									toElements(e);
+								})
 							} else {
-								element = tmpl(element, data, obj);
-								//parent.innerHTML = "";
-								parent.appendChild(element);
+								toElements(element);
 							}
-						},
-						done = (result) => {
-							obj._data = result;
-							obj.render && (element = pReact.tmpl(obj.render(), obj._data));
-							if (element) {
-								//console.log(element, parent)
-								if (module.is(typeof element, "object") && "length" in element || module.is(typeof element, "array")) {
-									element.forEach((e) => {
-										toElements(e);
-									})
-								} else {
-									toElements(element);
-								}
-								parent.className = parent.className.replace(/\s*preactroot/gim, "");
-								parent.className += " preactroot";
-							}
-							callback && callback();
-						};
+							parent.className = parent.className.replace(/\s*preactroot/gim, "");
+							parent.className += " preactroot";
+						}
+						callback && callback();
+					};
 
-					module.is(obj._data, undefined) && (obj._data = {});
-					(!module.is(data, undefined) || module.isPlainObject(data)) && module.extend(obj._data, data);
-					("getInitData" in obj) && (new Promise((resolve, reject) => {
-						obj.getInitData(resolve, reject)
-					}).then((result) => {
-						("length" in result) && /object|array/.test(typeof result) ? module.extend(obj._data, {
-							data: result
-						}) : module.extend(obj._data, result);
-						done(obj._data);
-					}, () => {
-						done({});
-					})) || done(data);
-				}
-				return this;
-			},
-			toMobile(num) {
-				var head = doc.getElementsByTagName("head")[0],
-					style = doc.createElement("style");
-				head.appendChild(style);
-				style.innerHTML = "abbr,article,aside,audio,canvas,datalist,details,dialog,eventsource,figure,footer,object,header,hgroup,mark,menu,meter,nav,output,progress,section,time,video{display:block}";
-				var e = "abbr,article,aside,audio,canvas,datalist,details,dialog,eventsource,figure,footer,object,header,hgroup,mark,menu,meter,nav,output,progress,section,time,video".split(',');
-				var i = e.length;
-				while (i--) {
-					doc.createElement(e[i])
-				}
-				var meta = doc.createElement("meta");
-				meta.name = "viewport";
-				meta.content = "width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0";
-				head.appendChild(meta);
+				module.is(obj._data, undefined) && (obj._data = {});
+				(!module.is(data, undefined) || module.isPlainObject(data)) && module.extend(obj._data, data);
+				("getInitData" in obj) && (new Promise((resolve, reject) => {
+					obj.getInitData(resolve, reject)
+				}).then((result) => {
+					("length" in result) && /object|array/.test(typeof result) ? module.extend(obj._data, {
+						data: result
+					}) : module.extend(obj._data, result);
+					done(obj._data);
+				}, () => {
+					done({});
+				})) || done(data);
+			}
+			return this;
+		},
+		toAmp(){
+			var html = doc.querySelectorAll("html")[0];
+			html.setAttribute("amp", "");
+			var styles = head.getElementsByTagName("style");
+			[].slice.call(styles).forEach((e) => {
+				e.setAttribute("amp-custom", "");
+			});
+			var scripts = head.getElementsByTagName("script");
+			[].slice.call(scripts).forEach((e) => {
+				e.setAttribute("async", "");
+			});
+			var script = doc.createElement("script"),
+				link = doc.createElement("link"),
+				styleAmp = doc.createElement("style"),
+				styleAmpNs = doc.createElement("style"),
+				nsAmp = doc.createElement("noscript");
+			var styleContext = ['body{-webkit-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-moz-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-ms-animation:-amp-start 8s steps(1,end) 0s 1 normal both;animation:-amp-start 8s steps(1,end) 0s 1 normal both}@-webkit-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-moz-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-ms-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-o-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}', 'body{-webkit-animation:none;-moz-animation:none;-ms-animation:none;animation:none}'];
+			head.insertBefore(script, head.childNodes[0]);
+			script.setAttribute("src", "https://cdn.ampproject.org/v0.js");
+			script.setAttribute("async", "");
+			head.insertBefore(link, head.childNodes[1]);
+			link.setAttribute("href", location.href);
+			link.setAttribute("rel", "canonical");
+			head.insertBefore(styleAmp, head.childNodes[2]);
+			styleAmp.setAttribute("amp-boilerplate", "");
+			styleAmp.innerHTML = styleContext[0];
+			head.insertBefore(nsAmp, head.childNodes[3]);
+			styleAmpNs.innerHTML = styleContext[1];
+			nsAmp.appendChild(styleAmpNs);
+			return this;
+		},
+		toMobile(num) {
+			var head = doc.getElementsByTagName("head")[0];
+			var style = doc.createElement("style");
+			head.appendChild(style);
+			style.setAttribute("amp-custom", "");
+			style.innerHTML = "abbr,article,aside,audio,canvas,datalist,details,dialog,eventsource,figure,footer,object,header,hgroup,mark,menu,meter,nav,output,progress,section,time,video{display:block}";
+			var e = "abbr,article,aside,audio,canvas,datalist,details,dialog,eventsource,figure,footer,object,header,hgroup,mark,menu,meter,nav,output,progress,section,time,video".split(',');
+			var i = e.length;
+			while (i--) {
+				doc.createElement(e[i])
+			}
+			var meta = doc.createElement("meta"),
+				metaIe = doc.createElement("meta");
+			meta.name = "viewport";
+			meta.content = "width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0";
+			head.appendChild(meta);
+			head.appendChild(metaIe);
+			metaIe.setAttribute("http-equiv", "X-UA-Compatible");
+			metaIe.setAttribute("content", "IE=edge");
+
+			module.setFontSize(num);
+			window.addEventListener("onorientationchange" in window ? "orientationchange" : "resize", (() => {
 				module.setFontSize(num);
-				window.addEventListener("onorientationchange" in window ? "orientationchange" : "resize", (() => {
-					module.setFontSize(num);
-				}), false);
-				return this;
-			},
-			getBaseFontSize(num) {
-				return window.baseFontSize || module.setFontSize(num);
-			},
-			loading() {
-				doc.body.setAttribute("hidden", "hidden");
-				return this;
-			},
-			loaded() {
-				doc.body.removeAttribute("hidden", "hidden");
-				return this;
-			},
-			each: function(a, b, c) {
-				var d, e = 0,
-					f = a.length,
-					g = pReact.is("array", a);
-				if (c) {
-					if (g) {
-						for (; f > e; e++)
-							if (d = b.apply(a[e], c), d === !1) break
-					} else
-						for (e in a)
-							if (d = b.apply(a[e], c), d === !1) break
-				} else if (g) {
+			}), false);
+			return this;
+		},
+		getBaseFontSize(num) {
+			return window.baseFontSize || module.setFontSize(num);
+		},
+		loading() {
+			doc.body.setAttribute("hidden", "hidden");
+			return this;
+		},
+		loaded() {
+			doc.body.removeAttribute("hidden");
+			return this;
+		},
+		each: function(a, b, c) {
+			var d, e = 0,
+				f = a.length,
+				g = pReact.is("array", a);
+			if (c) {
+				if (g) {
 					for (; f > e; e++)
-						if (d = b.call(a[e], e, a[e]), d === !1) break
+						if (d = b.apply(a[e], c), d === !1) break
 				} else
 					for (e in a)
-						if (d = b.call(a[e], e, a[e]), d === !1) break;
-				return a
-			},
-			renderPage(loading) {
-				let then = this;
-				loading && (() => {
-					loading(pReact.loading);
-				})();
-				then.toMobile();
-				var script = doc.getElementsByTagName("script");
-				(module.extend([], [].slice.call(script))).forEach((e) => {
-					if (module.is(e.type, "text/pReact")) {
-						module.evalContent(translateContent(e.innerHTML));
-						e.parentNode.removeChild(e);
-					}
-				});
-				return then;
-			},
-			ready(loading) {
-				let then = this,
-					completed = () => {
-						doc.removeEventListener("DOMContentLoaded", completed);
-						win.removeEventListener("load", completed);
-						then.renderPage(loading);
-					};
-				doc.addEventListener("DOMContentLoaded", completed);
-				win.addEventListener("load", completed);
-				return then;
-			},
-			tmpl(html, data) {
-				return tmpl(html, data);
-			},
-			createDom() {
-				let args = arguments,
-					len = args.length,
-					tagName, attrs, arr = module.extend([], args);
-				if (len < 2) return;
-				tagName = args[0];
-				attrs = args[1];
-				var childrens = [],
-					i = 0;
-				arr.forEach((r) => {
-					i += 1;
-					if (i > 2) childrens.push(r);
-				});
-				let element = module.is(tagName, "textNode") ? doc.createTextNode("") : module.is(tagName, "docmentfragment") ? doc.createDocumentFragment() : doc.createElement(tagName);
-				if (!module.is(tagName, "docmentfragment")) {
-					element._props = {};
-					module.extend(element._props, module.extend(attrs, {
-						tagName: tagName
-					}));
-					module.extend(element, {
-						_set(options) {
-							var then = this;
-							module.set(then, options);
+						if (d = b.apply(a[e], c), d === !1) break
+			} else if (g) {
+				for (; f > e; e++)
+					if (d = b.call(a[e], e, a[e]), d === !1) break
+			} else
+				for (e in a)
+					if (d = b.call(a[e], e, a[e]), d === !1) break;
+			return a
+		},
+		renderPage() {
+			let then = this;
+			pReact.loading();
+			var script = doc.getElementsByTagName("script");
+			(module.extend([], [].slice.call(script))).forEach((e) => {
+				if (module.is(e.type, "text/pReact")) {
+					module.evalContent(translateContent(e.innerHTML));
+					e.parentNode.removeChild(e);
+				}
+			});
+			pReact.loaded();
+			return then;
+		},
+		ready(loading) {
+			let then = this,
+				completed = () => {
+					doc.removeEventListener("DOMContentLoaded", completed);
+					win.removeEventListener("load", completed);
+					loading && loading();
+					then.toMobile(16);
+					then.renderPage();
+				};
+			doc.addEventListener("DOMContentLoaded", completed);
+			win.addEventListener("load", completed);
+			return then;
+		},
+		tmpl(html, data) {
+			return tmpl(html, data);
+		},
+		createDom() {
+			let args = arguments,
+				len = args.length,
+				tagName, attrs, arr = module.extend([], args);
+			if (len < 2) return;
+			tagName = args[0];
+			attrs = args[1];
+			var childrens = [],
+				i = 0;
+			arr.forEach((r) => {
+				i += 1;
+				if (i > 2) childrens.push(r);
+			});
+			let element = module.is(tagName, "textNode") ? doc.createTextNode("") : module.is(tagName, "docmentfragment") ? doc.createDocumentFragment() : doc.createElement(tagName);
+			if (!module.is(tagName, "docmentfragment")) {
+				element._props = {};
+				module.extend(element._props, module.extend(attrs, {
+					tagName: tagName
+				}));
+				module.extend(element, {
+					_set(options) {
+						var then = this;
+						module.set(then, options);
+						return this;
+					},
+					_findNode(selector) {
+						var then = this;
+						return module.fineNode(then, selector);
+					},
+					_empty() {
+						[].slice.call(this.childNodes).forEach((e) => {
+							e._remove();
+						})
+						return this;
+					},
+					_parents(selector) {
+						var then = this;
+						return module.parents(then, selector);
+					},
+					_attr(name, value) {
+						var then = this;
+						return !module.is(typeof name, "string") && [].slice.call(name).forEach((e) => {
+							element.setAttribute(e.name, e.value);
+						}) || !module.is(typeof value, "undefined") && then.setAttribute(name, value) || then.getAttribute(name);
+					},
+					_removeAttr(name) {
+						name.split(' ').forEach((n) => {
+							this.removeAttribute(n);
+						});
+						return this;
+					},
+					_clone(bool) {
+						let nE = this.cloneNode(!module.is(typeof bool, "undefined") ? bool : true);
+						bool === true && module.cloneHandle(nE, this);
+						return nE;
+					},
+					_on(eventName, fn) {
+						module.on(this, eventName, fn);
+						return this;
+					},
+					_off(eventName) {
+						module.off(this, eventName);
+						return this;
+					},
+					_remove(element) {
+						element && element.nodeType && this.removeChild(element) || this.parentNode && this.parentNode.removeChild(this);
+						return this;
+					},
+					_append(element) {
+						if (module.is(typeof element, "string")) {
+							element = new Function("return " + translateContent("(" + tmpl(element) + ")"))();
+							this.appendChild(element);
+							module.cloneHandle(element);
+						} else if (module.is(typeof element, "function")) {
+							element(this);
+						} else {
+							this.appendChild(element);
+							module.cloneHandle(element);
+						}
+						return this;
+					},
+					_css(name, value) {
+						var args = arguments,
+							len = args.length;
+						if (len === 0) {
 							return this;
-						},
-						_findNode(selector) {
-							var then = this;
-							return module.fineNode(then, selector);
-						},
-						_empty() {
-							[].slice.call(this.childNodes).forEach((e) => {
-								e._remove();
-							})
-							return this;
-						},
-						_parents(selector) {
-							var then = this;
-							return module.parents(then, selector);
-						},
-						_attr(name, value) {
-							var then = this;
-							return !module.is(typeof name, "string") && [].slice.call(name).forEach((e) => {
-								element.setAttribute(e.name, e.value);
-							}) || !module.is(typeof value, "undefined") && then.setAttribute(name, value) || then.getAttribute(name);
-						},
-						_removeAttr(name) {
-							name.split(' ').forEach((n) => {
-								this.removeAttribute(n);
-							});
-							return this;
-						},
-						_clone(bool) {
-							let nE = this.cloneNode(!module.is(typeof bool, "undefined") ? bool : true);
-							bool === true && module.cloneHandle(nE, this);
-							return nE;
-						},
-						_on(eventName, fn) {
-							module.on(this, eventName, fn);
-							return this;
-						},
-						_off(eventName) {
-							module.off(this, eventName);
-							return this;
-						},
-						_remove(element) {
-							element && element.nodeType && this.removeChild(element) || this.parentNode && this.parentNode.removeChild(this);
-							return this;
-						},
-						_append(element) {
-							if (module.is(typeof element, "string")) {
-								element = new Function("return " + translateContent("(" + tmpl(element) + ")"))();
-								this.appendChild(element);
-								module.cloneHandle(element);
-							} else if (module.is(typeof element, "function")) {
-								element(this);
-							} else {
-								this.appendChild(element);
-								module.cloneHandle(element);
-							}
-							return this;
-						},
-						_css(name, value) {
-							var args = arguments,
-								len = args.length;
-							if (len === 0) {
-								return this;
-							} else if (len === 1) {
-								if ("style" in this) {
-									if (module.is(typeof name, "string")) {
-										var f = [],
-											then = this;
-										name.split(' ').forEach((n) => {
-											f.push(then.style[n]);
-										});
-										return f.length > 1 ? f : f.join('');
-									} else if (module.isPlainObject(name)) {
-										for (n in name) {
-											this.style[n] = name[n]
-										}
-										return this;
+						} else if (len === 1) {
+							if ("style" in this) {
+								if (module.is(typeof name, "string")) {
+									var f = [],
+										then = this;
+									name.split(' ').forEach((n) => {
+										f.push(then.style[n]);
+									});
+									return f.length > 1 ? f : f.join('');
+								} else if (module.isPlainObject(name)) {
+									for (n in name) {
+										this.style[n] = name[n]
 									}
-								} else {
 									return this;
 								}
 							} else {
-								this.style[name] = value;
 								return this;
 							}
-						},
-						_offset() {
-							return {
-								top: this.offsetTop,
-								left: this.offsetLeft
+						} else {
+							this.style[name] = value;
+							return this;
+						}
+					},
+					_offset() {
+						return {
+							top: this.offsetTop,
+							left: this.offsetLeft
+						}
+					},
+					_previous() {
+						return this.previousElementSibling;
+					},
+					_next() {
+						return this.nextElementSibling;
+					},
+					_has(a, b) {
+						return module.has(a, b);
+					}
+				})
+				module.state.elements.push(element);
+				var f = (v) => {
+					var val = [];
+					if (/\{+\s*([^<>}{,]+)\s*\}+/.test(v) && /\./.test(v)) {
+						v.replace(/\{+\s*([^<>}{,]+)\s*\}+/gim, function(a, b) {
+							if (b) {
+								var style = pReact.getStyle(b.split('.')[1]);
+								style && val.push(style);
+								if (val.length === 0) module.Class[b.split('.')[0]] && val.push(module.Class[b.split('.')[0]][b.split('.')[1]]);
 							}
-						},
-						_previous() {
-							return this.previousElementSibling;
-						},
-						_next() {
-							return this.nextElementSibling;
-						},
-						_has(a, b) {
-							return module.has(a, b);
-						}
-					})
-					module.state.elements.push(element);
-					var f = (v) => {
-						var val = [];
-						if (/\{+\s*([^<>}{,]+)\s*\}+/.test(v) && /\./.test(v)) {
-							v.replace(/\{+\s*([^<>}{,]+)\s*\}+/gim, function(a, b) {
-								if (b) {
-									var style = pReact.getStyle(b.split('.')[1]);
-									style && val.push(style);
-									if (val.length === 0) module.Class[b.split('.')[0]] && val.push(module.Class[b.split('.')[0]][b.split('.')[1]]);
-								}
-							});
-						}
-						if (val.length === 0) val.push(v);
-						return val;
-					};
-					for (name in attrs) {
-						var n = attrs[name],
-							v = f(n);
-						//console.log(v, name)
-						switch (name) {
-							case "text":
-								v.forEach((sv) => {
-									if (module.is(typeof sv, "string") && module.is(element.nodeType, 3)) {
+						});
+					}
+					if (val.length === 0) val.push(v);
+					return val;
+				};
+				for (name in attrs) {
+					var n = attrs[name],
+						v = f(n);
+					//console.log(v, name)
+					switch (name) {
+						case "text":
+							v.forEach((sv) => {
+								if (module.is(typeof sv, "string") && module.is(element.nodeType, 3)) {
+									element.textContent = sv;
+								} else if (module.is(typeof sv, "function")) {
+									sv = sv();
+									if (module.is(typeof sv, "string")) {
 										element.textContent = sv;
-									} else if (module.is(typeof sv, "function")) {
-										sv = sv();
-										if (module.is(typeof sv, "string")) {
-											element.textContent = sv;
-										} else if (!module.is(sv.nodeType, undefined)) {
-											element = sv;
-											var r = /\{+\s*([^<>}{,]+)\s*\}+/.exec(n);
-											if (r) {
-												module.setElementClass(element, r[1].split('.')[0])
-											}
+									} else if (!module.is(sv.nodeType, undefined)) {
+										element = sv;
+										var r = /\{+\s*([^<>}{,]+)\s*\}+/.exec(n);
+										if (r) {
+											module.setElementClass(element, r[1].split('.')[0])
 										}
-									} else {
-										var textnode = doc.createTextNode(sv);
-										element.appendChild(textnode);
 									}
-								})
-								break;
-							case "src":
-							case "poster":
-								element.setAttribute((/\{+\s*([^<>}{,]+)\s*\}+/.test(v) ? "data-" + name : name), v.join(''));
-								break;
-							case "html":
-								n = module.is(typeof n, "function") ? n() : n;
-								element.innerHTML = n.nodeType ? n.innerHTML : n;
-								break;
-							case "class":
-								element.className += " " + v.join(' ');
-								break;
-							case "handle":
-								module.bind(v.join(' '), element);
-								break;
-							default:
-								if (name == "style") {
-									element[name].cssText = ""
+								} else {
+									var textnode = doc.createTextNode(sv);
+									element.appendChild(textnode);
 								}
-								v.forEach((sv) => {
-									if (/^on/.test(name) || /href/.test(name) && /\{{,1}\s*[^<>}{,]+\s*\}{,1}/.test(sv)) {
-										!element._props.handle && (element._props.handle = {});
-										let a = {};
-										var fn = sv;
-										if (/href/.test(name) && /\{\s*[^{}]+\s*\}/.test(sv)) {
-											element.setAttribute(name, "javascript:;");
-											name = "onclick";
-										}
-										a[name.replace("on", "")] = fn;
-										module.extend(element._props.handle, a);
-										module.bind(a, element);
-									} else {
-										if (name == "style") {
-											element[name] && (element[name].cssText += sv);
-										} else {
-											!/element|tagName/.test(name) && element.setAttribute(name, sv)
-										}
-									}
-								})
-								break;
-						}
-					}
-					element._childrens = childrens
-				} else {
-					module.extend(element, {
-						_findNode(selector) {
-							var then = this;
-							return module.fineNode(then, selector);
-						},
-						_clone(bool) {
-							let nE = this.cloneNode(!module.is(typeof bool, "undefined") ? bool : true);
-							bool === true && module.cloneHandle(nE, this);
-							return nE;
-						},
-						_remove(element) {
-							element && element.nodeType && this.removeChild(element) || this.parentNode && this.parentNode.removeChild(this);
-							return this;
-						},
-						_append(element) {
-							if (module.is(typeof element, "string")) {
-								element = new Function("return " + translateContent("(" + tmpl(element) + ")"))();
-								this.appendChild(element);
-							} else {
-								this.appendChild(element);
+							})
+							break;
+						case "src":
+						case "poster":
+							element.setAttribute((/\{+\s*([^<>}{,]+)\s*\}+/.test(v.join('')) ? "data-" + name : name), v.join(''));
+							break;
+						case "html":
+							n = module.is(typeof n, "function") ? n() : n;
+							element.innerHTML = n.nodeType ? n.innerHTML : n;
+							break;
+						case "class":
+							element.className += " " + v.join(' ');
+							break;
+						case "handle":
+							module.bind(v.join(' '), element);
+							break;
+						default:
+							if (name == "style") {
+								element[name].cssText = ""
 							}
-							return this;
-						}
-					})
-				}
-				childrens.forEach((e) => {
-					if (module.is(typeof e, "function")) {
-						var items = e();
-						element.appendChild(items);
-					} else {
-						element.appendChild(e);
+							v.forEach((sv) => {
+								if (/^on/.test(name) || /href/.test(name) && /\{{,1}\s*[^<>}{,]+\s*\}{,1}/.test(sv)) {
+									!element._props.handle && (element._props.handle = {});
+									let a = {};
+									var fn = sv;
+									if (/href/.test(name) && /\{\s*[^{}]+\s*\}/.test(sv)) {
+										element.setAttribute(name, "javascript:;");
+										name = "onclick";
+									}
+									a[name.replace("on", "")] = fn;
+									module.extend(element._props.handle, a);
+									module.bind(a, element);
+								} else {
+									if (name == "style") {
+										element[name] && (element[name].cssText += sv);
+									} else {
+										!/element|tagName/.test(name) && element.setAttribute(name, sv)
+									}
+								}
+							})
+							break;
 					}
-				});
-				return element;
-			},
-			getStyle(name) {
-				return !Object.is(module.Styles[name], undefined) && module.Styles[name];
+				}
+				element._childrens = childrens
+			} else {
+				module.extend(element, {
+					_findNode(selector) {
+						var then = this;
+						return module.fineNode(then, selector);
+					},
+					_clone(bool) {
+						let nE = this.cloneNode(!module.is(typeof bool, "undefined") ? bool : true);
+						bool === true && module.cloneHandle(nE, this);
+						return nE;
+					},
+					_remove(element) {
+						element && element.nodeType && this.removeChild(element) || this.parentNode && this.parentNode.removeChild(this);
+						return this;
+					},
+					_append(element) {
+						if (module.is(typeof element, "string")) {
+							element = new Function("return " + translateContent("(" + tmpl(element) + ")"))();
+							this.appendChild(element);
+						} else {
+							this.appendChild(element);
+						}
+						return this;
+					}
+				})
 			}
-		})
-		//console.log(module.state)
+			childrens.forEach((e) => {
+				if (module.is(typeof e, "function")) {
+					var items = e();
+					element.appendChild(items);
+				} else {
+					element.appendChild(e);
+				}
+			});
+			return element;
+		},
+		getStyle(name) {
+			return !Object.is(module.Styles[name], undefined) && module.Styles[name];
+		}
+	});
+
+	pReact.ready();
+	
 })(this, (element, data, obj) => {
 	var f = (element) => {
 			element && ("length" in element ? Object.is(element.nodeType, 11) ? [].slice.call(element.childNodes) : [].slice.call(element) : [element]).forEach((e) => {
