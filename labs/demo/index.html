@@ -388,6 +388,22 @@
 						right:(10/baseFontSize).toFixed(4)+"rem",
 						fontStyle:"normal",
 						fontSize:(10/baseFontSize).toFixed(4)+"rem"
+					},
+					listmore:{
+						textAlign:"center",
+						padding:(20/baseFontSize).toFixed(4)+"rem 0"
+					},
+					listmorebutton:{
+						border:0,
+						borderTop:(1/baseFontSize).toFixed(4)+"rem solid rgb(220,220,220)",
+						width:(screen.width/baseFontSize).toFixed(4)+"rem",
+						fontSize:(16/baseFontSize).toFixed(4)+"rem",
+						background:"rgb(255,255,255)",
+						padding:(6/baseFontSize).toFixed(4)+"rem 0"
+					},
+					lasttip:{
+						color:"#ccc",
+						fontSize:(16/baseFontSize).toFixed(4)+"rem"
 					}
 				});
 
@@ -756,8 +772,14 @@
 								a.querySelectorAll("li").forEach((e) => {
 									contents.push({
 										title: e.innerText,
-										url: e.childNodes[0].href,
+										url: e.childNodes[0].href
 									});
+									contents.length<=parseFloat(then._data.initnum) ? pReact.extend(contents[contents.length-1], {
+										style: "display:block"
+									}) : pReact.extend(contents[contents.length-1], {
+										style: "display:none"
+									});
+									i+=1;
 								});
 							}else{
 								a.querySelectorAll(".ask,.top,.bottom").forEach((e) => {
@@ -767,6 +789,11 @@
 											title: item[0].innerText,
 											desc: item[1].innerText,
 											reply: isBottom ? item[2].innerText : "-"
+										});
+										contents.length<=parseFloat(then._data.initnum) ? pReact.extend(contents[contents.length-1], {
+											style: "display:block"
+										}) : pReact.extend(contents[contents.length-1], {
+											style: "display:none"
 										});
 										item.length = 0;
 									}
@@ -791,7 +818,8 @@
 									data: {
 										title: then.querySelectorAll("h1")[0].innerText,
 										desc: then.querySelectorAll("p")[0].innerText,
-										reply: then.querySelectorAll("span")[0].innerText
+										reply: then.querySelectorAll("span")[0].innerText,
+										style:"display:block"
 									},
 									num: parseInt(then._attr("data-index"))||0
 								},
@@ -803,26 +831,26 @@
 				render(){
 					let a = document.createDocumentFragment(), i=0, then = this;
 					this._data && this._data.type == "item" ? a.appendChild(pReact.tmpl((
-						<article style={styles.list}{styles.listview}>
+						<article style={styles.list}{styles.listview} data-style="{{style}}">
 							<h1 style={styles.listViewTitle}>{{title | limitTo : 30}}</h1>
 							<p style={styles.listViewDesc}>{{desc}}</p>
 							<span style={styles.listViewreply}>{{reply}}</span>
 						</article>
 					), this._data)) : this._data.data.forEach((n) => {
 						a.appendChild(pReact.tmpl(then._data.type == "newvoteon" ? (
-							<article style={styles.list} onclick={handleClick} data-index="{{index}}">
+							<article style={styles.list} data-style="{{style}}" onclick={handleClick} data-index="{{index}}">
 								<h1 style={styles.listTitle}>{{title | limitTo : 30}}</h1>
 								<p style={styles.listDesc}{styles.hide}>{{desc}}</p>
 								<span style={styles.listreply}{styles.hide}>{{reply}}</span>
 							</article>
 						) : then._data.type == "overvoteon" ? (
-							<article style={styles.list} onclick={handleClick} data-index="{{index}}">
+							<article style={styles.list} data-style="{{style}}" onclick={handleClick} data-index="{{index}}">
 								<h1 style={styles.listTitle}>{{title | limitTo : 30}}</h1>
 								<p style={styles.listDesc}{styles.hide}>{{desc}}</p>
 								<span style={styles.listreply}>{{reply}}</span>
 							</article>
 						) : (
-							<article style={styles.list} data-index="{{index}}">
+							<article style={styles.list} data-style="{{style}}" data-index="{{index}}">
 								<h1 style={styles.listTitle}>
 									<a href="{{url}}" target="_blank" style={styles.listTitleLink}>{{title | limitTo : 30}}</a>
 								</h1>
@@ -833,6 +861,39 @@
 						i+=1;
 					});
 					return a;
+				}
+			}),
+			listMore = pReact.createClass("listmore", {
+				handleClick(e){
+					let then = this, p = this._parents(".preactroot"), n=0, ps = p._findNode("article[style=display:none]");
+					if (ps.length < parseFloat(then._data.pagenum)){
+						pReact.renderDom(
+							<lasttip />,
+							then.parentNode
+						);
+						then._remove();
+					}else{
+						pReact.each(ps, (i, e) => {
+							if (i >= parseFloat(this._data.pagenum)){
+								return false;
+							}
+							e.style.display = "block";
+						});
+					}
+				},
+				render(){
+					return (
+						<div style={styles.listmore}>
+							<button style={styles.listmorebutton} onclick={handleClick}>点击加载更多</button>
+						</div>
+					)
+				}
+			}),
+			lasttip = pReact.createClass("lasttip", {
+				render(){
+					return (
+						<span style={styles.lasttip}>已经到底了</span>
+					)
 				}
 			});
 
@@ -857,9 +918,13 @@
 							let a = document.getElementById("tab_view_head");
 							a.childNodes[1].click();
 							pReact.renderDom(
-								<list url="//192.168.10.47/m/preact/preact/labs/demo/t.inc" type="newvoteon" />,
+								<list url="//192.168.10.47/m/preact/preact/labs/demo/t.inc" type="newvoteon" initnum="30" />,
 								document.getElementById("tabbb"),
 								(() => {
+									pReact.renderDom(
+										<listMore pagenum="10" />,
+										document.getElementById("tabbb")
+									);
 									document.getElementById("modulebox")._remove();
 									pReact.renderDom(
 										<list url="//192.168.10.47/m/preact/preact/labs/demo/t1.inc" type="overvoteon" />,

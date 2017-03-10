@@ -135,6 +135,20 @@
 				if (children) {
 					return [].slice.call(children);
 				}
+			} else if (/\[[^\[\]]+\]/.test(selector)) {
+				let reg = /([^\[\]]+)\s*\[([^\[\]]+)\]/.exec(selector);
+				if (reg) {
+					let nodes = [];
+					//console.log(exp);
+					[].slice.call(element.querySelectorAll(reg[1])).forEach((e) => {
+						let exp = new RegExp(reg[2].split('=')[1].replace(/\:/gim, "\\s*\\:\\s*"), "gim"),
+							is = exp.test(e.getAttribute(reg[2].split('=')[0]));
+						if (is) {
+							nodes.push(e);
+						}
+					});
+					return nodes;
+				}
 			}
 			var node = element.querySelectorAll(selector);
 			return [].slice.call(node);
@@ -221,13 +235,16 @@
 			var parent = null;
 			parent = module.dir(elem, "parentNode");
 			if (id) {
-				parent.forEach((item) => {
+				pReact.each(parent, (i, item) => {
 					if (/^#/.test(id) && item.id && item.id == id.replace("#", "")) {
 						parent = [item];
+						return false;
 					} else if (/^\./.test(id) && (new RegExp(id.replace(".", ""))).test(item.className)) {
 						parent = [item];
+						return false;
 					} else if (item.tagName.toLowerCase() == id.toLowerCase()) {
 						parent = [item];
+						return false;
 					}
 				});
 			} else {
@@ -422,7 +439,7 @@
 			}
 			return this;
 		},
-		toAmp(){
+		toAmp() {
 			var html = doc.querySelectorAll("html")[0];
 			html.setAttribute("amp", "");
 			var styles = head.getElementsByTagName("style");
@@ -457,7 +474,6 @@
 			var head = doc.getElementsByTagName("head")[0];
 			var style = doc.createElement("style");
 			head.appendChild(style);
-			style.setAttribute("amp-custom", "");
 			style.innerHTML = "abbr,article,aside,audio,canvas,datalist,details,dialog,eventsource,figure,footer,object,header,hgroup,mark,menu,meter,nav,output,progress,section,time,video{display:block}";
 			var e = "abbr,article,aside,audio,canvas,datalist,details,dialog,eventsource,figure,footer,object,header,hgroup,mark,menu,meter,nav,output,progress,section,time,video".split(',');
 			var i = e.length;
@@ -788,7 +804,7 @@
 	});
 
 	pReact.ready();
-	
+
 })(this, (element, data, obj) => {
 	var f = (element) => {
 			element && ("length" in element ? Object.is(element.nodeType, 11) ? [].slice.call(element.childNodes) : [].slice.call(element) : [element]).forEach((e) => {
