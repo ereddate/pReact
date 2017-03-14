@@ -1943,7 +1943,13 @@
 						console.log("cancel")
 					},
 					handleSubmitClick(e){
-						console.log("submit")
+						console.log("submit");
+						this._animate({opacity: 0}, "slow", () => {
+							console.log("animate end");
+							this._animate({opacity: 1}, "slow", () => {
+								console.log("animate end")
+							})
+						})
 					},
 					render(){
 						return this._data.type == "cancel" ? (

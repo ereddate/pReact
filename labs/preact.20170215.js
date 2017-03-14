@@ -83,6 +83,43 @@
 			//console.log(val, a.join(';'))
 			return a.join(';')
 		},
+		animateFade(list, styles, time, timingFunction, callback, transitionKey) {
+			let times = {
+				slow: 600,
+				normal: 400,
+				fast: 200
+			};
+			if (typeof time === 'string') {
+				time = times[time];
+			}
+
+			timingFunction = timingFunction || 'linear';
+			setTimeout(function() {
+				for (s in styles) {
+					list.style[transitionKey] = s + ' ' + time + 'ms ' + timingFunction;
+					list.style[s] = styles[s];
+				}
+			}, 20);
+
+			setTimeout(function() {
+				list.style[transitionKey] = "";
+				callback.call(list);
+			}, time);
+
+			return list;
+		},
+		animate(list, styles, time, callback, timingFunction) {
+			let auxDiv = document.createElement('div'),
+				transitionKey = auxDiv.style.webkitTransition !== undefined ? 'webkitTransition' : (
+					auxDiv.style.mozTransition !== undefined ? 'mozTransition' : (
+						auxDiv.style.msTransition !== undefined ? 'msTransition' : undefined
+					)
+				);
+			this.animateTimeout && (clearTimeout(this.animateTimeout), list.style[transitionKey] = "");
+			this.animateTimeout = setTimeout(() => {
+				module.animateFade(list, styles, time, timingFunction, callback, transitionKey);
+			}, 100);
+		},
 		mixElement(element) {
 			let attrs = {
 				_set(options) {
@@ -243,6 +280,10 @@
 							parseFloat(window.getComputedStyle(this, null).getPropertyValue('padding-right')) -
 							parseFloat(window.getComputedStyle(this, null).getPropertyValue('border-right-width'));
 					}
+					return this;
+				},
+				_animate(styles, time, callback, timingFunction) {
+					module.animate(this, styles, time, callback, timingFunction);
 					return this;
 				},
 				_height(value) {
