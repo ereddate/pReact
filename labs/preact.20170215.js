@@ -120,7 +120,7 @@
 				module.animateFade(list, styles, time, timingFunction, callback, transitionKey);
 			}, 100);
 		},
-		toggle(element, callback){
+		toggle(element, callback) {
 			element.style.visibility = "hidden";
 			callback && callback(element);
 			element.style.visibility = "visible";
@@ -182,6 +182,7 @@
 				},
 				_remove(element) {
 					element && element.nodeType && this.removeChild(element) || this.parentNode && this.parentNode.removeChild(this);
+					module.clearHandle(element);
 					return this;
 				},
 				_append(element) {
@@ -430,6 +431,17 @@
 				if (module.is(a.element, oldElement))(then || oldElement)[a.eventName] = ((e) => {
 					a.factory.call(this, e)
 				});
+			});
+			return this;
+		},
+		clearHandle(element) {
+			let i = 0, handleObj = [];
+			module.eventData.forEach((a) => {
+				if (module.is(a.element, element)) handleObj.push({obj:a, index:i})
+				i += 1;
+			});
+			handleObj.forEach((a) => {
+				module.eventData.splice(a.index, 1)
 			});
 			return this;
 		},
