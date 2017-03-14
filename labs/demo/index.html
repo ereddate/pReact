@@ -162,6 +162,21 @@
 						display:"inline-block",
 						fontSize:(14/baseFontSize).toFixed(4)+"rem"
 					},
+					header:{
+						background:"rgb(255,255,255)",
+						height:(45/baseFontSize).toFixed(4)+"rem",
+						overflow: "hidden",
+						border:(1/baseFontSize).toFixed(4)+"rem solid rgb(220,220,220)",
+						borderRight:0,
+						borderLeft:0
+					},
+					headerLogoLink:{
+						margin:(10/baseFontSize).toFixed(4)+"rem "+(15/baseFontSize).toFixed(4)+"rem",
+						display: "block"
+					},
+					headerLogoImg:{
+						width:(172/baseFontSize).toFixed(4)+"rem"
+					},
 					xform:{
 						fontSize:(16/baseFontSize).toFixed(4)+"rem",
 						background:"rgb(255,255,255)",
@@ -223,10 +238,14 @@
 						fontSize:(16/baseFontSize).toFixed(4)+"rem"
 					},
 					list:{
-						margin:(12/baseFontSize).toFixed(4)+"rem",
+						margin:(5/baseFontSize).toFixed(4)+"rem",
 						background:"#fff",
 						fontSize:(16/baseFontSize).toFixed(4)+"rem",
-						padding:(5/baseFontSize).toFixed(4)+"rem"
+						padding:(5/baseFontSize).toFixed(4)+"rem",
+						borderBottom:(1/baseFontSize).toFixed(4)+"rem solid rgb(220,220,220)"
+					},
+					listlast:{
+						border:0
 					},
 					listDesc:{
 						padding:(10/baseFontSize).toFixed(4)+"rem 0 0"
@@ -395,11 +414,17 @@
 					},
 					listmorebutton:{
 						border:0,
-						borderTop:(1/baseFontSize).toFixed(4)+"rem solid rgb(220,220,220)",
 						width:(screen.width/baseFontSize).toFixed(4)+"rem",
 						fontSize:(16/baseFontSize).toFixed(4)+"rem",
 						background:"rgb(255,255,255)",
 						padding:(6/baseFontSize).toFixed(4)+"rem 0"
+					},
+					listsource:{
+						textAlign:"right",
+						fontSize:(12/baseFontSize).toFixed(4)+"rem",
+						color:"rgb(220,220,220)",
+						display:"block",
+						lineHeight:(30/baseFontSize).toFixed(4)+"rem"
 					},
 					lasttip:{
 						color:"#ccc",
@@ -411,8 +436,20 @@
 				render(){
 					return (
 						<div>
+							<xheader></xheader>
 							<tab taba="投诉专区" tabaurl="disabled" tabb="和讯曝光台" tabburl="disabled" tabc="315真播" tabcurl="http://zhibo.hexun.com/1738/default.html" tabheadid="tab_head" tabaid="taba" tabbid="tabb" tabcid="tabc"></tab>
 						</div>
+					)
+				}
+			}),
+			xheader = pReact.createClass("xheader", {
+				render(){
+					return (
+						<header style={styles.header}>
+							<a href="//315.hexun.com" style={styles.headerLogoLink}>
+								<img data-src="img/logo.png" alt="和讯315" style={styles.headerLogoImg} />
+							</a>
+						</header>
 					)
 				}
 			}),
@@ -829,7 +866,7 @@
 					)
 				},
 				render(){
-					let a = document.createDocumentFragment(), i=0, then = this;
+					let a = document.createDocumentFragment(), i=0, then = this, len = this._data.data && this._data.data.length || 0;
 					this._data && this._data.type == "item" ? a.appendChild(pReact.tmpl((
 						<article style={styles.list}{styles.listview} data-style="{{style}}">
 							<h1 style={styles.listViewTitle}>{{title | limitTo : 30}}</h1>
@@ -837,22 +874,46 @@
 							<span style={styles.listViewreply}>{{reply}}</span>
 						</article>
 					), this._data)) : this._data.data.forEach((n) => {
-						a.appendChild(pReact.tmpl(then._data.type == "newvoteon" ? (
+						a.appendChild(pReact.tmpl(then._data.type == "newvoteon" ? i>= len-1 ? (
+							<article style={styles.list}{styles.listlast} data-style="{{style}}" onclick={handleClick} data-index="{{index}}">
+								<h1 style={styles.listTitle}>{{title | limitTo : 30}}</h1>
+								<p style={styles.listDesc}{styles.hide}>{{desc}}</p>
+								<span style={styles.listreply}{styles.hide}>{{reply}}</span>
+								<span style={styles.listsource}>和讯315</span>
+							</article>
+						) : (
 							<article style={styles.list} data-style="{{style}}" onclick={handleClick} data-index="{{index}}">
 								<h1 style={styles.listTitle}>{{title | limitTo : 30}}</h1>
 								<p style={styles.listDesc}{styles.hide}>{{desc}}</p>
 								<span style={styles.listreply}{styles.hide}>{{reply}}</span>
+								<span style={styles.listsource}>和讯315</span>
 							</article>
-						) : then._data.type == "overvoteon" ? (
+						) : then._data.type == "overvoteon" ? i>= len-1 ? (
+							<article style={styles.list}{styles.listlast} data-style="{{style}}" onclick={handleClick} data-index="{{index}}">
+								<h1 style={styles.listTitle}>{{title | limitTo : 30}}</h1>
+								<p style={styles.listDesc}{styles.hide}>{{desc}}</p>
+								<span style={styles.listreply}>{{reply}}</span>
+								<span style={styles.listsource}>和讯315</span>
+							</article>
+						) : (
 							<article style={styles.list} data-style="{{style}}" onclick={handleClick} data-index="{{index}}">
 								<h1 style={styles.listTitle}>{{title | limitTo : 30}}</h1>
 								<p style={styles.listDesc}{styles.hide}>{{desc}}</p>
 								<span style={styles.listreply}>{{reply}}</span>
+								<span style={styles.listsource}>和讯315</span>
+							</article>
+						) :  i>= len-1 ? (
+							<article style={styles.list}{styles.listlast} data-style="{{style}}" data-index="{{index}}">
+								<h1 style={styles.listTitle}>
+									<a href="{{url}}" target="_blank" style={styles.listTitleLink}>{{title | limitTo : 30}}</a>
+									<span style={styles.listsource}>和讯315</span>
+								</h1>
 							</article>
 						) : (
 							<article style={styles.list} data-style="{{style}}" data-index="{{index}}">
 								<h1 style={styles.listTitle}>
 									<a href="{{url}}" target="_blank" style={styles.listTitleLink}>{{title | limitTo : 30}}</a>
+									<span style={styles.listsource}>和讯315</span>
 								</h1>
 							</article>
 						), pReact.extend(n, {

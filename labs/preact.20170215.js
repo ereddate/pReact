@@ -1,6 +1,16 @@
 ((win, tmpl, translateContent, jsonp) => {
 	var doc = win.document;
 	win.pReact = {};
+	/*let callbacks = new Callbacks((done) => {
+		done()
+	}, (done) => {
+		done()
+	});
+	callbacks.add((done) => {
+		done()
+	}).delay(1000).add((done) => {
+		done()
+	}).done();*/
 	class Callbacks {
 		constructor() {
 			let args = arguments && [].slice.call(arguments) || [],
@@ -44,17 +54,6 @@
 			return then;
 		}
 	}
-
-	/*let callbacks = new Callbacks((done) => {
-		done()
-	}, (done) => {
-		done()
-	});
-	callbacks.add((done) => {
-		done()
-	}).delay(1000).add((done) => {
-		done()
-	}).done();*/
 
 	const module = {
 		dir(elem, dir) {
@@ -373,9 +372,8 @@
 			return a;
 		},
 		createClass(name, classObject) {
-			module.Class[name.toLowerCase()] = module.extend(classObject, {
-				_className: name.toLowerCase()
-			});
+			let a = new (new Function("return class "+name+"{constructor(){}}")())();
+			module.Class[name.toLowerCase()] = module.extend(a, classObject);
 			return classObject;
 		},
 		createStyle(style) {
@@ -804,7 +802,6 @@
 	});
 
 	pReact.ready();
-
 })(this, (element, data, obj) => {
 	var f = (element) => {
 			element && ("length" in element ? Object.is(element.nodeType, 11) ? [].slice.call(element.childNodes) : [].slice.call(element) : [element]).forEach((e) => {
@@ -937,7 +934,7 @@
 		dom.innerHTML = b;
 		var f = (dom) => {
 			var p = [];
-			dom.childNodes.forEach((e) => {
+			[].slice.call(dom.childNodes).forEach((e) => {
 				var attrs = e.attributes && e.attributes.length > 0 && [].slice.call(e.attributes) || false,
 					html = ["pReact.createDom('" + (Object.is(e.nodeType, 3) ? "textNode" : e.tagName) + "'"];
 				if (attrs) {
@@ -1047,7 +1044,6 @@
 		}
 	}
 });
-
 pReact && (((pReact) => {
 	let stringify = (obj) => {
 			if (null == obj)
