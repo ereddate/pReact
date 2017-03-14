@@ -120,6 +120,11 @@
 				module.animateFade(list, styles, time, timingFunction, callback, transitionKey);
 			}, 100);
 		},
+		toggle(element, callback){
+			element.style.visibility = "hidden";
+			callback && callback(element);
+			element.style.visibility = "visible";
+		},
 		mixElement(element) {
 			let attrs = {
 				_set(options) {
@@ -132,9 +137,11 @@
 					return module.fineNode(then, selector);
 				},
 				_empty() {
-					[].slice.call(this.childNodes).forEach((e) => {
-						e._remove();
-					})
+					module.toggle(this, (element) => {
+						[].slice.call(element.childNodes).forEach((e) => {
+							e._remove();
+						})
+					});
 					return this;
 				},
 				_parents(selector) {
@@ -378,7 +385,9 @@
 			module.setElementData(element, oldElement._data);
 
 			var parent = oldElement.parentNode;
-			parent.replaceChild(element, oldElement);
+			module.toggle(parent, () => {
+				parent.replaceChild(element, oldElement);
+			});
 		},
 		fineNode(element, selector) {
 			if (/^name=/.test(selector)) {

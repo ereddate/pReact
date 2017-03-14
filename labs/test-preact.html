@@ -1940,14 +1940,20 @@
 				}),
 				xbutton = pReact.createClass("xbutton", {
 					handleCancelClick(e){
-						console.log("cancel")
+						console.log("cancel");
+						this._set({
+							text: "改后..."
+						})
 					},
 					handleSubmitClick(e){
 						console.log("submit");
 						this._animate({opacity: 0}, "slow", () => {
 							console.log("animate end");
 							this._animate({opacity: 1}, "slow", () => {
-								console.log("animate end")
+								console.log("animate end");
+								this._set({
+									text: "提交中..."
+								})
 							})
 						})
 					},
