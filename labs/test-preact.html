@@ -998,16 +998,29 @@
 							})
 						});
 					},
+					handleAddTipCountClick(e){
+						!this.tipCount && (this.tipCount=0);
+						let button = this._parents(".tab").firstChild._findNode("span")[1],
+							tip = button._findNode("i")[0];
+						if (tip) tip._remove();
+						this.tipCount+=1;
+						button._append(pReact.tmpl((
+							<i style={styles.tabButtonTip}>{{num}}</i>
+						), {
+							num:this.tipCount>99 ? "99+" : this.tipCount
+						}))
+					},
 					render(){
 						return (
-							<div style={styles.tab}>
+							<div style={styles.tab} class="tab">
 								<div style={styles.tabButtonControl}{styles.fullColumn}>
 									<span style={styles.tabButton}{styles.threeColumnItem}{styles.tabButtonActive} onclick={handleClick}>1<i style={styles.tabButtonTip}>99+</i></span>
 									<span style={styles.tabButton}{styles.threeColumnItem} onclick={handleClick}>2</span>
 									<span style={styles.tabButton}{styles.threeColumnItem} onclick={handleClick}>3<i style={styles.tabButtonTip}>99+</i></span>
 								</div>
 								<ul>
-									<li style={styles.tabView}{styles.show}>1
+									<li style={styles.tabView}{styles.show}>
+										<button onclick={handleAddTipCountClick}>增加提示</button>
 									</li>
 									<li style={styles.tabView}{styles.hide}>2
 									</li>
