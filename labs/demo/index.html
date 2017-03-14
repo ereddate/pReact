@@ -801,7 +801,7 @@
 					if (then._data.type == "item"){
 						success(then._data.data);
 					}else{
-						pReact.get(then._data.url, {}, ((result) => {
+						pReact.get(then._data.url, {}, ((status, result) => {
 							var a = document.createElement("div");
 							a.innerHTML = result;
 							var contents = [], item=[], isBottom = a.querySelectorAll(".bottom").length > 0,i =0;
@@ -838,6 +838,8 @@
 								});
 							}
 							success(contents);
+						}), ((status, msg) => {
+							console.log(status, msg)
 						}), "html");
 					}
 				},

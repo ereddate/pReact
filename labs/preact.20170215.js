@@ -83,6 +83,124 @@
 			//console.log(val, a.join(';'))
 			return a.join(';')
 		},
+		mixElement(element) {
+			module.extend(element, {
+				_set(options) {
+					var then = this;
+					module.set(then, options);
+					return this;
+				},
+				_findNode(selector) {
+					var then = this;
+					return module.fineNode(then, selector);
+				},
+				_empty() {
+					[].slice.call(this.childNodes).forEach((e) => {
+						e._remove();
+					})
+					return this;
+				},
+				_parents(selector) {
+					var then = this;
+					return module.parents(then, selector);
+				},
+				_attr(name, value) {
+					var then = this;
+					return !module.is(typeof name, "string") && [].slice.call(name).forEach((e) => {
+						element.setAttribute(e.name, e.value);
+					}) || !module.is(typeof value, "undefined") && then.setAttribute(name, value) || then.getAttribute(name);
+				},
+				_children(selector) {
+					if (selector) {
+						return [].slice.call(this.querySelectorAll(selector))
+					} else {
+						return [].slice.call(this.children);
+					}
+				},
+				_removeAttr(name) {
+					name.split(' ').forEach((n) => {
+						this.removeAttribute(n);
+					});
+					return this;
+				},
+				_clone(bool) {
+					let nE = this.cloneNode(!module.is(typeof bool, "undefined") ? bool : true);
+					bool === true && module.cloneHandle(nE, this);
+					return nE;
+				},
+				_on(eventName, fn) {
+					module.on(this, eventName, fn);
+					return this;
+				},
+				_off(eventName) {
+					module.off(this, eventName);
+					return this;
+				},
+				_remove(element) {
+					element && element.nodeType && this.removeChild(element) || this.parentNode && this.parentNode.removeChild(this);
+					return this;
+				},
+				_append(element) {
+					if (module.is(typeof element, "string")) {
+						element = new Function("return " + translateContent("(" + tmpl(element) + ")"))();
+						this.appendChild(element);
+						module.cloneHandle(element);
+					} else if (module.is(typeof element, "function")) {
+						element(this);
+					} else {
+						this.appendChild(element);
+						module.cloneHandle(element);
+					}
+					return this;
+				},
+				_css(name, value) {
+					var args = arguments,
+						len = args.length;
+					if (len === 0) {
+						return this;
+					} else if (len === 1) {
+						if ("style" in this) {
+							if (module.is(typeof name, "string")) {
+								var f = [],
+									then = this;
+								name.split(' ').forEach((n) => {
+									f.push(then.style[n]);
+								});
+								return f.length > 1 ? f : f.join('');
+							} else if (module.isPlainObject(name)) {
+								for (n in name) {
+									this.style[n] = name[n]
+								}
+								return this;
+							}
+						} else {
+							return this;
+						}
+					} else {
+						this.style[name] = value;
+						return this;
+					}
+				},
+				_tmpl(data) {
+					return pReact.tmpl(this.innerHTML, data);
+				},
+				_offset() {
+					return {
+						top: this.offsetTop,
+						left: this.offsetLeft
+					}
+				},
+				_previous() {
+					return this.previousElementSibling;
+				},
+				_next() {
+					return this.nextElementSibling;
+				},
+				_has(a, b) {
+					return module.has(a, b);
+				}
+			});
+		},
 		has(target, obj) {
 			var hasIn = false;
 			switch (typeof target) {
@@ -372,7 +490,7 @@
 			return a;
 		},
 		createClass(name, classObject) {
-			let a = new (new Function("return class "+name+"{constructor(){}}")())();
+			let a = new(new Function("return class " + name + "{constructor(){}}")())();
 			module.Class[name.toLowerCase()] = module.extend(a, classObject);
 			return classObject;
 		},
@@ -571,112 +689,7 @@
 				module.extend(element._props, module.extend(attrs, {
 					tagName: tagName
 				}));
-				module.extend(element, {
-					_set(options) {
-						var then = this;
-						module.set(then, options);
-						return this;
-					},
-					_findNode(selector) {
-						var then = this;
-						return module.fineNode(then, selector);
-					},
-					_empty() {
-						[].slice.call(this.childNodes).forEach((e) => {
-							e._remove();
-						})
-						return this;
-					},
-					_parents(selector) {
-						var then = this;
-						return module.parents(then, selector);
-					},
-					_attr(name, value) {
-						var then = this;
-						return !module.is(typeof name, "string") && [].slice.call(name).forEach((e) => {
-							element.setAttribute(e.name, e.value);
-						}) || !module.is(typeof value, "undefined") && then.setAttribute(name, value) || then.getAttribute(name);
-					},
-					_removeAttr(name) {
-						name.split(' ').forEach((n) => {
-							this.removeAttribute(n);
-						});
-						return this;
-					},
-					_clone(bool) {
-						let nE = this.cloneNode(!module.is(typeof bool, "undefined") ? bool : true);
-						bool === true && module.cloneHandle(nE, this);
-						return nE;
-					},
-					_on(eventName, fn) {
-						module.on(this, eventName, fn);
-						return this;
-					},
-					_off(eventName) {
-						module.off(this, eventName);
-						return this;
-					},
-					_remove(element) {
-						element && element.nodeType && this.removeChild(element) || this.parentNode && this.parentNode.removeChild(this);
-						return this;
-					},
-					_append(element) {
-						if (module.is(typeof element, "string")) {
-							element = new Function("return " + translateContent("(" + tmpl(element) + ")"))();
-							this.appendChild(element);
-							module.cloneHandle(element);
-						} else if (module.is(typeof element, "function")) {
-							element(this);
-						} else {
-							this.appendChild(element);
-							module.cloneHandle(element);
-						}
-						return this;
-					},
-					_css(name, value) {
-						var args = arguments,
-							len = args.length;
-						if (len === 0) {
-							return this;
-						} else if (len === 1) {
-							if ("style" in this) {
-								if (module.is(typeof name, "string")) {
-									var f = [],
-										then = this;
-									name.split(' ').forEach((n) => {
-										f.push(then.style[n]);
-									});
-									return f.length > 1 ? f : f.join('');
-								} else if (module.isPlainObject(name)) {
-									for (n in name) {
-										this.style[n] = name[n]
-									}
-									return this;
-								}
-							} else {
-								return this;
-							}
-						} else {
-							this.style[name] = value;
-							return this;
-						}
-					},
-					_offset() {
-						return {
-							top: this.offsetTop,
-							left: this.offsetLeft
-						}
-					},
-					_previous() {
-						return this.previousElementSibling;
-					},
-					_next() {
-						return this.nextElementSibling;
-					},
-					_has(a, b) {
-						return module.has(a, b);
-					}
-				})
+				module.mixElement(element);
 				module.state.elements.push(element);
 				var f = (v) => {
 					var val = [];
@@ -761,30 +774,7 @@
 				}
 				element._childrens = childrens
 			} else {
-				module.extend(element, {
-					_findNode(selector) {
-						var then = this;
-						return module.fineNode(then, selector);
-					},
-					_clone(bool) {
-						let nE = this.cloneNode(!module.is(typeof bool, "undefined") ? bool : true);
-						bool === true && module.cloneHandle(nE, this);
-						return nE;
-					},
-					_remove(element) {
-						element && element.nodeType && this.removeChild(element) || this.parentNode && this.parentNode.removeChild(this);
-						return this;
-					},
-					_append(element) {
-						if (module.is(typeof element, "string")) {
-							element = new Function("return " + translateContent("(" + tmpl(element) + ")"))();
-							this.appendChild(element);
-						} else {
-							this.appendChild(element);
-						}
-						return this;
-					}
-				})
+				module.mixElement(element);
 			}
 			childrens.forEach((e) => {
 				if (module.is(typeof e, "function")) {
@@ -1347,12 +1337,12 @@ pReact && (((pReact) => {
 	function ajaxSuccess(data, xhr, settings) {
 		var context = settings.context,
 			status = 'success'
-		settings.success && settings.success(data, xhr)
+		settings.success && settings.success(status, data, xhr)
 	}
 
 	function ajaxError(error, type, xhr, settings) {
 		var context = settings.context
-		settings.error && settings.error(error, xhr)
+		settings.error && settings.error(type, error, xhr)
 	}
 
 	function empty() {}
@@ -1457,24 +1447,39 @@ pReact && (((pReact) => {
 		}, settings.timeout)
 
 		xhr.send(settings.data ? settings.data : null)
-		return xhr
+		return {
+			error() {
+
+			}
+		}
 	}
 
 	$.each(["get", "post"], (i, name) => {
-		$[name] = (url, data, callback, type, options) => {
-			return ajax(!options ? {
+		$[name] = (url, data, success, error, type, options) => {
+			ajax(!options ? {
 				url: url,
 				type: name,
 				dataType: type,
 				data: data,
-				success: callback
+				success: (type, data, xhr) => {
+					success && success(type, data, xhr)
+				},
+				error: (type, msg, xhr) => {
+					error && error(type, data, xhr)
+				}
 			} : $.extend({
 				url: url,
 				type: name,
 				dataType: type,
 				data: data,
-				success: callback
-			}, options));
+				success: (data, xhr) => {
+					success && success(type, data, xhr)
+				},
+				error: (type, msg, xhr) => {
+					error && error(type, data, xhr)
+				}
+			}, options))
+			return $;
 		}
 	});
 
