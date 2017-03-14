@@ -84,7 +84,7 @@
 			return a.join(';')
 		},
 		mixElement(element) {
-			module.extend(element, {
+			let attrs = {
 				_set(options) {
 					var then = this;
 					module.set(then, options);
@@ -153,6 +153,26 @@
 					}
 					return this;
 				},
+				_appendTo(element) {
+					element.appendChild(this);
+					module.cloneHandle(this);
+					return this;
+				},
+				_prepend(element) {
+					let previous = this.firstChild;
+					previous && this.insertBefore(element, previous) || this.appendChild(element);
+					module.cloneHandle(element);
+					return this;
+				},
+				_prependTo(element) {
+					element._prepend(this);
+					return this;
+				},
+				_after(element) {
+					let next = this[i].nextElementSibling || this[i].nextSibling;
+					next && this.parentNode.insertBefore(element, next) || this.parentNode.appendChild(element);
+					return this;
+				},
 				_css(name, value) {
 					var args = arguments,
 						len = args.length;
@@ -181,6 +201,64 @@
 						return this;
 					}
 				},
+				_addClass(name) {
+					let then = this;
+					name.split(' ').forEach((n) => {
+						then._removeClass(n);
+						then.className += " " + n;
+					});
+					return this;
+				},
+				_removeClass(name) {
+					let then = this;
+					name.split(' ').forEach((n) => {
+						module.has(then.className, n) && then.className.replace(new RegExp("\\s*" + n, "gim"), "");
+					});
+					return this;
+				},
+				_toggleClass(name) {
+					let then = this;
+					name.split(' ').forEach((n) => {
+						module.has(then.className, n) ? then._removeClass(n) : then._addClass(n);
+					});
+					return this;
+				},
+				_hasClass(name) {
+					let then = this,
+						bool = [];
+					name.split(' ').forEach((n) => {
+						bool.push(module.has(then.className, n));
+					});
+					return bool.length === 0 ? false : bool.length === 1 ? bool[0] : bool;
+				},
+				_width(value) {
+					if (value) {
+						return this.offsetWidth;
+					} else if (value != undefined) {
+						this.style.width = value;
+					} else {
+						return this.offsetWidth -
+							parseFloat(window.getComputedStyle(this, null).getPropertyValue('border-left-width')) -
+							parseFloat(window.getComputedStyle(this, null).getPropertyValue('padding-left')) -
+							parseFloat(window.getComputedStyle(this, null).getPropertyValue('padding-right')) -
+							parseFloat(window.getComputedStyle(this, null).getPropertyValue('border-right-width'));
+					}
+					return this;
+				},
+				_height(value) {
+					if (value) {
+						return this.offsetHeight;
+					} else if (value != undefined) {
+						this.style.height = value;
+					} else {
+						return this.offsetHeight -
+							parseFloat(window.getComputedStyle(this, null).getPropertyValue('border-top-width')) -
+							parseFloat(window.getComputedStyle(this, null).getPropertyValue('padding-top')) -
+							parseFloat(window.getComputedStyle(this, null).getPropertyValue('padding-bottom')) -
+							parseFloat(window.getComputedStyle(this, null).getPropertyValue('border-bottom-width'));
+					}
+					return this;
+				},
 				_tmpl(data) {
 					return pReact.tmpl(this.innerHTML, data);
 				},
@@ -198,8 +276,23 @@
 				},
 				_has(a, b) {
 					return module.has(a, b);
+				},
+				_scrollLeft(value) {
+					if (val === undefined) {
+						return this["scrollLeft"];
+					}
+					this["scrollLeft"] = val;
+					return this;
+				},
+				_scrollTop(value) {
+					if (val === undefined) {
+						return this["scrollTop"];
+					}
+					this["scrollTop"] = val;
+					return this;
 				}
-			});
+			};
+			module.extend(element, attrs);
 		},
 		has(target, obj) {
 			var hasIn = false;
