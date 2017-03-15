@@ -121,15 +121,15 @@
 						auxDiv.style.msTransition !== undefined ? 'msTransition' : undefined
 					)
 				);
-			this.animateTimeout && (clearTimeout(this.animateTimeout), list.style[transitionKey] = "");
-			this.animateTimeout = setTimeout(() => {
-				module.animateFade(list, styles, time, timingFunction, callback, transitionKey);
-			}, 100);
+			if (module.is(list.style[transitionKey].replace(/\s+/gim, ""), "")) {
+				list.style[transitionKey] = "";
+			}
+			module.animateFade(list, styles, time, timingFunction, callback, transitionKey);
 		},
 		toggle(element, callback) {
-			element.style.visibility = "hidden";
+			element && (element.style.visibility = "hidden");
 			callback && callback(element);
-			element.style.visibility = "visible";
+			element && (element.style.visibility = "visible");
 		},
 		mixElement(element) {
 			let attrs = {
@@ -393,7 +393,7 @@
 
 			var parent = oldElement.parentNode;
 			module.toggle(parent, () => {
-				parent.replaceChild(element, oldElement);
+				parent && parent.replaceChild(element, oldElement);
 			});
 		},
 		fineNode(element, selector) {
