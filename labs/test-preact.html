@@ -1726,7 +1726,7 @@
 						};
 					},
 					handleTouchEnd(e){
-						var direction = pReact.calculateDirection(this.start, this.end);
+						var direction = pReact.touchDirection(this.start, this.end);
 						var a = 150,parent =this._findNode("ul"), fz = screen.width / 16, transvalue = screen.width/fz,start = parseInt(this._attr("data-start")) || 0,
 						len = parent[0]._findNode("li").length;
 						switch(direction){

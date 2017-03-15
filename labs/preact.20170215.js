@@ -94,6 +94,11 @@
 			}
 
 			timingFunction = timingFunction || 'linear';
+			list._on(transitionKey + "end " + transitionKey.replace("webkit", "") + "end", function(e) {
+				this._off(transitionKey + "end " + transitionKey.replace("webkit", "") + "end");
+				this.style[transitionKey] = "";
+				callback.call(this);
+			});
 			setTimeout(function() {
 				for (s in styles) {
 					list.style[transitionKey] = s + ' ' + time + 'ms ' + timingFunction;
@@ -101,10 +106,11 @@
 				}
 			}, 20);
 
-			setTimeout(function() {
+
+			/*setTimeout(function() {
 				list.style[transitionKey] = "";
 				callback.call(list);
-			}, time);
+			}, time);*/
 
 			return list;
 		},
@@ -435,9 +441,13 @@
 			return this;
 		},
 		clearHandle(element) {
-			let i = 0, handleObj = [];
+			let i = 0,
+				handleObj = [];
 			module.eventData.forEach((a) => {
-				if (module.is(a.element, element)) handleObj.push({obj:a, index:i})
+				if (module.is(a.element, element)) handleObj.push({
+					obj: a,
+					index: i
+				})
 				i += 1;
 			});
 			handleObj.forEach((a) => {
@@ -455,7 +465,7 @@
 			}
 			return angle;
 		},
-		calculateDirection(startPoint, endPoint) {
+		touchDirection(startPoint, endPoint) {
 			var angle = module.calculateAngle(startPoint, endPoint);
 			if ((angle <= 45) && (angle >= 0)) {
 				return "left";
@@ -472,10 +482,7 @@
 		on(then, eventName, fn) {
 			eventName = eventName.toLowerCase().split(' ');
 			eventName.forEach((ev) => {
-				ev = /^on/.test(ev) ? ev : "on" + ev;
-				then[ev] = ((e) => {
-					fn.call(this, e)
-				});
+				then.addEventListener(ev, fn, false);
 				module.eventData.push({
 					element: then,
 					eventName: ev,
@@ -495,10 +502,12 @@
 			}
 			eventName = eventName.toLowerCase().split(' ');
 			eventName.forEach((ev) => {
-				then[/^on/.test(eventName) ? eventName : "on" + eventName] = null;
 				module.eventData.forEach((a) => {
 					i += 1;
-					if (module.is(a.element, then) && module.is(a.eventName, eventName)) module.eventData.splice(i, 1)
+					if (module.is(a.element, then) && module.is(a.eventName, ev)) {
+						then.removeEventListener(ev, a.factory, false);
+						module.eventData.splice(i, 1);
+					}
 				})
 			});
 			return this;
@@ -611,7 +620,7 @@
 		Class: module.Class,
 		Styles: module.Styles,
 		jsonp: jsonp,
-		calculateDirection: module.calculateDirection,
+		touchDirection: module.touchDirection,
 		Callbacks() {
 			let args = arguments && [].slice.call(arguments) || [],
 				len = args.length,
