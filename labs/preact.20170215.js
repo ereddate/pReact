@@ -94,11 +94,6 @@
 			}
 
 			timingFunction = timingFunction || 'linear';
-			list._on(transitionKey + "end " + transitionKey.replace("webkit", "") + "end", function(e) {
-				this._off(transitionKey + "end " + transitionKey.replace("webkit", "") + "end");
-				this.style[transitionKey] = "";
-				callback.call(this);
-			});
 			setTimeout(function() {
 				for (s in styles) {
 					list.style[transitionKey] = s + ' ' + time + 'ms ' + timingFunction;
@@ -107,10 +102,10 @@
 			}, 20);
 
 
-			/*setTimeout(function() {
+			setTimeout(function() {
 				list.style[transitionKey] = "";
 				callback.call(list);
-			}, time);*/
+			}, time);
 
 			return list;
 		},
@@ -124,6 +119,11 @@
 			if (module.is(list.style[transitionKey].replace(/\s+/gim, ""), "")) {
 				list.style[transitionKey] = "";
 			}
+			/*list._on(transitionKey + "end " + transitionKey.replace("webkit", "") + "end", function(e) {
+				this._off(transitionKey + "end " + transitionKey.replace("webkit", "") + "end");
+				this.style[transitionKey] = "";
+				callback.call(this);
+			});*/
 			module.animateFade(list, styles, time, timingFunction, callback, transitionKey);
 		},
 		toggle(element, callback) {
