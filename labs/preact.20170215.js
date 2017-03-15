@@ -323,6 +323,15 @@
 						left: this.offsetLeft
 					}
 				},
+				_index(){
+					return this.parentNode ? this._prevAll().length : -1;
+				},
+				_prevAll() {
+					return module.dir(this, "previousElementSibling");
+				},
+				_nextAll() {
+					return module.dir(this, "nextElementSibling");
+				},
 				_previous() {
 					return this.previousElementSibling;
 				},

@@ -1994,12 +1994,14 @@
 				xbutton = pReact.createClass("xbutton", {
 					handleCancelClick(e){
 						console.log("cancel");
+						console.log("index："+this._index());
 						this._set({
 							text: "改后..."
 						})
 					},
 					handleSubmitClick(e){
 						console.log("submit");
+						console.log("index："+this._index());
 						this._animate({opacity: 0}, "slow", () => {
 							console.log("animate end");
 							this._animate({opacity: 1}, "slow", () => {
