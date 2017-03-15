@@ -1413,14 +1413,13 @@
 								<div id="header" class="item"></div>
 								<div id="pageview" style={styles.pageview}>
 									<div id="search" class="item"></div>
-									<div id="topbanner" class="item">
-										<topbanner></topbanner>
-									</div>
+									<div id="topbanner" class="item"></div>
 									<div id="quota" class="item"></div>
 									<div id="tools" class="item"></div>
 									<div id="tabs" class="item"></div>
 									<div id="group" class="item" style="text-align:center"></div>
 									<div id="listview" class="item"></div>
+									<div id="service" class="item"></div>
 									<div id="progress" class="item"></div>
 									<div id="form">
 										<xform action="" target="_blank" name="xform"></xform>
@@ -1702,7 +1701,7 @@
 						return b;
 					}
 				}),
-				topbanner = pReact.createClass("topbanner", {
+				horizontalbanner = pReact.createClass("horizontalbanner", {
 					handleTouchStart(e){
 						var touches = e.touches[0];
 						this.start = {
@@ -1759,14 +1758,55 @@
 					render(){
 						return (
 							<div style={styles.topbanner} ontouchstart={handleTouchStart} ontouchmove={handleTouchMove} ontouchend={handleTouchEnd} data-start="0">
-								<ul style={styles.topbannerItems}>
-									<topbanner_list></topbanner_list>
+								<ul style={styles.topbannerItems} id="{{id}}">
 								</ul>
 							</div>
 						)
 					}
 				}),
 				topbanner_list = pReact.createClass("topbanner_list", {
+					getInitData(success, error){
+						success([{
+							img: "1.jpg",
+							url: "",
+							title: "广告：比速M3/T3 售6.19万起",
+							desc: "广告：比速M3/T3 售6.19万起"
+						},{
+							img: "1.jpg",
+							url: "",
+							title: "金正恩视察革命学院 李雪主陪同植树",
+							desc: "金正恩视察革命学院 李雪主陪同植树"
+						},{
+							img: "1.jpg",
+							url: "",
+							title: "云南货车与大巴相撞现场 致10死38伤",
+							desc: "云南货车与大巴相撞现场 致10死38伤"
+						}])
+					},
+					render(){
+						let a = document.createDocumentFragment(), i=0, then = this;
+						this._data && this._data.data.forEach((n) => {
+							i+=1;
+							a.appendChild(pReact.tmpl((
+								<li style={styles.topbannerItem}>
+									<a style={styles.topbannerItemLink}>
+										<img data-src="{{img}}" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" alt="{{title}}" style={styles.topbannerItemImg} />
+									</a>
+									<atricle style={styles.topbannerItemAside}>
+										<h2 style={styles.topbannerItemAsideTitle}>{{title}}</h2>
+										<p style={styles.topbannerItemAsideDesc}>{{desc}}</p>
+										<span style={styles.topbannerItemCount}><i style={styles.topbannerItemCountNum}{styles.red}>{{current}}</i>/<i style={styles.topbannerItemCountNum}>{{count}}</i></span>
+									</atricle>
+								</li>
+							), pReact.extend(n, {
+								current: i,
+								count: then._data.data.length
+							})))
+						});
+						return a;
+					}
+				}),
+				service_list = pReact.createClass("service_list", {
 					getInitData(success, error){
 						success([{
 							img: "1.jpg",
@@ -1984,6 +2024,26 @@
 					<page />,
 					document.getElementById("page"),
 					(() => {
+						pReact.renderDom(
+							<horizontalbanner id="topbanner_view" />,
+							document.getElementById("topbanner"),
+							(() => {
+								pReact.renderDom(
+									<topbanner_list />,
+									document.getElementById("topbanner_view")
+								)
+							})
+						);
+						pReact.renderDom(
+							<horizontalbanner id="service_view" />,
+							document.getElementById("service"),
+							(() => {
+								pReact.renderDom(
+									<service_list />,
+									document.getElementById("service_view")
+								)
+							})
+						);
 						done()
 					})
 				);
