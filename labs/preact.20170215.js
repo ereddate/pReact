@@ -273,7 +273,7 @@
 				_removeClass(name) {
 					let then = this;
 					name.split(' ').forEach((n) => {
-						module.has(then.className, n) && then.className.replace(new RegExp("\\s*" + n, "gim"), "");
+						module.has(then.className, n) && (then.className = then.className.replace(new RegExp("\\s*" + n, "gim"), ""));
 					});
 					return this;
 				},
@@ -373,7 +373,8 @@
 			var hasIn = false;
 			switch (typeof target) {
 				case "string":
-					return new RegExp(obj, "gim").test(target)
+					let reg = new RegExp(obj, "gim");
+					return reg.test(target)
 					break;
 				case "array":
 					var i = 0;

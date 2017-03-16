@@ -868,6 +868,59 @@
 					xbuttonActive:{
 						background:"rgb(51,122,183)",
 						color:"rgb(255,255,255)"
+					},
+					xnav:{
+						fontSize: (20/baseFontSize).toFixed(4)+"rem",
+						height:(50/baseFontSize).toFixed(4)+"rem",
+						lineHeight:(50/baseFontSize).toFixed(4)+"rem",
+						textAlign:"left"
+					},
+					xnavTitle:{
+						lineHeight:(50/baseFontSize).toFixed(4)+"rem",
+						display:"block",
+						padding:"0 0 0 "+(10/baseFontSize).toFixed(4)+"rem",
+						width:(100/baseFontSize).toFixed(4)+"rem"
+					},
+					xnavMenu:{
+						width:((screen.width-100-37)/baseFontSize).toFixed(4)+"rem",
+						textAlign:"right",
+						overflow:"hidden"
+					},
+					xnavMore:{
+						lineHeight:(50/baseFontSize).toFixed(4)+"rem",
+						width:(37/baseFontSize).toFixed(4)+"rem",
+						display:"block",
+					    backgroundSize: (16/baseFontSize).toFixed(4)+"rem",
+					    backgroundPosition: (10/baseFontSize).toFixed(4)+"rem center",
+					    backgroundRepeat: "no-repeat",
+						textAlign:"center",
+						position:"relative"
+					},
+					xnavmoreList:{
+						position:"absolute",
+						lineHeight:(16/baseFontSize).toFixed(4)+"rem",
+						textAlign:"left",
+						top:"100%",
+						right: (2/baseFontSize).toFixed(4)+"rem",
+						background:"rgb(255,255,255)",
+						zIndex:999,
+						minWidth:(150/baseFontSize).toFixed(4)+"rem",
+						border:(1/baseFontSize).toFixed(4)+"rem solid #ccc",
+						borderBottom:0
+					},
+					xnavmoreListItem:{
+						fontSize: (16/baseFontSize).toFixed(4)+"rem",
+						display:"block",
+						lineHeight:(35/baseFontSize).toFixed(4)+"rem",
+						textDecoration:"none",
+						color:"#000",
+						borderBottom:(1/baseFontSize).toFixed(4)+"rem solid #ccc",
+						textIndent:(10/baseFontSize).toFixed(4)+"rem"
+					},
+					xnavmenuListItem:{
+						fontSize: (16/baseFontSize).toFixed(4)+"rem",
+						textDecoration:"none",
+						color:"#000",
 					}
 				}),
 				tools = pReact.createClass("tools", {
@@ -1351,7 +1404,7 @@
 					},
 					render(){
 						return (
-							<div style={styles.headerTop}{styles.search}>
+							<div style={styles.search}>
 								<input type="text" value="" placeholder="{{defaultText}}" style={styles.searchInput} onkeyup={handleKeyUp} onkeydown={handleKeyDown} />
 							</div>
 						)
@@ -1412,6 +1465,7 @@
 						return (
 								<div id="header" class="item"></div>
 								<div id="pageview" style={styles.pageview}>
+									<div id="nav" class="item"></div>
 									<div id="search" class="item"></div>
 									<div id="topbanner" class="item"></div>
 									<div id="quota" class="item"></div>
@@ -2019,6 +2073,102 @@
 							<button type="button" style={styles.xbutton}{styles.xbuttonActive} onclick={handleSubmitClick}>{{title}}</button>
 						)
 					}
+				}),
+				xnav = pReact.createClass("xnav", {
+					handleClick(e){
+						history.back();
+					},
+					handleMoreClick(e){
+						this._toggleClass("icon--4")._toggleClass("icon--5");
+						let menu = this._children()[0];
+						menu && menu._css("display", menu._css("display") == "none" ? "block" : "none");
+					},
+					render(){
+						return this._data && this._data.type == "home" ? (
+							<nav style={styles.xnav}{styles.fullColumn}{styles.headerTop}>
+								<span style={styles.xnavTitle}>{{title}}</span>
+								<div style={styles.xnavMenu} id="{{menuid}}"></div>
+								<span style={styles.xnavMore} id="{{moreid}}" class="icon--4" onclick={handleMoreClick}></span>
+							</nav>
+						) : (
+							<nav style={styles.xnav}{styles.fullColumn}{styles.headerTop}>
+								<span style={styles.xnavTitle} onclick={handleClick} class="icon-uniE90B"></span>
+								<div style={styles.xnavMenu} id="{{menuid}}"></div>
+								<span style={styles.xnavMore} id="{{moreid}}" class="icon--4" onclick={handleMoreClick}></span>
+							</nav>
+						)
+					}
+				}),
+				xnavmore_list = pReact.createClass("xnavmore_list", {
+					render(){
+						return (
+							<span style={styles.xnavmoreList}{styles.hide} id="{{id}}">
+							</span>
+						)
+					}
+				}),
+				xnavmore_listItems = pReact.createClass("xnav_morelistitems", {
+					getInitData(success, error){
+						success([{
+							title: "menu 1",
+							url:""
+						},{
+							title: "menu 2",
+							url:""
+						},{
+							title: "menu 3",
+							url:""
+						},{
+							title: "menu 4",
+							url:""
+						},{
+							title: "menu 5",
+							url:""
+						}])
+					},
+					render(){
+						let a = document.createDocumentFragment(), i=0;
+						this._data && this._data.data.forEach((n) => {
+							a.appendChild(pReact.tmpl((
+								<a href="{{url}}" target="_blank" style={styles.xnavmoreListItem}>{{title}}</a>
+							), n))
+						});
+						return a;
+					}
+				}),
+				xnavmenu_list = pReact.createClass("xnavmenu_list", {
+					render(){
+						return (
+							<span style={styles.xnavmenuList} id="{{id}}">
+							</span>
+						)
+					}
+				}),
+				xnavmenu_listItems = pReact.createClass("xnavmenu_listItems", {
+					getInitData(success, error){
+						success([{
+							title: "item",
+							url:""
+						},{
+							title: "item",
+							url:""
+						},{
+							title: "item",
+							url:""
+						},{
+							title: "item",
+							url:""
+						}])
+					},
+					render(){
+						let a = document.createDocumentFragment(), i=0;
+						this._data && this._data.data.forEach((n) => {
+							a.appendChild(pReact.tmpl((
+								<a href="{{url}}" target="_blank" style={styles.xnavmenuListItem}>{{title}}</a>
+							), n))
+						});
+						return a;
+					}
 				});
 
 			pReact.Callbacks((done) => {
@@ -2026,6 +2176,32 @@
 					<page />,
 					document.getElementById("page"),
 					(() => {
+						pReact.renderDom(
+							<xnav menuid="xnav_menuview" moreid="xnav_moreview" title="channel" type="home" />,
+							document.getElementById("nav"),
+							(() => {
+								pReact.renderDom(
+									<xnavmore_list id="xnav_morelist" />,
+									document.getElementById("xnav_moreview"),
+									(() => {
+										pReact.renderDom(
+											<xnavmore_listItems />,
+											document.getElementById("xnav_morelist")
+										)
+									})
+								);
+								pReact.renderDom(
+									<xnavmenu_list id="xnav_menulist" />,
+									document.getElementById("xnav_menuview"),
+									(() => {
+										pReact.renderDom(
+											<xnavmenu_listItems />,
+											document.getElementById("xnav_menulist")
+										)
+									})
+								);
+							})
+						);
 						pReact.renderDom(
 							<horizontalbanner id="topbanner_view" />,
 							document.getElementById("topbanner"),
