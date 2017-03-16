@@ -18,14 +18,19 @@
 				then = this;
 			then.emit = [];
 			len > 0 && args.forEach((a) => {
-				then.emit.push(a)
+				then.add(a);
 			});
 		}
 		add(callback) {
 			var then = this;
 			then.emit.push((done) => {
 				setTimeout(() => {
-					callback && callback.call(then, done);
+					try {
+						callback && callback.call(then, done);
+					} catch (e) {
+						console.log(e);
+						done();
+					}
 				}, 25)
 			});
 			return then;
@@ -34,7 +39,12 @@
 			var then = this;
 			then.emit.push((done) => {
 				setTimeout(() => {
-					callback && callback.call(then, done) || done();
+					try {
+						callback && callback.call(then, done) || done();
+					} catch (e) {
+						console.log(e);
+						done();
+					}
 				}, time || 1000);
 			});
 			return then;
