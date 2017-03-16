@@ -323,7 +323,7 @@
 						left: this.offsetLeft
 					}
 				},
-				_index(){
+				_index() {
 					return this.parentNode ? this._prevAll().length : -1;
 				},
 				_prevAll() {
@@ -356,6 +356,7 @@
 					return this;
 				}
 			};
+			element.tagName && (element.xTagName = "x" + element.tagName.toLowerCase());
 			module.extend(element, attrs);
 		},
 		has(target, obj) {
@@ -639,6 +640,20 @@
 			});
 			return callback;
 		},
+		findNode(element, selector) {
+			let elems = [];
+			if (!selector) {
+				elems = typeof element == "string" ? module.fineNode(document, selector) : element.nodeType ? [element] : element.document ? [window] : element;
+			} else {
+				elems = module.fineNode(element, selector);
+			}
+			elems.forEach((e) => {
+				if (!e.xTagName) {
+					module.mixElement(e);
+				}
+			});
+			return elems;
+		},
 		tmplThesaurus: {},
 		is(b, a) {
 			if (typeof b == "string") switch (b) {
@@ -654,10 +669,7 @@
 					break;
 			}
 			return module.is(a, b);
-		}
-	});
-
-	module.extend(win.pReact, {
+		},
 		extend(a, b) {
 			a = module.extend(a, b);
 			return a;
