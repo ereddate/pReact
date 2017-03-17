@@ -654,7 +654,7 @@
 		findNode(element, selector) {
 			let elems = [];
 			if (!selector) {
-				elems = typeof element == "string" ? module.fineNode(document, selector) : element.nodeType ? [element] : element.document ? [window] : element;
+				elems = typeof element == "string" ? module.fineNode(document, element) : element.nodeType ? [element] : element.document ? [window] : element;
 			} else {
 				elems = module.fineNode(element, selector);
 			}

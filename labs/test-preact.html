@@ -401,7 +401,7 @@
 						lineHeight: (40/baseFontSize).toFixed(4)+"rem",
 						color:"rgb(255,255,255)",
 						textDecoration:"none",
-						zIndex:999999
+						zIndex:999998
 					},
 					left:{
 						float:"left",
@@ -481,6 +481,16 @@
 						background: "rgb(255,255,255)",
 						color:"rgb(0,0,0)"
 					},
+					moduleboxViewImgView:{
+						padding:0,
+						top:0,
+						left:0,
+						right:0,
+						bottom:0,
+						borderRadius:0,
+						background:"rgb(0,0,0)",
+						color:"rgb(255,255,255)"
+					},
 					moduleboxViewBottom:{
 						position:"fixed",
 						left:(5/baseFontSize).toFixed(4)+"rem",
@@ -496,16 +506,15 @@
 					},
 					moduleboxViewTop:{
 						position:"fixed",
-						left:(5/baseFontSize).toFixed(4)+"rem",
-						right:(5/baseFontSize).toFixed(4)+"rem",
-						top:(5/baseFontSize).toFixed(4)+"rem",
-						borderRadius:(5/baseFontSize).toFixed(4)+"rem",
+						left:0,
+						right:0,
+						top:0,
+						borderRadius:0,
 						textAlign:"center",
 						background:"rgba(0,0,0,1)",
 						padding:(10/baseFontSize).toFixed(4)+"rem",
-						borderRadius:(10/baseFontSize).toFixed(4)+"rem",
 						color:"rgb(255,255,255)",
-						fontSize:(20/baseFontSize).toFixed(4)+"rem"
+						fontSize:(16/baseFontSize).toFixed(4)+"rem"
 					},
 					moduleboxCloseButton:{
 						background:"rgb(0,0,0)",
@@ -528,6 +537,11 @@
 					moduleboxViewModuleContentFull:{
 						marginTop:(20/baseFontSize).toFixed(4)+"rem",
 						height: ((screen.height-50)/baseFontSize).toFixed(4)+"rem",
+					},
+					moduleboxViewModuleContentImgView:{
+						marginTop:(30/baseFontSize).toFixed(4)+"rem",
+						overflow: "visible",
+						overflowX: "",
 					},
 					moduleboxViewModuleContentBottom:{
 						marginTop:(20/baseFontSize).toFixed(4)+"rem",
@@ -731,7 +745,6 @@
 						float:"left",
 						width:(screen.width/baseFontSize).toFixed(4)+"rem",
 						height:(screen.width/1.9714/baseFontSize).toFixed(4)+"rem",
-						overflow:"hidden",
 						position:"relative"
 					},
 					topbannerItemLink:{
@@ -1432,13 +1445,34 @@
 							}])
 						}, 2000)
 					},
+					handleClick(e){
+						pReact.renderDom(
+							<moduleBox type="imgview" />,
+							document.body,
+							(() => {
+								pReact.renderDom(
+									<horizontalbanner id="imgviewmain" />,
+									document.getElementById("moduleboxmain"),
+									(() => {
+										pReact.renderDom(
+											<topbanner_list />,
+											document.getElementById("imgviewmain"),
+											(() => {
+												pReact.findNode("#moduleboxmain")[0]._css("marginTop", ((screen.height - pReact.findNode("#imgviewmain")[0].parentNode._height())/2/baseFontSize).toFixed(4)+"rem");
+											})
+										)
+									})
+								)
+							})
+						)
+					},
 					render(){
 						var b = document.createDocumentFragment(), i=0;
 						this._data && this._data.data.forEach((n) => {
 							i+=1;
 							b.appendChild(pReact.tmpl((
 								<div style={styles.photosListItem}>
-									<a href="{{url}}" style={styles.photosListItemLlink}>
+									<a href="javascript:;" style={styles.photosListItemLlink} onclick={handleClick}>
 										<img data-src="{{img}}" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" alt="{{title}}" style={styles.photosListItemImg}/>
 									</a>
 									<p style={styles.photosListItemTitle}>{{title | limitTo : 5}}</p>
@@ -1513,40 +1547,40 @@
 							style: styles.hide
 						});
 						document.getElementById("modulebox")._remove();
-						pReact.renderDom(
+						/*pReact.renderDom(
 							<moduleBox type="full"  />,
 							document.body
-						);
+						);*/
 					},
 					handleFullscreenClick(e){
 						this._parents("#modulebox")._set({
 							style: styles.hide
 						});
 						document.getElementById("modulebox")._remove();
-						pReact.renderDom(
+						/*pReact.renderDom(
 							<moduleBox type="bottom" html="bottom tip!" />,
 							document.body
-						);
+						);*/
 					},
 					handleBottomClick(e){
 						this._parents("#modulebox")._set({
 							style: styles.hide
 						});
 						document.getElementById("modulebox")._remove();
-						pReact.renderDom(
+						/*pReact.renderDom(
 							<moduleBox type="top" html="top tip!" />,
 							document.body
-						);
+						);*/
 					},
 					handleTopClick(e){
 						this._parents("#modulebox")._set({
 							style: styles.hide
 						});
 						document.getElementById("modulebox")._remove();
-						pReact.renderDom(
+						/*pReact.renderDom(
 							<moduleBox context="警告消息提示：......" type="warn"  />,
 							document.body
-						);
+						);*/
 					},
 					handleClick(e){
 						this._append((
@@ -1566,17 +1600,17 @@
 							style: styles.hide
 						});
 						document.getElementById("modulebox")._remove();
-						pReact.renderDom(
+						/*pReact.renderDom(
 							<moduleBox context="test" type="alert"  />,
 							document.body
-						);
+						);*/
 					},
 					handleWarnClick(e){
 						this._parents("#modulebox")._set({
 							style: styles.hide
 						});
 						document.getElementById("modulebox")._remove();
-						pReact.renderDom(
+						/*pReact.renderDom(
 							<moduleBox type="loading"  />,
 							document.body,
 							(() => {
@@ -1586,7 +1620,7 @@
 									})._remove();
 								}, 3000)
 							})
-						);
+						);*/
 					},
 					render(){
 						console.log(this);
@@ -1604,6 +1638,13 @@
 									<div style={styles.moduleboxViewModuleControl}>
 										<button style={styles.moduleboxButton} onclick={handleClick}>cancel</button><button style={styles.moduleboxButton}{styles.moduleboxButtonActive} onclick={handleEnterClick}>enter</button>
 									</div>
+								</atricle>
+							</div>
+						) : this._data.type == "imgview" ? (
+							<div id="modulebox" style={styles.modulebox}>
+								<article style={styles.moduleboxView}{styles.moduleboxViewImgView}>
+									<span onclick={handleFullscreenClick} style={styles.moduleboxCloseButton}>close</span>
+									<article style={styles.moduleboxViewModuleContent}{styles.moduleboxViewModuleContentImgView} id="moduleboxmain"></article>
 								</atricle>
 							</div>
 						) : this._data.type == "full" ? (
@@ -2177,6 +2218,10 @@
 					document.getElementById("page"),
 					(() => {
 						pReact.renderDom(
+							<moduleBox type="top" html="本网站将使用Cookies。通过继续浏览网站即表示您同意我们使用Cookie的。"  />,
+							document.body
+						);
+						pReact.renderDom(
 							<xnav menuid="xnav_menuview" moreid="xnav_moreview" title="channel" type="home" />,
 							document.getElementById("nav"),
 							(() => {
@@ -2470,13 +2515,14 @@
 					})
 				);
 			}).delay(1000, (done) => {
-				pReact.renderDom(
+				/*pReact.renderDom(
 					<moduleBox context="test" type="module" title="module box" html="module tip!"  />,
 					document.body,
 					(() => {
 						done()
 					})
-				);
+				);*/
+				done();
 			}).add((done) => {
 				pReact.renderDom(
 					<goTop  />,
