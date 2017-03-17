@@ -196,9 +196,13 @@
 					module.off(this, eventName);
 					return this;
 				},
+				_one(eventName, fn){
+					module.on(this, eventName, fn, true);
+					return this;
+				},
 				_remove(element) {
-					element && element.nodeType && this.removeChild(element) || this.parentNode && this.parentNode.removeChild(this);
 					module.clearHandle(element);
+					element && element.nodeType && this.removeChild(element) || this.parentNode && this.parentNode.removeChild(this);
 					return this;
 				},
 				_append(element) {
@@ -500,9 +504,13 @@
 				return "up";
 			}
 		},
-		on(then, eventName, fn) {
+		on(then, eventName, callback, bool) {
 			eventName = eventName.toLowerCase().split(' ');
 			eventName.forEach((ev) => {
+				let fn = (e) => {
+					bool && then._off(ev);
+					callback && callback.call(then, e);
+				};
 				then.addEventListener(ev, fn, false);
 				module.eventData.push({
 					element: then,

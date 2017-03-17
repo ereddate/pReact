@@ -1458,7 +1458,14 @@
 											<topbanner_list />,
 											document.getElementById("imgviewmain"),
 											(() => {
-												pReact.findNode("#moduleboxmain")[0]._css("marginTop", ((screen.height - pReact.findNode("#imgviewmain")[0].parentNode._height())/2/baseFontSize).toFixed(4)+"rem");
+												let a = pReact.findNode("#moduleboxmain")[0];
+												a._findNode("img").forEach((b) => {
+													b._one("load", (e) => {
+														console.log("loaded");
+														let c = pReact.findNode("#imgviewmain")[0];
+														c && a._css("marginTop", ((screen.height - c.parentNode._height())/2/baseFontSize).toFixed(4)+"rem");
+													});
+												});
 											})
 										)
 									})
