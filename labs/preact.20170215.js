@@ -188,7 +188,7 @@
 					bool === true && module.cloneHandle(nE, this);
 					return nE;
 				},
-				_on(eventName, fn) {
+				_on(eventName, selector, fn) {
 					module.on(this, eventName, fn);
 					return this;
 				},
@@ -196,7 +196,7 @@
 					module.off(this, eventName);
 					return this;
 				},
-				_one(eventName, fn){
+				_one(eventName, fn) {
 					module.on(this, eventName, fn, true);
 					return this;
 				},
@@ -504,18 +504,40 @@
 				return "up";
 			}
 		},
-		on(then, eventName, callback, bool) {
+		on(then, eventName, selector, callback, bool) {
+			if (typeof selector == "function") {
+				bool = callback;
+				callback = selector;
+				selector = undefined;
+			}
 			eventName = eventName.toLowerCase().split(' ');
 			eventName.forEach((ev) => {
 				let fn = (e) => {
 					bool && then._off(ev);
-					callback && callback.call(then, e);
+					if (selector && typeof selector == "string") {
+						e.preventDefault();
+						let elem = e.target;
+						if (/\./, test(selector) && new RegExp(selector.replace(/\./gim, "")).test(elem.className)) {
+							callback && callback.call(elem, e);
+						} else if (/\#/.test(selector) && elem.id == selector.replace(/\#/gim, "")) {
+							callback && callback.call(elem, e);
+						} else if (elem.tagName.toLowerCase() == selector.replace(/\s+/gim, "")) {
+							callback && callback.call(elem, e);
+						} else {
+							let s = [].slice.call(elem.parentNode.querySelectorAll(selector));
+							s.length > 0 && callback && callback.call(s[0], e);
+						}
+					} else {
+						callback && callback.call(then, e);
+					}
 				};
 				then.addEventListener(ev, fn, false);
 				module.eventData.push({
 					element: then,
 					eventName: ev,
-					factory: fn
+					factory: fn,
+					selector: selector,
+					bool: bool
 				});
 			});
 			return this;
