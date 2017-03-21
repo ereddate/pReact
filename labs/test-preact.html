@@ -3,7 +3,6 @@
 	<head>
 		<meta charset="utf-8">
 		<script src="preact.20170215.js"></script>
-		<link href="preact.font.css" rel="stylesheet" />
 		<style>
 			body {
 				background: #f4f5f7;
@@ -173,8 +172,17 @@
 	</head>
 	<body>
 		<div id="page"></div>
-		<script>pReact.toAmp();</script>
+		<script>
+			pReact.toAmp();
+		</script>
 		<script type="text/pReact">
+			pReact.import("preact.font.css").then((status) => {
+				console.log(status)
+			}, (status) => {
+				console.log(status)
+			}).catch((error) => {
+				console.log(error)
+			});
 			var baseFontSize = baseFontSize || pReact.getBaseFontSize(),
 				styles = pReact.createStyle({
 					clearfix:{

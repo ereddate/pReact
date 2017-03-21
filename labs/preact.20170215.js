@@ -661,8 +661,34 @@
 		eventData: []
 	}
 
+	var head = doc.getElementsByTagName("head")[0];
+
 	pReact.extend = module.extend;
 	pReact.extend(pReact, {
+		import(url) {
+			let promise = new Promise((resolve, reject) => {
+				let isCss = /\.css/.test(url),
+					dom = doc.createElement(isCss ? "link" : "script");
+				if (!isCss) {
+					dom.src = url;
+					dom.async = true;
+					dom.charset = "utf-8"
+				} else {
+					dom.rel = "stylesheet";
+					dom.href = url;
+				}
+				head.appendChild(dom);
+				pReact.on(dom, "load", function(e) {
+					if (!isCss) {
+						head.removeChild(dom);
+					}
+					resolve("success");
+				}).on(dom, "error", function(e) {
+					reject("error");
+				});
+			});
+			return promise;
+		},
 		trim(str) {
 			return str.replace(/(^\s*)|(\s*$)/g, "");
 		},
@@ -790,7 +816,6 @@
 			return this;
 		},
 		toAmp() {
-			var head = doc.getElementsByTagName("head")[0];
 			var html = doc.querySelectorAll("html")[0];
 			html.setAttribute("amp", "");
 			var styles = head.getElementsByTagName("style");
@@ -822,7 +847,6 @@
 			return this;
 		},
 		toMobile(num) {
-			var head = doc.getElementsByTagName("head")[0];
 			var style = doc.createElement("style");
 			head.appendChild(style);
 			style.innerHTML = "abbr,article,aside,audio,canvas,datalist,details,dialog,eventsource,figure,footer,object,header,hgroup,mark,menu,meter,nav,output,progress,section,time,video{display:block}";
