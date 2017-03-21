@@ -790,6 +790,7 @@
 			return this;
 		},
 		toAmp() {
+			var head = doc.getElementsByTagName("head")[0];
 			var html = doc.querySelectorAll("html")[0];
 			html.setAttribute("amp", "");
 			var styles = head.getElementsByTagName("style");
@@ -856,7 +857,7 @@
 			doc.body.removeAttribute("hidden");
 			return this;
 		},
-		each: function(a, b, c) {
+		each(a, b, c) {
 			var d, e = 0,
 				f = a.length,
 				g = pReact.is("array", a);

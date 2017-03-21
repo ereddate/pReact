@@ -173,6 +173,7 @@
 	</head>
 	<body>
 		<div id="page"></div>
+		<script>pReact.toAmp();</script>
 		<script type="text/pReact">
 			var baseFontSize = baseFontSize || pReact.getBaseFontSize(),
 				styles = pReact.createStyle({
@@ -938,8 +939,10 @@
 					},
 					xselectTip:{
 						position:"absolute",
-						top:(6/baseFontSize).toFixed(4)+"rem",
-						right:(12/baseFontSize).toFixed(4)+"rem"
+						top:(10/baseFontSize).toFixed(4)+"rem",
+						right:(12/baseFontSize).toFixed(4)+"rem",
+						fontSize:(10/baseFontSize).toFixed(4)+"rem",
+						lineHeight:(16/baseFontSize).toFixed(4)+"rem"
 					},
 					xselectInput:{
 						position:"absolute",
