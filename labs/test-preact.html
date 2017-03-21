@@ -927,15 +927,36 @@
 						display:"block",
 						lineHeight:(30/baseFontSize).toFixed(4)+"rem"
 					},
-					xselectInput:{
-						"1-webkit-appearance":"none",
-						padding:(6/baseFontSize).toFixed(4)+"rem "+(12/baseFontSize).toFixed(4)+"rem",
+					xselectView:{
 						border:(1/baseFontSize).toFixed(4)+"rem solid rgb(204,204,204)",
 						borderRadius:(6/baseFontSize).toFixed(4)+"rem",
 						boxShadow:"inset 0 "+(1/baseFontSize).toFixed(4)+"rem "+(1/baseFontSize).toFixed(4)+"rem rgba(0, 0, 0, 0.075)",
 						transition: "border-color ease-in-out .15s, box-shadow ease-in-out .15s",
-						width:((screen.width-20)/baseFontSize).toFixed(4)+"rem",
-						fontSize:(16/baseFontSize).toFixed(4)+"rem"
+						width:((screen.width-26)/baseFontSize).toFixed(4)+"rem",
+						height:(30/baseFontSize).toFixed(4)+"rem",
+						position:"relative"
+					},
+					xselectTip:{
+						position:"absolute",
+						top:(6/baseFontSize).toFixed(4)+"rem",
+						right:(12/baseFontSize).toFixed(4)+"rem"
+					},
+					xselectInput:{
+						position:"absolute",
+						top:0,
+						left:0,
+						right:0,
+						bottom:0,
+						"-webkit-appearance":"none",
+						padding:(6/baseFontSize).toFixed(4)+"rem "+(12/baseFontSize).toFixed(4)+"rem",
+						border:0,
+						borderRadius:(6/baseFontSize).toFixed(4)+"rem",
+						fontSize:(16/baseFontSize).toFixed(4)+"rem",
+						zIndex:1
+					},
+					xselectInputHidden:{
+						width:((screen.width - 26)/baseFontSize).toFixed(4)+"rem",
+						zIndex:2
 					},
 					xbutton:{
 						padding:(6/baseFontSize).toFixed(4)+"rem "+(12/baseFontSize).toFixed(4)+"rem",
@@ -2156,11 +2177,14 @@
 					render(){
 						var d = document.createDocumentFragment(), i=0, select = document.createElement("select");
 						select.name = this._data.name;
-						select.style = this._data.style;
+						select.style = styles.xselectInput+";"+styles.xselectInputHidden+";opacity:0";
 						this._data && this._data.data.forEach((n) => {
-							select.appendChild(pReact.tmpl((
+							select.appendChild(pReact.tmpl(i===0 ? (
+								<option value="{{value}}" checked="">{{title}}</option>
+							) : (
 								<option value="{{value}}">{{title}}</option>
-							),n))
+							),n));
+							i+=1;
 						});
 						d.appendChild(select);
 						return d;
@@ -2171,7 +2195,11 @@
 						return (
 							<div style={styles.xselect}>
 								<label style={styles.xselectTitle}>{{title}}</label>
-								<xselectlist name="{{name}}" style={styles.xselectInput}></xselectlist>
+								<div style={styles.xselectView}>
+									<span style={styles.xselectInput}{styles.xselectInputHidden} id="selectmain"></span>
+									<span style={styles.xselectInput}>请选择...</span>
+									<span style={styles.xselectTip}><i class="icon-uniE90A"></i></span>
+								</div>
 							</div>
 						)
 					}
@@ -2307,6 +2335,17 @@
 					<page />,
 					document.getElementById("page"),
 					(() => {
+						pReact.renderDom(
+							<xselectlist name="a" />,
+							document.getElementById("selectmain"),
+							(() => {
+								let a = document.getElementById("selectmain")._findNode("select")[0];
+								pReact.on(a, "change", function(e){
+									let parent = this.parentNode;
+									parent._next().innerHTML = this.value;
+								})
+							})
+						);
 						pReact.renderDom(
 							<moduleBox type="top" html="本网站将使用Cookies。通过继续浏览网站即表示您同意我们使用Cookie的。"  />,
 							document.body

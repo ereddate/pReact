@@ -711,6 +711,14 @@
 			}
 			return module.is(a, b);
 		},
+		on(element, eventName, selector, fn) {
+			module.on(element, eventName, selector, fn);
+			return this;
+		},
+		off(element, eventName) {
+			module.off(element, eventName);
+			return this;
+		},
 		extend(a, b) {
 			a = module.extend(a, b);
 			return a;
