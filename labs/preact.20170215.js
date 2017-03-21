@@ -189,11 +189,15 @@
 					return nE;
 				},
 				_on(eventName, selector, fn) {
-					module.on(this, eventName, fn);
+					module.on(this, eventName, selector, fn);
 					return this;
 				},
 				_off(eventName) {
 					module.off(this, eventName);
+					return this;
+				},
+				_trigger(eventName) {
+					module.trigger(this, eventName);
 					return this;
 				},
 				_one(eventName, fn) {
@@ -357,16 +361,16 @@
 				},
 				_scrollLeft(value) {
 					if (val === undefined) {
-						return this["scrollLeft"];
+						return this.window == this ? ("pageXOffset" in win) ? win["pageXOffset"] : this.document.documentElement["scrollTop"] : this["scrollLeft"];
 					}
 					this["scrollLeft"] = val;
 					return this;
 				},
 				_scrollTop(value) {
-					if (val === undefined) {
-						return this["scrollTop"];
+					if (value === undefined) {
+						return this.window == this ? ("pageYOffset" in win) ? win["pageYOffset"] : this.document.documentElement["scrollTop"] : this["scrollTop"];
 					}
-					this["scrollTop"] = val;
+					this["scrollTop"] = value;
 					return this;
 				}
 			};
@@ -563,6 +567,20 @@
 			});
 			return this;
 		},
+		trigger(then, eventName) {
+			eventName = eventName.toLowerCase().split(' ');
+			eventName.forEach((ev) => {
+				module.eventData.forEach((a) => {
+					if (module.is(a.element, then) && module.is(a.eventName, ev)) {
+						if (ev == "scroll") setTimeout(() => {window.scrollTo(1,1)}, 1);
+						let event = null;
+						document.createEvent ? (event = document.createEvent("HTMLEvents"), event.initEvent(eventName, true, true)) : (event = document.createEventObject());
+						a.factory.call(a.element, event);
+					}
+				})
+			});
+			return this;
+		},
 		parents(elem, id) {
 			var parent = null;
 			parent = module.dir(elem, "parentNode");
@@ -665,7 +683,7 @@
 
 	pReact.extend = module.extend;
 	pReact.extend(pReact, {
-		import(url) {
+		import (url) {
 			let promise = new Promise((resolve, reject) => {
 				let isCss = /\.css/.test(url),
 					dom = doc.createElement(isCss ? "link" : "script");

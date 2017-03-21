@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<script src="preact.20170215.js"></script>
+		<style>
+			body {
+				background: #f4f5f7;
+				font-family: 微软雅黑;
+			}
+			body, ul, p {
+				list-style: none;
+				padding: 0;
+				margin: 0;
+			}
+		</style>
+	</head>
+	<body>
+		<div style="position:fixed;top:0;left:0;right:0;background:rgba(0,0,0,.5)" id="a">0</div>
+		<script type="text/pReact">
+			let baseFontSize = window.baseFontSize || pReact.getBaseFontSize(),
+				styles = pReact.createStyle({
+					demo:{
+						width:(16/baseFontSize).toFixed(4)+"rem",
+						height:(screen.height/baseFontSize).toFixed(4)+"rem"
+					}
+				});
+
+			let demo = pReact.createClass("demo", {
+				render(){
+					return (
+						<div style={styles.demo}>{{name}}</div>
+					)
+				}
+			});
+
+			pReact.renderDom(
+				<demo name="1"/>,
+				document.body,
+				(() => {
+					pReact.renderDom(
+						<demo name="2"/>,
+						document.body,
+						(() => {
+							pReact.renderDom(
+								<demo name="3"/>,
+								document.body,
+								(() => {
+									pReact.renderDom(
+										<demo name="4"/>,
+										document.body,
+										(() => {
+											let then = pReact.findNode(window)[0];
+											then._on("scroll", function(e){
+												let top = then._scrollTop(), div = pReact.findNode(document)[0]._findNode("div");
+												div.splice(0, 1);
+												pReact.each(div, (i, e) => {
+													let elemTop = e._offset().top,
+														elemHeight = e._height();
+													if (top >= elemTop && top < elemTop+elemHeight){
+														pReact.findNode("#a")[0].innerHTML = i+1;
+													}
+												})
+											});
+											then._trigger("scroll");
+										})
+									)
+								})
+							)
+						})
+					)
+				})
+			)
+		</script>
+	</body>
+</html>
