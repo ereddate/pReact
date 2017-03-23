@@ -258,7 +258,7 @@
 								});
 								return f.length > 1 ? f : f.join('');
 							} else if (module.isPlainObject(name)) {
-								for (n in name) {
+								for (let n in name) {
 									this.style[n] = name[n]
 								}
 								return this;
@@ -394,7 +394,7 @@
 					return hasIn;
 					break;
 				case "object":
-					for (name in target) {
+					for (let name in target) {
 						if (typeof obj == "object" && target[name] == obj[name] || typeof obj == "string" && name == obj) hasIn = name;
 					}
 					return hasIn;
@@ -451,7 +451,7 @@
 			return [].slice.call(node);
 		},
 		bind(handle, element) {
-			for (name in handle) !/element/.test(name) && (module.on(element, name, ((e) => {
+			for (let name in handle) !/element/.test(name) && (module.on(element, name, ((e) => {
 				if (module.is(typeof handle[e.type], "string")) {
 					var fnName = handle[e.type].replace(/\s+/gim, "").replace("{", "").replace("}", "");
 					element._factory[fnName].call(element, e);
@@ -573,7 +573,9 @@
 			eventName.forEach((ev) => {
 				module.eventData.forEach((a) => {
 					if (module.is(a.element, then) && module.is(a.eventName, ev)) {
-						if (ev == "scroll") setTimeout(() => {window.scrollTo(1,1)}, 1);
+						if (ev == "scroll") setTimeout(() => {
+							window.scrollTo(1, 1)
+						}, 1);
 						let event = null;
 						document.createEvent ? (event = document.createEvent("HTMLEvents"), event.initEvent(eventName, true, true)) : (event = document.createEventObject());
 						a.factory.call(a.element, event);
@@ -672,7 +674,7 @@
 		},
 		isEmptyObject(obj) {
 			var name;
-			for (name in obj) {
+			for (let name in obj) {
 				return false;
 			}
 			return true;
@@ -775,7 +777,7 @@
 		},
 		createStyle(style) {
 			module.extend(module.Styles, (() => {
-				for (name in style) {
+				for (let name in style) {
 					style[name] = module.toStyle(style[name]);
 				}
 				return style;
@@ -983,7 +985,7 @@
 					if (val.length === 0) val.push(v);
 					return val;
 				};
-				for (name in attrs) {
+				for (let name in attrs) {
 					var n = attrs[name],
 						v = f(n);
 					//console.log(v, name)
@@ -1081,7 +1083,7 @@
 						options = {};
 					if (attrs) {
 						attrs.forEach((a) => {
-							for (name in data) {
+							for (let name in data) {
 								let reg = new RegExp("{{\\s*" + name.toLowerCase() + "\\s*(\\|\\s*([^<>,]+)\\s*)*}}", "gim"),
 									v = reg.exec(a.value.toLowerCase());
 								if (v) {
@@ -1119,7 +1121,7 @@
 					var attrs = e.attributes && e.attributes.length > 0 && [].slice.call(e.attributes) || false;
 					if (attrs) {
 						attrs.forEach((a) => {
-							for (name in data) {
+							for (let name in data) {
 								let reg = new RegExp("{{\\s*" + name.toLowerCase() + "\\s*(\\|\\s*([^<>,]+)\\s*)*}}", "gim"),
 									v = reg.exec(a.value.toLowerCase());
 								if (v) {
@@ -1145,7 +1147,7 @@
 					}
 					["text", "nodeValue"].forEach((text) => {
 						e[text] && e[text].replace && (e[text] = e[text].replace(/\{+\s*[^<>}{,]+\s*\}+/gim, ((a) => {
-							for (name in data) {
+							for (let name in data) {
 								a = a.replace(new RegExp("{{\\s*" + name + "\\s*(\\|\\s*([^<>,]+)\\s*)*}}", "gim"), ((a, b, c) => {
 									if (c) {
 										let v = c.split(':');
@@ -1177,7 +1179,7 @@
 		};
 	if (Object.is(typeof element, "string")) {
 		element = element.replace(/\{+\s*[^<>}{,]+\s*\}+/gim, ((a) => {
-			for (name in data) {
+			for (let name in data) {
 				a = a.replace(new RegExp("{{\\s*" + name + "\\s*(\\|\\s*([^<>,]+)\\s*)*}}", "gim"), ((a, b, c) => {
 					if (c) {
 						let v = c.split(':');
@@ -1338,7 +1340,7 @@ pReact && (((pReact) => {
 				case "object":
 					if (pReact.isPlainObject(obj)) {
 						ar = [];
-						for (i in obj)
+						for (let i in obj)
 							ar.push('"' + i.replace(/[\"\r\n\t\\]+/gim, ((a) => {
 								return "\\\\" + a
 							})) + '":' + stringify(obj[i]));
