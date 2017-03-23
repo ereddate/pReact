@@ -66,6 +66,10 @@
 		}
 	}
 
+	Array.prototype._eq = function(index) {
+		return this[index];
+	};
+
 	const module = {
 		dir(elem, dir) {
 			var matched = [];
@@ -285,6 +289,22 @@
 						module.has(then.className, n) && (then.className = then.className.replace(new RegExp("\\s*" + n, "gim"), ""));
 					});
 					return this;
+				},
+				_prop(name, value) {
+					if (typeof value != "undefined") {
+						this[name] = typeof value == "function" ? value.call(this, name, this) : value;
+						return this;
+					} else {
+						return this[name];
+					}
+				},
+				_data(name, value) {
+					!this._elementData && (this._elementData = {});
+					if (typeof value != "undefined"){
+						this._elementData[name] = value;
+					}else{
+						return this._elementData[name];
+					}
 				},
 				_toggleClass(name) {
 					let then = this;
@@ -680,7 +700,7 @@
 			return true;
 		},
 		eventData: []
-	}
+	};
 
 	var head = doc.getElementsByTagName("head")[0];
 
@@ -1383,7 +1403,7 @@ pReact && (((pReact) => {
 				len = text.length,
 				vtext = "";
 			for (var i = 0; i < len; i++) {
-				vtext = text.substr(i, 1).replace("â€œ", " ").replace("â€", " ");
+				vtext = text.substr(i, 1).replace("¡°", " ").replace("¡±", " ");
 				if (/([^\x00-\xff]|[A-Z])/.test(vtext)) {
 					n += 2;
 				} else {

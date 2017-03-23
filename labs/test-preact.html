@@ -1170,7 +1170,7 @@
 					handleAddTipCountClick(e){
 						!this.tipCount && (this.tipCount=0);
 						let button = this._parents(".tab").firstChild._findNode("span")[1],
-							tip = button._findNode("i")[0];
+							tip = button._findNode("i")._eq(0);
 						if (tip) tip._remove();
 						this.tipCount+=1;
 						button._append(pReact.tmpl((
