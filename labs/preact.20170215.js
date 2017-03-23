@@ -193,8 +193,8 @@
 					bool === true && module.cloneHandle(nE, this);
 					return nE;
 				},
-				_on(eventName, selector, fn) {
-					module.on(this, eventName, selector, fn);
+				_on(eventName, fn) {
+					module.on(this, eventName, fn);
 					return this;
 				},
 				_off(eventName) {
@@ -299,10 +299,9 @@
 					}
 				},
 				_data(name, value) {
-					if (/^data-/.test(name)){
+					if (/^data-/.test(name)) {
 						return this._attr(name, value);
-					}
-					!this._elementData && (this._elementData = {});
+					}!this._elementData && (this._elementData = {});
 					if (typeof value != "undefined") {
 						this._elementData[name] = value;
 						return this;
@@ -311,7 +310,7 @@
 					}
 				},
 				_removeData(name) {
-					if (/^data-/.test(name)){
+					if (/^data-/.test(name)) {
 						return this._removeAttr(name);
 					}
 					this._elementData && this._elementData[name] && (delete this._elementData[name]);
@@ -540,39 +539,18 @@
 				return "up";
 			}
 		},
-		on(then, eventName, selector, callback, bool) {
-			if (typeof selector == "function") {
-				bool = callback;
-				callback = selector;
-				selector = undefined;
-			}
+		on(then, eventName, callback, bool) {
 			eventName = eventName.toLowerCase().split(' ');
 			eventName.forEach((ev) => {
 				let fn = (e) => {
 					bool && then._off(ev);
-					if (selector && typeof selector == "string") {
-						e.preventDefault();
-						let elem = e.target;
-						if (/\./, test(selector) && new RegExp(selector.replace(/\./gim, "")).test(elem.className)) {
-							callback && callback.call(elem, e);
-						} else if (/\#/.test(selector) && elem.id == selector.replace(/\#/gim, "")) {
-							callback && callback.call(elem, e);
-						} else if (elem.tagName.toLowerCase() == selector.replace(/\s+/gim, "")) {
-							callback && callback.call(elem, e);
-						} else {
-							let s = [].slice.call(elem.parentNode.querySelectorAll(selector));
-							s.length > 0 && callback && callback.call(s[0], e);
-						}
-					} else {
-						callback && callback.call(then, e);
-					}
+					callback && callback.call(then, e);
 				};
 				then.addEventListener(ev, fn, false);
 				module.eventData.push({
 					element: then,
 					eventName: ev,
 					factory: fn,
-					selector: selector,
 					bool: bool
 				});
 			});
@@ -790,8 +768,8 @@
 			}
 			return module.is(a, b);
 		},
-		on(element, eventName, selector, fn) {
-			module.on(element, eventName, selector, fn);
+		on(element, eventName, fn) {
+			module.on(element, eventName, fn);
 			return this;
 		},
 		off(element, eventName) {
