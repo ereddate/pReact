@@ -299,12 +299,23 @@
 					}
 				},
 				_data(name, value) {
+					if (/^data-/.test(name)){
+						return this._attr(name, value);
+					}
 					!this._elementData && (this._elementData = {});
-					if (typeof value != "undefined"){
+					if (typeof value != "undefined") {
 						this._elementData[name] = value;
-					}else{
+						return this;
+					} else {
 						return this._elementData[name];
 					}
+				},
+				_removeData(name) {
+					if (/^data-/.test(name)){
+						return this._removeAttr(name);
+					}
+					this._elementData && this._elementData[name] && (delete this._elementData[name]);
+					return this;
 				},
 				_toggleClass(name) {
 					let then = this;
@@ -670,6 +681,9 @@
 		},
 		Class: {},
 		Styles: {},
+		trim(str) {
+			return str.replace(/(^\s*)|(\s*$)/g, "");
+		},
 		translateFragment(temp, frags, obj, data) {
 			[].slice.call(temp.childNodes).forEach((e) => {
 				let attrs = {};
@@ -730,9 +744,7 @@
 			});
 			return promise;
 		},
-		trim(str) {
-			return str.replace(/(^\s*)|(\s*$)/g, "");
-		},
+		trim: module.trim,
 		isPlainObject: module.isPlainObject,
 		isEmptyObject: module.isEmptyObject,
 		Class: module.Class,
