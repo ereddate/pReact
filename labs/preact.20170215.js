@@ -110,7 +110,7 @@
 
 			timingFunction = timingFunction || 'linear';
 			setTimeout(function() {
-				for (s in styles) {
+				for (let s in styles) {
 					list.style[transitionKey] = s + ' ' + time + 'ms ' + timingFunction;
 					list.style[s] = styles[s];
 				}
