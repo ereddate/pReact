@@ -176,6 +176,7 @@
 			pReact.toAmp();
 		</script>
 		<script type="text/pReact">
+			'use strict';
 			pReact.import("preact.font.css").then((status) => {
 				console.log(status)
 			}, (status) => {
@@ -2188,7 +2189,7 @@
 					render(){
 						var d = document.createDocumentFragment(), i=0, select = document.createElement("select");
 						select.name = this._data.name;
-						select.style = styles.xselectInput+";"+styles.xselectInputHidden+";opacity:0";
+						select.style.cssText = styles.xselectInput+";"+styles.xselectInputHidden+";opacity:0";
 						this._data && this._data.data.forEach((n) => {
 							select.appendChild(pReact.tmpl(i===0 ? (
 								<option value="{{value}}" checked="">{{title}}</option>

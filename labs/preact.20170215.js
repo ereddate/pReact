@@ -1,3 +1,4 @@
+'use strict';
 ((win, tmpl, translateContent, jsonp) => {
 	var doc = win.document;
 	win.pReact = {};
@@ -768,7 +769,7 @@
 			return a;
 		},
 		createClass(name, classObject) {
-			let a = new(new Function("return class " + name + "{constructor(){}}")())();
+			let a = new(new Function("'use strict'; return class " + name + "{constructor(){}}")())();
 			module.Class[name.toLowerCase()] = module.extend(a, classObject);
 			return classObject;
 		},
@@ -1624,7 +1625,7 @@ pReact && (((pReact) => {
 
 	function empty() {}
 
-	ajaxSettings = {
+	let ajaxSettings = {
 		type: 'GET',
 		success: empty,
 		error: empty,
