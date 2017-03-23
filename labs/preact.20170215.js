@@ -87,7 +87,7 @@
 		},
 		toStyle(val) {
 			let style = [];
-			for (name in val) style.push(name + ":'" + val[name] + "'");
+			for (let name in val) style.push(name + ":'" + val[name] + "'");
 			var a = [];
 			style.forEach((e) => {
 				e = e.split(':');
@@ -931,13 +931,13 @@
 					for (; f > e; e++)
 						if (d = b.apply(a[e], c), d === !1) break
 				} else
-					for (e in a)
+					for (let e in a)
 						if (d = b.apply(a[e], c), d === !1) break
 			} else if (g) {
 				for (; f > e; e++)
 					if (d = b.call(a[e], e, a[e]), d === !1) break
 			} else
-				for (e in a)
+				for (let e in a)
 					if (d = b.call(a[e], e, a[e]), d === !1) break;
 			return a
 		},
@@ -1374,7 +1374,7 @@ pReact && (((pReact) => {
 				return filterCondition(val);
 			} else if (typeof filterCondition == "object") {
 				if (pReact.isPlainObject(filterCondition)) {
-					for (name in filterCondition) {
+					for (let name in filterCondition) {
 						var oval = filterCondition[name];
 						var oreg = new RegExp(oval, "igm");
 						if (oreg.test(val)) {
@@ -1686,7 +1686,7 @@ pReact && (((pReact) => {
 
 	var ajax = function(options) {
 		var settings = $.extend({}, options || {})
-		for (key in ajaxSettings)
+		for (let key in ajaxSettings)
 			if (settings[key] === undefined) settings[key] = ajaxSettings[key]
 
 		if (!settings.url) settings.url = window.location.toString()
@@ -1733,12 +1733,12 @@ pReact && (((pReact) => {
 		}
 
 		if (settings.xhrFields)
-			for (name in settings.xhrFields) xhr[name] = settings.xhrFields[name]
+			for (let name in settings.xhrFields) xhr[name] = settings.xhrFields[name]
 
 		var async = 'async' in settings ? settings.async : true
 		xhr.open(settings.type, settings.url, async, settings.username, settings.password)
 
-		for (name in headers) nativeSetHeader.apply(xhr, headers[name])
+		for (let name in headers) nativeSetHeader.apply(xhr, headers[name])
 
 		if (settings.timeout > 0) abortTimeout = setTimeout(function() {
 			xhr.onreadystatechange = empty
