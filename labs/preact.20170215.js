@@ -162,6 +162,10 @@
 					var then = this;
 					return module.fineNode(then, selector);
 				},
+				_contents(){
+					let elem = this;
+					return elem.tagName && elem.tagName.toLowerCase() == "iframe" ? elem.contentDocument || elem.contentWindow.document : elem.childNodes && [].slice.call(elem.childNodes) || [];
+				},
 				_empty() {
 					module.toggle(this, (element) => {
 						[].slice.call(element.childNodes).forEach((e) => {
@@ -746,7 +750,7 @@
 		findNode(element, selector) {
 			let elems = [];
 			if (!selector) {
-				elems = typeof element == "string" ? module.fineNode(document, element) : element.nodeType ? [element] : element.document ? [window] : element;
+				elems = typeof element == "string" ? module.fineNode(document, element) : element.nodeType ? [element] : element.document ? [window] : [element];
 			} else {
 				elems = module.fineNode(element, selector);
 			}
