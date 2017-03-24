@@ -26,12 +26,13 @@
 			var then = this;
 			then.emit.push((done) => {
 				setTimeout(() => {
-					try {
-						callback && callback.call(then, done);
-					} catch (e) {
-						console.log(e);
-						done();
-					}
+					new Promise((resolve, reject) => {
+						try {
+							callback && callback.call(then, resolve);
+						} catch (e) {
+							reject();
+						}
+					}).then(done, done);
 				}, 25)
 			});
 			return then;
@@ -40,23 +41,23 @@
 			var then = this;
 			then.emit.push((done) => {
 				setTimeout(() => {
-					try {
-						callback && callback.call(then, done) || done();
-					} catch (e) {
-						console.log(e);
-						done();
-					}
+					new Promise((resolve, reject) => {
+						try {
+							callback && callback.call(then, resolve);
+						} catch (e) {
+							reject();
+						}
+					}).then(done, done);
 				}, time || 1000);
 			});
 			return then;
 		}
 		done(callback) {
 			var then = this;
-			if (!Object.is(then.emit.length, 0)) {
-				var i = 0,
-					f = then.emit[i];
+			if (then.emit.length>0) {
+				var f = then.emit[0];
+				then.emit.splice(0, 1);
 				f(() => {
-					then.emit.splice(i, 1)
 					then.done(callback);
 				});
 			} else {
@@ -120,7 +121,7 @@
 			setTimeout(function() {
 				list.style[transitionKey] = "";
 				callback.call(list);
-			}, time);
+			}, time + 20);
 
 			return list;
 		},
