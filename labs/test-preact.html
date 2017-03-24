@@ -1037,6 +1037,20 @@
 						fontSize: (16/baseFontSize).toFixed(4)+"rem",
 						textDecoration:"none",
 						color:"#000",
+					},
+					newsView:{
+						position:"fixed",
+						top:0,
+						left:0,
+						right:0,
+						bottom:0,
+						background:"rgba(255,255,255,1)",
+						zIndex:999999
+					},
+					newsViewMainIframe:{
+						border:0,
+						width:(screen.width/baseFontSize).toFixed(4)+"rem",
+						height:((screen.height-50)/baseFontSize).toFixed(4)+"rem"
 					}
 				}),
 				tools = pReact.createClass("tools", {
@@ -1301,6 +1315,17 @@
 						return b
 					}
 				}),
+				newsView = pReact.createClass("newsView", {
+					render(){
+						return (
+							<div style={styles.newsView}>
+								<xnav menuid="xnav_view_menuview" moreid="xnav_view_moreview" type="view"></xnav>
+								<div style={styles.newsViewMain} id="{{id}}">
+								</div>
+							</div>
+						)
+					}
+				}),
 				newsList = pReact.createClass("newsList", {
 					getInitData(success, error){
 						setTimeout(() => {
@@ -1374,6 +1399,32 @@
 					handleVideoClick(e){
 						this.paused ? this.play() : this.pause();
 					},
+					handleVideoTitleClick(e){
+						e.preventDefault();
+						pReact.renderDom(
+							<newsView id="newview_iframe" style="position:fixed;top:0;left:0;right:0" />,
+							document.body,
+							(() => {
+								let elem = pReact.tmpl((
+									<div>
+										<iframe src="{{url}}" style={styles.newsViewMainIframe}{styles.headerTop}></iframe>
+									</div>
+								),{
+									url:"http://m.hexun.com/news/2017-03-24/188615120.html"
+								}),
+								parent = pReact.findNode("#newview_iframe")[0];
+								parent._append(elem);
+								pReact.findNode(window)[0]._on("resize", function(e){
+									parent._findNode("iframe")[0].style.height = ((screen.height-50)/baseFontSize).toFixed(4)+"rem"
+								});
+							})
+						);
+						console.log(e)
+					},
+					handleNewsTitleClick(e){
+						e.preventDefault();
+						console.log(e)
+					},
 					render(){
 						var b = document.createDocumentFragment(), i=0;
 						this._data && this._data.data.forEach((n) => {
@@ -1384,7 +1435,7 @@
 										<xvideo src="{{video}}" poster="{{img}}"></xvideo>
 									</div>
 									<div>
-										<a href="{{url}}" style={styles.newsListActive}>{{title}}</a>
+										<a href="{{url}}" style={styles.newsListActive} onclick={handleVideoTitleClick}>{{title}}</a>
 										<p style={styles.newsListItemSource}>{{source}} {{time}}</p>
 										<button type="button" style={styles.button}{styles.buttonActive}{styles.marginSpanRight}>点赞</button><button type="button" style={styles.button}>下载</button>
 									</div>
@@ -1393,7 +1444,7 @@
 								<li style={styles.newsListItem}>
 									<img data-src="{{img}}" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" alt="{{title}}" style={styles.left} />
 									<div style={styles.right}>
-										<a href="{{url}}" style={styles.newsListActive}>{{title}}</a>
+										<a href="{{url}}" style={styles.newsListActive} onclick={handleNewsTitleClick}>{{title}}</a>
 										<p style={styles.newsListItemSource}>{{source}} {{time}}</p>
 									</div>
 								</li>
@@ -1401,7 +1452,7 @@
 								<li style={styles.newsListItem}>
 									<video data-src="{{video}}" style={styles.video} onclick={handleVideoClick} data-poster="{{img}}"></video>
 									<div>
-										<a href="{{url}}" style={styles.newsListItemTitle}>{{title}}</a>
+										<a href="{{url}}" style={styles.newsListItemTitle} onclick={handleVideoTitleClick}>{{title}}</a>
 										<p style={styles.newsListItemSource}>{{source}} {{time}}</p>
 									</div>
 								</li>
@@ -1409,7 +1460,7 @@
 								<li style={styles.newsListItem}>
 									<img data-src="{{img}}" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" alt="{{title}}" style={styles.left} />
 									<div style={styles.right}>
-										<a href="{{url}}" style={styles.newsListItemTitle}>{{title}}</a>
+										<a href="{{url}}" style={styles.newsListItemTitle} onclick={handleNewsTitleClick}>{{title}}</a>
 										<p style={styles.newsListItemSource}>{{source}} {{time}}</p>
 									</div>
 								</li>
@@ -2254,12 +2305,27 @@
 						let menu = this._children()[0];
 						menu && menu._css("display", menu._css("display") == "none" ? "block" : "none");
 					},
+					handleViewClick(e){
+						let view = this._parents(".preactroot");
+						view._animate({
+							left:(screen.width/baseFontSize).toFixed(4)+"rem",
+							right:"-"+(screen.width/baseFontSize).toFixed(4)+"rem"
+						}, "slow", function(){
+							view._remove();
+						});
+					},
 					render(){
 						return this._data && this._data.type == "home" ? (
 							<nav style={styles.xnav}{styles.fullColumn}{styles.headerTop}>
 								<span style={styles.xnavTitle}>{{title}}</span>
 								<div style={styles.xnavMenu} id="{{menuid}}"></div>
 								<span style={styles.xnavMore} id="{{moreid}}" class="icon--4" onclick={handleMoreClick}></span>
+							</nav>
+						) : this._data.type == "view" ? (
+							<nav style={styles.xnav}{styles.fullColumn} data-style="{{style}}">
+								<span style={styles.xnavTitle} onclick={handleViewClick} class="icon-uniE90B"></span>
+								<div style={styles.xnavMenu} id="{{menuid}}"></div>
+								<span style={styles.xnavMore}{styles.hide} id="{{moreid}}" class="icon--4" onclick={handleMoreClick}></span>
 							</nav>
 						) : (
 							<nav style={styles.xnav}{styles.fullColumn}{styles.headerTop}>
