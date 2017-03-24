@@ -30,6 +30,7 @@
 						try {
 							callback && callback.call(then, resolve);
 						} catch (e) {
+							console.log(e);
 							reject();
 						}
 					}).then(done, done);
@@ -45,6 +46,7 @@
 						try {
 							callback && callback.call(then, resolve);
 						} catch (e) {
+							console.log(e);
 							reject();
 						}
 					}).then(done, done);
@@ -54,7 +56,7 @@
 		}
 		done(callback) {
 			var then = this;
-			if (then.emit.length>0) {
+			if (then.emit.length > 0) {
 				var f = then.emit[0];
 				then.emit.splice(0, 1);
 				f(() => {
@@ -100,28 +102,30 @@
 			return a.join(';')
 		},
 		animateFade(list, styles, time, timingFunction, callback, transitionKey) {
-			let times = {
-				slow: 600,
-				normal: 400,
-				fast: 200
-			};
-			if (typeof time === 'string') {
-				time = times[time];
-			}
+			let then = this;
+			then.timeout && clearTimeout(then.timeout) && (list.style[transitionKey] = "");
+			then.timeout = setTimeout(function() {
+				let times = {
+					slow: 600,
+					normal: 400,
+					fast: 200
+				};
+				if (typeof time === 'string') {
+					time = times[time];
+				}
 
-			timingFunction = timingFunction || 'linear';
-			setTimeout(function() {
+				timingFunction = timingFunction || 'linear';
 				for (let s in styles) {
 					list.style[transitionKey] = s + ' ' + time + 'ms ' + timingFunction;
 					list.style[s] = styles[s];
 				}
+
+
+				setTimeout(function() {
+					list.style[transitionKey] = "";
+					callback.call(list);
+				}, time + 20);
 			}, 20);
-
-
-			setTimeout(function() {
-				list.style[transitionKey] = "";
-				callback.call(list);
-			}, time + 20);
 
 			return list;
 		},
@@ -841,7 +845,8 @@
 						data: result
 					}) : module.extend(obj._data, result);
 					done(obj._data);
-				}, () => {
+				}, (e) => {
+					console.log(e);
 					done({});
 				})) || done(data);
 			}
