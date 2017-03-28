@@ -401,6 +401,18 @@
 					module.animate(this, styles, time, callback, timingFunction);
 					return this;
 				},
+				_show(){
+					this._css({
+						display: "block"
+					});
+					return this;
+				},
+				_hide(){
+					this._css({
+						display: "none"
+					});
+					return this;
+				},
 				_height(value) {
 					if (value) {
 						return this.offsetHeight;
