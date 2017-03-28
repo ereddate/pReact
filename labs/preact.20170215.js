@@ -103,8 +103,8 @@
 		},
 		animateFade(list, styles, time, timingFunction, callback, transitionKey) {
 			let then = this;
-			//then.timeout && clearTimeout(then.timeout) && (list.style[transitionKey] = "");
-			//then.timeout = setTimeout(function() {
+			then.timeout && clearTimeout(then.timeout) && (list.style[transitionKey] = "");
+			then.timeout = setTimeout(function() {
 				let times = {
 					slow: 600,
 					normal: 400,
@@ -122,10 +122,10 @@
 
 
 				setTimeout(function() {
-					//list.style[transitionKey] = "";
+					list.style[transitionKey] = "";
 					callback.call(list);
 				}, time + 20);
-			//}, 20);
+			}, 20);
 
 			return list;
 		},
@@ -136,9 +136,9 @@
 						auxDiv.style.msTransition !== undefined ? 'msTransition' : undefined
 					)
 				);
-			//if (module.is(list.style[transitionKey].replace(/\s+/gim, ""), "")) {
-				//list.style[transitionKey] = "";
-			//}
+			if (module.is(list.style[transitionKey].replace(/\s+/gim, ""), "")) {
+				list.style[transitionKey] = "";
+			}
 			/*list._on(transitionKey + "end " + transitionKey.replace("webkit", "") + "end", function(e) {
 				this._off(transitionKey + "end " + transitionKey.replace("webkit", "") + "end");
 				this.style[transitionKey] = "";
