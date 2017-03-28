@@ -997,6 +997,9 @@
 						padding:"0 0 0 "+(10/baseFontSize).toFixed(4)+"rem",
 						width:(100/baseFontSize).toFixed(4)+"rem"
 					},
+					xnav_viewTitle:{
+						width:(65/baseFontSize).toFixed(4)+"rem"
+					},
 					xnavMenu:{
 						width:((screen.width-100-37)/baseFontSize).toFixed(4)+"rem",
 						textAlign:"right",
@@ -1050,7 +1053,7 @@
 					newsViewMainIframe:{
 						border:0,
 						width:(screen.width/baseFontSize).toFixed(4)+"rem",
-						height:((screen.height-50)/baseFontSize).toFixed(4)+"rem"
+						height:((document.documentElement.clientHeight)/baseFontSize).toFixed(4)+"rem"
 					}
 				}),
 				tools = pReact.createClass("tools", {
@@ -1401,10 +1404,12 @@
 					},
 					handleVideoTitleClick(e){
 						e.preventDefault();
+						let then = this;
 						pReact.renderDom(
 							<newsView id="newview_iframe" style="position:fixed;top:0;left:0;right:0" />,
 							document.body,
 							(() => {
+								pReact.findNode("#xnav_view_menuview")[0].innerHTML = then._text();
 								let elem = pReact.tmpl((
 									<div>
 										<iframe src="{{url}}" style={styles.newsViewMainIframe}{styles.headerTop}></iframe>
@@ -1415,7 +1420,7 @@
 								parent = pReact.findNode("#newview_iframe")[0];
 								parent._append(elem);
 								pReact.findNode(window)[0]._on("resize", function(e){
-									parent._findNode("iframe")[0].style.height = ((screen.height-50)/baseFontSize).toFixed(4)+"rem"
+									parent._findNode("iframe")[0].style.height = ((document.documentElement.clientHeight)/baseFontSize).toFixed(4)+"rem"
 								});
 							})
 						);
@@ -2323,7 +2328,7 @@
 							</nav>
 						) : this._data.type == "view" ? (
 							<nav style={styles.xnav}{styles.fullColumn} data-style="{{style}}">
-								<span style={styles.xnavTitle} onclick={handleViewClick} class="icon-uniE90B"></span>
+								<span style={styles.xnavTitle}{styles.xnav_viewTitle} onclick={handleViewClick} class="icon-uniE90B"></span>
 								<div style={styles.xnavMenu} id="{{menuid}}"></div>
 								<span style={styles.xnavMore}{styles.hide} id="{{moreid}}" class="icon--4" onclick={handleMoreClick}></span>
 							</nav>

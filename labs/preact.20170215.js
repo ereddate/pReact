@@ -162,7 +162,7 @@
 					var then = this;
 					return module.fineNode(then, selector);
 				},
-				_contents(){
+				_contents() {
 					let elem = this;
 					return elem.tagName && elem.tagName.toLowerCase() == "iframe" ? elem.contentDocument || elem.contentWindow.document : elem.childNodes && [].slice.call(elem.childNodes) || [];
 				},
@@ -196,6 +196,49 @@
 						this.removeAttribute(n);
 					});
 					return this;
+				},
+				_text(value) {
+					let then = this,
+						nodeType = then.nodeType;
+					if (nodeType) {
+						if ((nodeType === 1 || nodeType === 9 || nodeType === 11) && typeof then.textContent === "string") {
+							if (value) {
+								then.textContent = value;
+								return this;
+							} else {
+								return then.textContent;
+							}
+						} else if (nodeType === 3 || nodeType === 4) {
+							if (value) {
+								then.nodeValue = value;
+								return this;
+							} else {
+								return then.nodeValue;
+							}
+						} else {
+							return value ? this : "";
+						}
+					} else {
+						return value ? this : "";
+					}
+				},
+				_html(value) {
+					let then = this;
+					if (typeof value != "boolean") {
+						if (typeof value == "string") {
+							then.innerHTML = value;
+						} else if (value.nodeType) {
+							then._append(value);
+						} else if (typeof value == "function") {
+							then._html(value());
+						} else {
+							return then;
+						}
+					} else if (value === true) {
+						return then.outerHTML;
+					} else {
+						return then.innerHTML;
+					}
 				},
 				_clone(bool) {
 					let nE = this.cloneNode(!module.is(typeof bool, "undefined") ? bool : true);
