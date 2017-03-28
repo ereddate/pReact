@@ -1437,7 +1437,7 @@
 						e.preventDefault();
 						let then = this;
 						pReact.renderDom(
-							<newsView id="newview_iframe" style="position:fixed;top:0;left:0;right:0" />,
+							<newsView id="newview_iframe" style="position:absolute;top:0;left:0;right:0;" />,
 							document.body,
 							(() => {
 								pReact.findNode("#xnav_view_menuview")[0].innerHTML = then._text();
@@ -2344,9 +2344,8 @@
 					handleViewClick(e){
 						let view = this._parents(".preactroot");
 						view._animate({
-							left:(screen.width/baseFontSize).toFixed(4)+"rem",
-							right:"-"+(screen.width/baseFontSize).toFixed(4)+"rem"
-						}, "slow", function(){
+							left:(screen.width/baseFontSize).toFixed(4)+"rem"
+						}, "fast", function(){
 							view._remove();
 						});
 					},
