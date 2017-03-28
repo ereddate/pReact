@@ -989,7 +989,8 @@
 						fontSize: (20/baseFontSize).toFixed(4)+"rem",
 						height:(50/baseFontSize).toFixed(4)+"rem",
 						lineHeight:(50/baseFontSize).toFixed(4)+"rem",
-						textAlign:"left"
+						textAlign:"left",
+						background:"rgb(244,245,247)"
 					},
 					xnavTitle:{
 						lineHeight:(50/baseFontSize).toFixed(4)+"rem",
@@ -1001,9 +1002,34 @@
 						width:(65/baseFontSize).toFixed(4)+"rem"
 					},
 					xnavMenu:{
-						width:((screen.width-100-37)/baseFontSize).toFixed(4)+"rem",
+						width:((screen.width-137)/baseFontSize).toFixed(4)+"rem",
 						textAlign:"right",
-						overflow:"hidden"
+						overflow:"hidden",
+						position:"relative"
+					},
+					xnavMenuMain:{
+						width:((screen.width-137)/baseFontSize).toFixed(4)+"rem",
+						padding:"0 "+(10/baseFontSize).toFixed(4)+"rem",
+						overflow:"scroll",
+						overflowY:"hidden",
+					},
+					xnavMenuLeftShadow:{
+						display:"block",
+						position:"absolute",
+						left:0,
+						top:0,
+						width:(10/baseFontSize).toFixed(4)+"rem",
+						height:"100%",
+						background:"-webkit-linear-gradient(left,rgb(244,245,247),hsla(0,0%,100%,.2))",
+					},
+					xnavMenuRightShadow:{
+						display:"block",
+						position:"absolute",
+						right:0,
+						top:0,
+						width:(10/baseFontSize).toFixed(4)+"rem",
+						height:"100%",
+						background:"-webkit-linear-gradient(left,hsla(0,0%,100%,.2),rgb(244,245,247))",
 					},
 					xnavMore:{
 						lineHeight:(50/baseFontSize).toFixed(4)+"rem",
@@ -1036,10 +1062,15 @@
 						borderBottom:(1/baseFontSize).toFixed(4)+"rem solid #ccc",
 						textIndent:(10/baseFontSize).toFixed(4)+"rem"
 					},
+					xnavmenuList:{
+						display:"block"
+					},
 					xnavmenuListItem:{
 						fontSize: (16/baseFontSize).toFixed(4)+"rem",
 						textDecoration:"none",
 						color:"#000",
+						float:"left",
+						marginRight:(10/baseFontSize).toFixed(4)+"rem"
 					},
 					newsView:{
 						position:"fixed",
@@ -2323,7 +2354,11 @@
 						return this._data && this._data.type == "home" ? (
 							<nav style={styles.xnav}{styles.fullColumn}{styles.headerTop}>
 								<span style={styles.xnavTitle}>{{title}}</span>
-								<div style={styles.xnavMenu} id="{{menuid}}"></div>
+								<div style={styles.xnavMenu}{styles.fullColumn}>
+									<span style={styles.xnavMenuLeftShadow}></span>
+									<span style={styles.xnavMenuRightShadow}></span>
+									<div id="{{menuid}}" style={styles.xnavMenuMain}></div>
+								</div>
 								<span style={styles.xnavMore} id="{{moreid}}" class="icon--4" onclick={handleMoreClick}></span>
 							</nav>
 						) : this._data.type == "view" ? (
@@ -2400,6 +2435,24 @@
 						},{
 							title: "item",
 							url:""
+						},{
+							title: "item",
+							url:""
+						},{
+							title: "item",
+							url:""
+						},{
+							title: "item",
+							url:""
+						},{
+							title: "item",
+							url:""
+						},{
+							title: "item",
+							url:""
+						},{
+							title: "item",
+							url:""
 						}])
 					},
 					render(){
@@ -2453,8 +2506,17 @@
 									(() => {
 										pReact.renderDom(
 											<xnavmenu_listItems />,
-											document.getElementById("xnav_menulist")
-										)
+											document.getElementById("xnav_menulist"),
+											(() => {
+												let a = pReact.findNode("#xnav_menulist")[0], w = 0;
+												a._findNode("a").forEach((e) => {
+													w+=e._width(true);
+												});
+												a._css({
+													width:((w+20)/baseFontSize).toFixed(4)+"rem"
+												});
+											})
+										);
 									})
 								);
 							})

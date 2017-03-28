@@ -384,16 +384,23 @@
 					return bool.length === 0 ? false : bool.length === 1 ? bool[0] : bool;
 				},
 				_width(value) {
+					let getStyle = window.getComputedStyle(this, null);
 					if (value) {
-						return this.offsetWidth;
+						return this.offsetWidth + 
+							parseFloat(getStyle.getPropertyValue('border-left-width')) +
+							parseFloat(getStyle.getPropertyValue('margin-left')) +
+							parseFloat(getStyle.getPropertyValue('margin-right')) +
+							parseFloat(getStyle.getPropertyValue('padding-left')) +
+							parseFloat(getStyle.getPropertyValue('padding-right')) +
+							parseFloat(getStyle.getPropertyValue('border-right-width'))
 					} else if (value != undefined) {
 						this.style.width = value;
 					} else {
 						return this.offsetWidth -
-							parseFloat(window.getComputedStyle(this, null).getPropertyValue('border-left-width')) -
-							parseFloat(window.getComputedStyle(this, null).getPropertyValue('padding-left')) -
-							parseFloat(window.getComputedStyle(this, null).getPropertyValue('padding-right')) -
-							parseFloat(window.getComputedStyle(this, null).getPropertyValue('border-right-width'));
+							parseFloat(getStyle.getPropertyValue('border-left-width')) -
+							parseFloat(getStyle.getPropertyValue('padding-left')) -
+							parseFloat(getStyle.getPropertyValue('padding-right')) -
+							parseFloat(getStyle.getPropertyValue('border-right-width'));
 					}
 					return this;
 				},
@@ -401,29 +408,30 @@
 					module.animate(this, styles, time, callback, timingFunction);
 					return this;
 				},
-				_show(){
+				_show() {
 					this._css({
 						display: "block"
 					});
 					return this;
 				},
-				_hide(){
+				_hide() {
 					this._css({
 						display: "none"
 					});
 					return this;
 				},
 				_height(value) {
+					let getStyle = window.getComputedStyle(this, null);
 					if (value) {
 						return this.offsetHeight;
 					} else if (value != undefined) {
 						this.style.height = value;
 					} else {
 						return this.offsetHeight -
-							parseFloat(window.getComputedStyle(this, null).getPropertyValue('border-top-width')) -
-							parseFloat(window.getComputedStyle(this, null).getPropertyValue('padding-top')) -
-							parseFloat(window.getComputedStyle(this, null).getPropertyValue('padding-bottom')) -
-							parseFloat(window.getComputedStyle(this, null).getPropertyValue('border-bottom-width'));
+							parseFloat(getStyle.getPropertyValue('border-top-width')) -
+							parseFloat(getStyle.getPropertyValue('padding-top')) -
+							parseFloat(getStyle.getPropertyValue('padding-bottom')) -
+							parseFloat(getStyle.getPropertyValue('border-bottom-width'));
 					}
 					return this;
 				},
