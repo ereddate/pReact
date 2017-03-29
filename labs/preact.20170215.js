@@ -64,6 +64,12 @@
 	Array.prototype._eq = function(index) {
 		return this[index];
 	};
+	let auxDiv = document.createElement('div'),
+		transitionKey = auxDiv.style.webkitTransition !== undefined ? 'webkitTransition' : (
+			auxDiv.style.mozTransition !== undefined ? 'mozTransition' : (
+				auxDiv.style.msTransition !== undefined ? 'msTransition' : undefined
+			)
+		);
 
 	const module = {
 		translateContent(content) {
@@ -299,12 +305,6 @@
 			return list;
 		},
 		animate(list, styles, time, callback, timingFunction) {
-			let auxDiv = document.createElement('div'),
-				transitionKey = auxDiv.style.webkitTransition !== undefined ? 'webkitTransition' : (
-					auxDiv.style.mozTransition !== undefined ? 'mozTransition' : (
-						auxDiv.style.msTransition !== undefined ? 'msTransition' : undefined
-					)
-				);
 			if (module.is(list.style[transitionKey].replace(/\s+/gim, ""), "")) {
 				list.style[transitionKey] = "";
 			}
