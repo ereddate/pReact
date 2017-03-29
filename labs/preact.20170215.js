@@ -1,17 +1,9 @@
 'use strict';
-((win, tmpl, translateContent, jsonp) => {
-	var doc = win.document;
+((win) => {
+	var doc = win.document,
+		head = doc.getElementsByTagName("head")[0];
 	win.pReact = {};
-	/*let callbacks = new Callbacks((done) => {
-		done()
-	}, (done) => {
-		done()
-	});
-	callbacks.add((done) => {
-		done()
-	}).delay(1000).add((done) => {
-		done()
-	}).done();*/
+
 	class Callbacks {
 		constructor() {
 			let args = arguments && [].slice.call(arguments) || [],
@@ -74,6 +66,183 @@
 	};
 
 	const module = {
+		translateContent(content) {
+			content = content.replace(/\s{2,}/gim, " ").replace(/((\()\s*<(\w+)(\s+([a-zA-Z-_0-9]+=["'{][^<>]+["'}]))*\s*>[\r\n]*[^\)]+[\r\n]*<\/\w+>\s*(\)))/gim, ((a, b, c, d, e, f, g) => {
+				b = b.replace(c, "").replace(new RegExp("\\" + g + "$"), "").replace(/>\s+</gim, "><");
+				var dom = document.createElement("div");
+				dom.innerHTML = b;
+				var f = (dom) => {
+					var p = [];
+					[].slice.call(dom.childNodes).forEach((e) => {
+						var attrs = e.attributes && e.attributes.length > 0 && [].slice.call(e.attributes) || false,
+							html = ["pReact.createDom('" + (Object.is(e.nodeType, 3) ? "textNode" : e.tagName) + "'"];
+						if (attrs) {
+							html.push(",{")
+							var attrsJson = []
+							attrs.forEach((n) => {
+								attrsJson.push("'" + n.name + "':'" + n.value + "'")
+							})
+							html.push(attrsJson.join(','));
+							html.push("}")
+						} else {
+							Object.is(e.nodeType, 3) && html.push(",{text:\"" + e.nodeValue + "\"}") || html.push(",{}");
+						}
+						p.push(html.join(''))
+						if (e.childNodes.length > 0) {
+							let a = f(e);
+							!Object.is(a.replace(/\s+/gim, ""), "") && p.push("," + a);
+						}
+						p.push(")")
+					});
+					return p.join('');
+				};
+				var w = "pReact.createDom(\"docmentfragment\",{}," + f(dom).replace(/\)pReact/gim, "),pReact") + ")";
+				dom = null;
+				return w;
+			})).replace(/renderDom\s*\(\s*(<(\w+)(\s+([a-zA-Z-_0-9]+=["'{][^<>]+["'}]))*\s*\/>)/gim, ((a, b, c, d) => {
+				var temp = document.createElement("div"),
+					attrs;
+				temp.innerHTML = a;
+				temp.children[0] && (attrs = temp.children[0].attributes);
+				if (attrs) {
+					var f = [];
+					[].slice.call(attrs).forEach((t) => {
+						f.push(t.name.toLowerCase() + ":\"" + t.value.toLowerCase() + "\"")
+					});
+					a = a.replace(b, c + ",{" + f.join(',') + "}");
+				} else {
+					a = a.replace(b, c + ",{}")
+				}
+				return a;
+			}));
+			return content;
+		},
+		tmpl(element, data, obj) {
+			var f = (element) => {
+					element && ("length" in element ? Object.is(element.nodeType, 11) ? [].slice.call(element.childNodes) : [].slice.call(element) : [element]).forEach((e) => {
+						//console.log(e)
+						if (e.tagName && !Object.is(pReact.Class[e.tagName.toLowerCase()], undefined)) {
+							//console.log(e)
+							let parent = e.parentNode;
+							var attrs = e.attributes && e.attributes.length > 0 && [].slice.call(e.attributes) || false,
+								options = {};
+							if (attrs) {
+								attrs.forEach((a) => {
+									for (let name in data) {
+										let reg = new RegExp("{{\\s*" + name.toLowerCase() + "\\s*(\\|\\s*([^<>,]+)\\s*)*}}", "gim"),
+											v = reg.exec(a.value.toLowerCase());
+										if (v) {
+											if (v[2]) {
+												v = v[2].split(':');
+												pReact.tmplThesaurus[v[0].replace(/\s+/gim, "")] && (options[a.name] = pReact.tmplThesaurus[v[0].replace(/\s+/gim, "")](data[name], v[1]));
+											} else {
+												options[a.name] = a.value.replace(reg, data[name])
+											}
+										}
+									}
+									if (/data\-src/.test(a.name.toLowerCase()) || /data\-poster/.test(a.name.toLowerCase()))
+										options[a.name.toLowerCase().replace("data-", "")] = /\{+\s*([^<>}{,]+)\s*\}+/.test(a.value) ? a.value.replace(/\{+\s*([^<>}{,]+)\s*\}+/gim, ((a, b) => {
+											return g(a, b, e);
+										})) : a.value;
+									else if (/data-style/.test(a.name.toLowerCase()))
+										options[a.name.toLowerCase().replace("data-", "")] = e.getAttribute(a.name.toLowerCase().replace("data-", "")) + a.value;
+									else
+										options[a.name] = /\{+\s*([^<>}{,]+)\s*\}+/.test(a.value) ? a.value = a.value.replace(/\{+\s*([^<>}{,]+)\s*\}+/gim, ((a, b) => {
+											return g(a, b, e);
+										})) : a.value;
+								})
+							}
+							e.childNodes.length > 0 && f(e.childNodes);
+							//console.log(pReact.Class[e.tagName.toLowerCase()].render.toString())
+							e._remove();
+							pReact.renderDom(
+								pReact.Class[e.tagName.toLowerCase()],
+								options,
+								parent
+							);
+						} else {
+							!e["_factory"] && (e["_factory"] = obj);
+							!e["_data"] && (e["_data"] = data);
+							var attrs = e.attributes && e.attributes.length > 0 && [].slice.call(e.attributes) || false;
+							if (attrs) {
+								attrs.forEach((a) => {
+									for (let name in data) {
+										let reg = new RegExp("{{\\s*" + name.toLowerCase() + "\\s*(\\|\\s*([^<>,]+)\\s*)*}}", "gim"),
+											v = reg.exec(a.value.toLowerCase());
+										if (v) {
+											if (v[2]) {
+												v = v[2].split(':');
+												pReact.tmplThesaurus[v[0].replace(/\s+/gim, "")] && e.setAttribute(a.name, pReact.tmplThesaurus[v[0].replace(/\s+/gim, "")](data[name], v[1]));
+											} else {
+												e.setAttribute(a.name, a.value.replace(reg, data[name]));
+											}
+										}
+									}
+									if (/data\-src/.test(a.name.toLowerCase()) || /data\-poster/.test(a.name.toLowerCase()))
+										(e.setAttribute(a.name.toLowerCase().replace("data-", ""), /\{+\s*([^<>}{,]+)\s*\}+/.test(a.value) ? (a.value = a.value.replace(/\{+\s*([^<>}{,]+)\s*\}+/gim, ((a, b) => {
+											return g(a, b, e);
+										}))) : a.value), e._removeAttr("data-src data-poster"));
+									else if (/data-style/.test(a.name.toLowerCase()))
+										(e.setAttribute(a.name.toLowerCase().replace("data-", ""), e.getAttribute(a.name.toLowerCase().replace("data-", "")) + a.value), e._removeAttr("data-style"));
+									else
+										e.setAttribute(a.name, /\{+\s*([^<>}{,]+)\s*\}+/.test(a.value) ? (a.value = a.value.replace(/\{+\s*([^<>}{,]+)\s*\}+/gim, ((a, b) => {
+											return g(a, b, e);
+										}))) : a.value);
+								})
+							}
+							["text", "nodeValue"].forEach((text) => {
+								e[text] && e[text].replace && (e[text] = e[text].replace(/\{+\s*[^<>}{,]+\s*\}+/gim, ((a) => {
+									for (let name in data) {
+										a = a.replace(new RegExp("{{\\s*" + name + "\\s*(\\|\\s*([^<>,]+)\\s*)*}}", "gim"), ((a, b, c) => {
+											if (c) {
+												let v = c.split(':');
+												return pReact.tmplThesaurus[v[0].replace(/\s+/gim, "")] && pReact.tmplThesaurus[v[0].replace(/\s+/gim, "")](data[name], v[1]) || data[name];
+											}
+											return data[name];
+										}))
+									}
+									a = a.replace(/\{+\s*([^<>}{,]+)\s*\}+/gim, ((a, b) => {
+										return g(a, b, e);
+									}));
+									return a;
+								})))
+							});
+							//console.log(e && e.childNodes)
+							e.childNodes.length > 0 && f(e.childNodes);
+						}
+					})
+				},
+				g = (a, b, e) => {
+					let v = data && !Object.is(typeof data[b], "undefined") && !Object.is(typeof data[b], "function") && data[b] || false;
+					if (Object.is(v, false)) {
+						if (Object.is(v, false) && !Object.is(pReact.getStyle(b.split('.')[1]), false))(v = pReact.getStyle(b.split('.')[1]));
+						if (Object.is(v, false) && obj && obj[b] && Object.is(typeof obj[b], "string")) v = obj[b];
+						if (Object.is(v, false) && obj && obj[b] && Object.is(typeof obj[b], "function")) v = obj[b]();
+						if (Object.is(v, false)) v = a;
+					}
+					return v;
+				};
+			if (Object.is(typeof element, "string")) {
+				element = element.replace(/\{+\s*[^<>}{,]+\s*\}+/gim, ((a) => {
+					for (let name in data) {
+						a = a.replace(new RegExp("{{\\s*" + name + "\\s*(\\|\\s*([^<>,]+)\\s*)*}}", "gim"), ((a, b, c) => {
+							if (c) {
+								let v = c.split(':');
+								return pReact.tmplThesaurus[v[0].replace(/\s+/gim, "")] && pReact.tmplThesaurus[v[0].replace(/\s+/gim, "")](data[name], v[1]) || data[name];
+							}
+							return data[name];
+						}))
+					}
+					a = a.replace(/\{+\s*([^<>}{,]+)\s*\}+/gim, ((a, b) => {
+						return "\"" + g(a, b) + "\"";
+					}));
+					return a;
+				}))
+			} else {
+				f(element);
+			}
+			return element;
+		},
 		dir(elem, dir) {
 			var matched = [];
 
@@ -85,7 +254,6 @@
 			return matched;
 		},
 		extend(a, b) {
-			//console.log(a, b)
 			return Object.assign(a, b)
 		},
 		toStyle(val) {
@@ -268,7 +436,7 @@
 				},
 				_append(element) {
 					if (module.is(typeof element, "string")) {
-						element = new Function("return " + translateContent("(" + tmpl(element) + ")"))();
+						element = new Function("return " + module.translateContent("(" + module.tmpl(element) + ")"))();
 						this.appendChild(element);
 						module.cloneHandle(element);
 					} else if (module.is(typeof element, "function")) {
@@ -386,7 +554,7 @@
 				_width(value) {
 					let getStyle = window.getComputedStyle(this, null);
 					if (value) {
-						return this.offsetWidth + 
+						return this.offsetWidth +
 							parseFloat(getStyle.getPropertyValue('border-left-width')) +
 							parseFloat(getStyle.getPropertyValue('margin-left')) +
 							parseFloat(getStyle.getPropertyValue('margin-right')) +
@@ -519,7 +687,7 @@
 			var element = pReact.createDom.apply(pReact, [oldElement.tagName,
 				module.extend(oldElement._props, options)
 			].concat(childrens || []));
-			element = tmpl(element, oldElement._data, oldElement._factory);
+			element = module.tmpl(element, oldElement._data, oldElement._factory);
 			module.setElementClass(element, oldElement._factory);
 			module.setElementData(element, oldElement._data);
 
@@ -766,8 +934,6 @@
 		eventData: []
 	};
 
-	var head = doc.getElementsByTagName("head")[0];
-
 	pReact.extend = module.extend;
 	pReact.extend(pReact, {
 		import (url) {
@@ -799,7 +965,6 @@
 		isEmptyObject: module.isEmptyObject,
 		Class: module.Class,
 		Styles: module.Styles,
-		jsonp: jsonp,
 		touchDirection: module.touchDirection,
 		Callbacks() {
 			let args = arguments && [].slice.call(arguments) || [],
@@ -874,13 +1039,13 @@
 						if (module.is(typeof element, "string")) {
 							var fragment = document.createDocumentFragment(),
 								temp = document.createElement("div");
-							element = tmpl(element, data, obj);
+							element = module.tmpl(element, data, obj);
 							temp.innerHTML = element;
 							fragment = module.translateFragment(temp, fragment, obj, data);
 							//parent.innerHTML = "";
 							parent.appendChild(fragment);
 						} else {
-							element = tmpl(element, data, obj);
+							element = module.tmpl(element, data, obj);
 							//parent.innerHTML = "";
 							parent.appendChild(element);
 						}
@@ -1010,7 +1175,7 @@
 			var script = doc.getElementsByTagName("script");
 			(module.extend([], [].slice.call(script))).forEach((e) => {
 				if (module.is(e.type, "text/pReact")) {
-					module.evalContent(translateContent(e.innerHTML));
+					module.evalContent(module.translateContent(e.innerHTML));
 					e.parentNode.removeChild(e);
 				}
 			});
@@ -1031,7 +1196,7 @@
 			return then;
 		},
 		tmpl(html, data) {
-			return tmpl(html, data);
+			return module.tmpl(html, data);
 		},
 		createDom() {
 			let args = arguments,
@@ -1155,249 +1320,77 @@
 	});
 
 	pReact.ready();
-})(this, (element, data, obj) => {
-	var f = (element) => {
-			element && ("length" in element ? Object.is(element.nodeType, 11) ? [].slice.call(element.childNodes) : [].slice.call(element) : [element]).forEach((e) => {
-				//console.log(e)
-				if (e.tagName && !Object.is(pReact.Class[e.tagName.toLowerCase()], undefined)) {
-					//console.log(e)
-					let parent = e.parentNode;
-					var attrs = e.attributes && e.attributes.length > 0 && [].slice.call(e.attributes) || false,
-						options = {};
-					if (attrs) {
-						attrs.forEach((a) => {
-							for (let name in data) {
-								let reg = new RegExp("{{\\s*" + name.toLowerCase() + "\\s*(\\|\\s*([^<>,]+)\\s*)*}}", "gim"),
-									v = reg.exec(a.value.toLowerCase());
-								if (v) {
-									if (v[2]) {
-										v = v[2].split(':');
-										pReact.tmplThesaurus[v[0].replace(/\s+/gim, "")] && (options[a.name] = pReact.tmplThesaurus[v[0].replace(/\s+/gim, "")](data[name], v[1]));
-									} else {
-										options[a.name] = a.value.replace(reg, data[name])
-									}
-								}
-							}
-							if (/data\-src/.test(a.name.toLowerCase()) || /data\-poster/.test(a.name.toLowerCase()))
-								options[a.name.toLowerCase().replace("data-", "")] = /\{+\s*([^<>}{,]+)\s*\}+/.test(a.value) ? a.value.replace(/\{+\s*([^<>}{,]+)\s*\}+/gim, ((a, b) => {
-									return g(a, b, e);
-								})) : a.value;
-							else if (/data-style/.test(a.name.toLowerCase()))
-								options[a.name.toLowerCase().replace("data-", "")] = e.getAttribute(a.name.toLowerCase().replace("data-", "")) + a.value;
-							else
-								options[a.name] = /\{+\s*([^<>}{,]+)\s*\}+/.test(a.value) ? a.value = a.value.replace(/\{+\s*([^<>}{,]+)\s*\}+/gim, ((a, b) => {
-									return g(a, b, e);
-								})) : a.value;
-						})
-					}
-					e.childNodes.length > 0 && f(e.childNodes);
-					//console.log(pReact.Class[e.tagName.toLowerCase()].render.toString())
-					e._remove();
-					pReact.renderDom(
-						pReact.Class[e.tagName.toLowerCase()],
-						options,
-						parent
-					);
-				} else {
-					!e["_factory"] && (e["_factory"] = obj);
-					!e["_data"] && (e["_data"] = data);
-					var attrs = e.attributes && e.attributes.length > 0 && [].slice.call(e.attributes) || false;
-					if (attrs) {
-						attrs.forEach((a) => {
-							for (let name in data) {
-								let reg = new RegExp("{{\\s*" + name.toLowerCase() + "\\s*(\\|\\s*([^<>,]+)\\s*)*}}", "gim"),
-									v = reg.exec(a.value.toLowerCase());
-								if (v) {
-									if (v[2]) {
-										v = v[2].split(':');
-										pReact.tmplThesaurus[v[0].replace(/\s+/gim, "")] && e.setAttribute(a.name, pReact.tmplThesaurus[v[0].replace(/\s+/gim, "")](data[name], v[1]));
-									} else {
-										e.setAttribute(a.name, a.value.replace(reg, data[name]));
-									}
-								}
-							}
-							if (/data\-src/.test(a.name.toLowerCase()) || /data\-poster/.test(a.name.toLowerCase()))
-								(e.setAttribute(a.name.toLowerCase().replace("data-", ""), /\{+\s*([^<>}{,]+)\s*\}+/.test(a.value) ? (a.value = a.value.replace(/\{+\s*([^<>}{,]+)\s*\}+/gim, ((a, b) => {
-									return g(a, b, e);
-								}))) : a.value), e._removeAttr("data-src data-poster"));
-							else if (/data-style/.test(a.name.toLowerCase()))
-								(e.setAttribute(a.name.toLowerCase().replace("data-", ""), e.getAttribute(a.name.toLowerCase().replace("data-", "")) + a.value), e._removeAttr("data-style"));
-							else
-								e.setAttribute(a.name, /\{+\s*([^<>}{,]+)\s*\}+/.test(a.value) ? (a.value = a.value.replace(/\{+\s*([^<>}{,]+)\s*\}+/gim, ((a, b) => {
-									return g(a, b, e);
-								}))) : a.value);
-						})
-					}
-					["text", "nodeValue"].forEach((text) => {
-						e[text] && e[text].replace && (e[text] = e[text].replace(/\{+\s*[^<>}{,]+\s*\}+/gim, ((a) => {
-							for (let name in data) {
-								a = a.replace(new RegExp("{{\\s*" + name + "\\s*(\\|\\s*([^<>,]+)\\s*)*}}", "gim"), ((a, b, c) => {
-									if (c) {
-										let v = c.split(':');
-										return pReact.tmplThesaurus[v[0].replace(/\s+/gim, "")] && pReact.tmplThesaurus[v[0].replace(/\s+/gim, "")](data[name], v[1]) || data[name];
-									}
-									return data[name];
-								}))
-							}
-							a = a.replace(/\{+\s*([^<>}{,]+)\s*\}+/gim, ((a, b) => {
-								return g(a, b, e);
-							}));
-							return a;
-						})))
-					});
-					//console.log(e && e.childNodes)
-					e.childNodes.length > 0 && f(e.childNodes);
-				}
-			})
-		},
-		g = (a, b, e) => {
-			let v = data && !Object.is(typeof data[b], "undefined") && !Object.is(typeof data[b], "function") && data[b] || false;
-			if (Object.is(v, false)) {
-				if (Object.is(v, false) && !Object.is(pReact.getStyle(b.split('.')[1]), false))(v = pReact.getStyle(b.split('.')[1]));
-				if (Object.is(v, false) && obj && obj[b] && Object.is(typeof obj[b], "string")) v = obj[b];
-				if (Object.is(v, false) && obj && obj[b] && Object.is(typeof obj[b], "function")) v = obj[b]();
-				if (Object.is(v, false)) v = a;
-			}
-			return v;
-		};
-	if (Object.is(typeof element, "string")) {
-		element = element.replace(/\{+\s*[^<>}{,]+\s*\}+/gim, ((a) => {
-			for (let name in data) {
-				a = a.replace(new RegExp("{{\\s*" + name + "\\s*(\\|\\s*([^<>,]+)\\s*)*}}", "gim"), ((a, b, c) => {
-					if (c) {
-						let v = c.split(':');
-						return pReact.tmplThesaurus[v[0].replace(/\s+/gim, "")] && pReact.tmplThesaurus[v[0].replace(/\s+/gim, "")](data[name], v[1]) || data[name];
-					}
-					return data[name];
-				}))
-			}
-			a = a.replace(/\{+\s*([^<>}{,]+)\s*\}+/gim, ((a, b) => {
-				return "\"" + g(a, b) + "\"";
-			}));
-			return a;
-		}))
-	} else {
-		f(element);
-	}
-	return element;
-}, (content) => {
-	content = content.replace(/\s{2,}/gim, " ").replace(/((\()\s*<(\w+)(\s+([a-zA-Z-_0-9]+=["'{][^<>]+["'}]))*\s*>[\r\n]*[^\)]+[\r\n]*<\/\w+>\s*(\)))/gim, ((a, b, c, d, e, f, g) => {
-		b = b.replace(c, "").replace(new RegExp("\\" + g + "$"), "").replace(/>\s+</gim, "><");
-		var dom = document.createElement("div");
-		dom.innerHTML = b;
-		var f = (dom) => {
-			var p = [];
-			[].slice.call(dom.childNodes).forEach((e) => {
-				var attrs = e.attributes && e.attributes.length > 0 && [].slice.call(e.attributes) || false,
-					html = ["pReact.createDom('" + (Object.is(e.nodeType, 3) ? "textNode" : e.tagName) + "'"];
-				if (attrs) {
-					html.push(",{")
-					var attrsJson = []
-					attrs.forEach((n) => {
-						attrsJson.push("'" + n.name + "':'" + n.value + "'")
-					})
-					html.push(attrsJson.join(','));
-					html.push("}")
-				} else {
-					Object.is(e.nodeType, 3) && html.push(",{text:\"" + e.nodeValue + "\"}") || html.push(",{}");
-				}
-				p.push(html.join(''))
-				if (e.childNodes.length > 0) {
-					let a = f(e);
-					!Object.is(a.replace(/\s+/gim, ""), "") && p.push("," + a);
-				}
-				p.push(")")
-			});
-			return p.join('');
-		};
-		var w = "pReact.createDom(\"docmentfragment\",{}," + f(dom).replace(/\)pReact/gim, "),pReact") + ")";
-		dom = null;
-		return w;
-	})).replace(/renderDom\s*\(\s*(<(\w+)(\s+([a-zA-Z-_0-9]+=["'{][^<>]+["'}]))*\s*\/>)/gim, ((a, b, c, d) => {
-		var temp = document.createElement("div"),
-			attrs;
-		temp.innerHTML = a;
-		temp.children[0] && (attrs = temp.children[0].attributes);
-		if (attrs) {
-			var f = [];
-			[].slice.call(attrs).forEach((t) => {
-				f.push(t.name.toLowerCase() + ":\"" + t.value.toLowerCase() + "\"")
-			});
-			a = a.replace(b, c + ",{" + f.join(',') + "}");
-		} else {
-			a = a.replace(b, c + ",{}")
-		}
-		return a;
-	}));
-	return content;
-}, (url, data, ops) => {
-	if (url == "") return;
-	if (!data) data = "";
+})(this);
 
-	var complete = function(result, success, error) {
-			if (result && result.status === 1) {
-				success && success(result.data || result, result.msg || "success.", result.code || 1, result);
-			} else if (result && result.status === 0) {
-				error && error(result.msg || "unknown error.", result.code || 0);
-			} else {
-				success && success(result);
-			}
-		},
-		fail = function(error, msg) {
-			error && error(msg || "unknown error.", 0);
-		},
-		jsonp = function(success, error) {
-			var head = document.getElementsByTagName("head")[0],
-				callback = "preactjsonp_" + (Math.random(10000) + "").replace(".", "");
-			while (window[callback]) {
-				callback = "preactjsonp_" + (Math.random(10000) + "").replace(".", "");
-			}
-			window[callback] = function(data) {
-				window[callback] = null;
-				document.getElementById(callback).parentNode.removeChild(document.getElementById(callback));
+pReact && (((pReact) => {
+	pReact.jsonp = (url, data, ops) => {
+		if (url == "") return;
+		if (!data) data = "";
+
+		var complete = function(result, success, error) {
+				if (result && result.status === 1) {
+					success && success(result.data || result, result.msg || "success.", result.code || 1, result);
+				} else if (result && result.status === 0) {
+					error && error(result.msg || "unknown error.", result.code || 0);
+				} else {
+					success && success(result);
+				}
+			},
+			fail = function(error, msg) {
+				error && error(msg || "unknown error.", 0);
+			},
+			jsonp = function(success, error) {
+				var head = document.getElementsByTagName("head")[0],
+					callback = "preactjsonp_" + (Math.random(10000) + "").replace(".", "");
+				while (window[callback]) {
+					callback = "preactjsonp_" + (Math.random(10000) + "").replace(".", "");
+				}
+				window[callback] = function(data) {
+					window[callback] = null;
+					document.getElementById(callback).parentNode.removeChild(document.getElementById(callback));
+					try {
+						data = data || new Function('return ' + data)();
+						console.log(callback)
+						complete(data, success, error);
+					} catch (e) {
+						fail(error, e.message);
+					}
+				};
 				try {
-					data = data || new Function('return ' + data)();
-					console.log(callback)
-					complete(data, success, error);
+					var script = document.createElement("script");
+					head.appendChild(script);
+					script.timeout = setTimeout(function() {
+						if (window[callback] != null) {
+							window[callback] = null;
+							head.removeChild(document.getElementById(callback));
+							fail(error, "timeout " + callback);
+						}
+					}, ops && ops.timeout || 5000);
+					script.id = callback;
+					script.src = url + (/\?/.test(url) ? "&" : "?") + (ops && ops.callback || "callback") + "=" + callback;
+					script.onload = function(a) {
+						//console.log(arguments)
+					};
+					script.onerror = function() {
+						head.removeChild(this);
+						window[callback] = null;
+						fail(error);
+					};
 				} catch (e) {
 					fail(error, e.message);
 				}
 			};
-			try {
-				var script = document.createElement("script");
-				head.appendChild(script);
-				script.timeout = setTimeout(function() {
-					if (window[callback] != null) {
-						window[callback] = null;
-						head.removeChild(document.getElementById(callback));
-						fail(error, "timeout " + callback);
-					}
-				}, ops && ops.timeout || 5000);
-				script.id = callback;
-				script.src = url + (/\?/.test(url) ? "&" : "?") + (ops && ops.callback || "callback") + "=" + callback;
-				script.onload = function(a) {
-					//console.log(arguments)
-				};
-				script.onerror = function() {
-					head.removeChild(this);
-					window[callback] = null;
-					fail(error);
-				};
-			} catch (e) {
-				fail(error, e.message);
-			}
-		};
 
-	return {
-		done: function(success, error) {
-			setTimeout(function() {
-				new jsonp(success, error);
-			}, 500);
-			return this;
+		return {
+			done: function(success, error) {
+				setTimeout(function() {
+					new jsonp(success, error);
+				}, 500);
+				return this;
+			}
 		}
 	}
-});
-pReact && (((pReact) => {
+})(pReact), ((pReact) => {
 	let stringify = (obj) => {
 			if (null == obj)
 				return "null";
@@ -1765,12 +1758,18 @@ pReact && (((pReact) => {
 			},
 			protocol = /^([\w-]+:)\/\//.test(settings.url) ? RegExp.$1 : window.location.protocol,
 			xhr = ajaxSettings.xhr()
-		xhr.setRequestHeader = setHeader
-		var nativeSetHeader = xhr.setRequestHeader,
-			abortTimeout;
 
 		setHeader('X-Requested-With', 'XMLHttpRequest')
 		setHeader('Accept', mime || '*/*')
+		if (settings.contentType || (settings.contentType !== false && settings.data && settings.type.toUpperCase() != 'GET'))
+			setHeader('Content-Type', settings.contentType || 'application/x-www-form-urlencoded')
+		if (settings.headers)
+			for (name in settings.headers) setHeader(name, settings.headers[name])
+		xhr.setRequestHeader = setHeader
+		console.log(headers)
+		var nativeSetHeader = xhr.setRequestHeader,
+			abortTimeout;
+
 
 		xhr.onreadystatechange = function() {
 			if (xhr.readyState == 4) {
@@ -1782,7 +1781,7 @@ pReact && (((pReact) => {
 					result = xhr.responseText
 
 					try {
-						if (dataType == 'json') result = blankRE.test(result) ? null : $.sEval("return " + result)();
+						if (dataType == 'json') result = blankRE.test(result) ? null : new Function("return " + result)();
 					} catch (e) {
 						error = e
 					}
@@ -1801,7 +1800,12 @@ pReact && (((pReact) => {
 		var async = 'async' in settings ? settings.async : true
 		xhr.open(settings.type, settings.url, async, settings.username, settings.password)
 
-		for (let name in headers) nativeSetHeader.apply(xhr, headers[name])
+		for (let name in headers) {
+			console.log(name, headers[name]);
+			nativeSetHeader.apply(xhr, headers[name]);
+		}
+
+		console.log(xhr)
 
 		if (settings.timeout > 0) abortTimeout = setTimeout(function() {
 			xhr.onreadystatechange = empty
@@ -1819,6 +1823,11 @@ pReact && (((pReact) => {
 
 	$.each(["get", "post"], (i, name) => {
 		$[name] = (url, data, success, error, type, options) => {
+			if (typeof error == "string") {
+				options = type;
+				type = error;
+				error = undefined;
+			}
 			ajax(!options ? {
 				url: url,
 				type: name,
