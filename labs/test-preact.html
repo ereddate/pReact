@@ -173,7 +173,7 @@
 	<body>
 		<div id="page"></div>
 		<script>
-			pReact.toAmp();
+			//pReact.toAmp();
 		</script>
 		<script type="text/pReact">
 			'use strict';
@@ -232,6 +232,12 @@
 					buttonActive:{
 						background: "rgb(51,122,183)",
 						color:"rgb(255,255,255)"
+					},
+					position:{
+						position:"absolute",
+						top:0,
+						left:0,
+						right:0
 					},
 					pageview:{
 						minHeight:(screen.height/baseFontSize).toFixed(4)+"rem"
@@ -1437,7 +1443,7 @@
 						e.preventDefault();
 						let then = this;
 						pReact.renderDom(
-							<newsView id="newview_iframe" style="position:absolute;top:0;left:0;right:0;" />,
+							<newsView id="newview_iframe" style={styles.position} />,
 							document.body,
 							(() => {
 								pReact.findNode("#xnav_view_menuview")[0].innerHTML = then._text();

@@ -80,6 +80,9 @@
 							html.push(",{")
 							var attrsJson = []
 							attrs.forEach((n) => {
+								/\{+\s*([^<>}{,]+)\s*\}+/.test(a.value) && (n.value = n.value.replace(/\{+\s*([^<>}{,]+)\s*\}+/gim, ((a, b) => {
+									return !Object.is(pReact.getStyle(b.split('.')[1]), false) ? pReact.getStyle(b.split('.')[1]) : a;
+								})));
 								attrsJson.push("'" + n.name + "':'" + n.value + "'")
 							})
 							html.push(attrsJson.join(','));
