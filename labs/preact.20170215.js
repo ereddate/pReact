@@ -274,7 +274,7 @@
 		},
 		animateFade(list, styles, time, timingFunction, callback, transitionKey) {
 			let then = this;
-			then.timeout && clearTimeout(then.timeout) && (list.style[transitionKey] = "");
+			then.timeout && clearTimeout(then.timeout) && (then._timeout && clearTimeout(then._timeout) || true) && (list.style[transitionKey] = "");
 			then.timeout = setTimeout(function() {
 				let times = {
 					slow: 600,
@@ -290,9 +290,7 @@
 					list.style[transitionKey] = s + ' ' + time + 'ms ' + timingFunction;
 					list.style[s] = styles[s];
 				}
-
-
-				setTimeout(function() {
+				then._timeout = setTimeout(function() {
 					list.style[transitionKey] = "";
 					callback.call(list);
 				}, time + 20);
