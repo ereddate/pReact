@@ -15,7 +15,7 @@
 			});
 		}
 		add(callback) {
-			var then = this;
+			let then = this;
 			then.emit.push((done) => {
 				setTimeout(() => {
 					new Promise((resolve, reject) => {
@@ -31,7 +31,7 @@
 			return then;
 		}
 		delay(time, callback) {
-			var then = this;
+			let then = this;
 			then.emit.push((done) => {
 				setTimeout(() => {
 					new Promise((resolve, reject) => {
@@ -47,13 +47,14 @@
 			return then;
 		}
 		done(callback) {
-			var then = this;
-			if (then.emit.length > 0) {
-				var f = then.emit[0];
+			let then = this,
+				a = then.emit[Symbol.iterator](),
+				b = a.next();
+			if (!b.done) {
 				then.emit.splice(0, 1);
-				f(() => {
-					then.done(callback);
-				});
+				b.value(() => {
+					then.done(callback)
+				})
 			} else {
 				callback && callback.call(then);
 			}
@@ -1019,9 +1020,10 @@
 			return a;
 		},
 		createClass(name, classObject) {
-			let a = new(new Function("'use strict'; return class " + name + "{constructor(){}}")())();
-			module.Class[name.toLowerCase()] = module.extend(a, classObject);
-			return classObject;
+			Reflect.defineProperty(module.Class, name.toLowerCase(), {
+				value: classObject
+			});
+			return Reflect.get(module.Class, name.toLowerCase());
 		},
 		createStyle(style) {
 			module.extend(module.Styles, (() => {
@@ -1034,7 +1036,7 @@
 		},
 		renderDom(name, data, parent, callback) {
 			if (!Object.is(parent, null)) {
-				let obj = (module.is(typeof name, "string") ? module.Class[name] : name),
+				let obj = (module.is(typeof name, "string") ? Reflect.get(module.Class, name.toLowerCase()) : name),
 					element,
 					toElements = (element) => {
 						if (module.is(typeof element, "string")) {
@@ -1227,7 +1229,7 @@
 							if (b) {
 								var style = pReact.getStyle(b.split('.')[1]);
 								style && val.push(style);
-								if (val.length === 0) module.Class[b.split('.')[0]] && val.push(module.Class[b.split('.')[0]][b.split('.')[1]]);
+								if (val.length === 0) Reflect.has(module.Class, b.split('.')[0].toLowerCase()) && val.push(Reflect.get(Reflect.get(module.Class, b.split('.')[0].toLowerCase()), b.split('.')[1]));
 							}
 						});
 					}
