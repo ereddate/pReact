@@ -6,7 +6,7 @@
 
 	class Callbacks {
 		constructor() {
-			let args = arguments && [].slice.call(arguments) || [],
+			let args = arguments && [...arguments] || [],
 				len = args.length,
 				then = this;
 			then.emit = [];
@@ -80,8 +80,8 @@
 				dom.innerHTML = b;
 				var f = (dom) => {
 					var p = [];
-					[].slice.call(dom.childNodes).forEach((e) => {
-						var attrs = e.attributes && e.attributes.length > 0 && [].slice.call(e.attributes) || false,
+					[...dom.childNodes].forEach((e) => {
+						var attrs = e.attributes && e.attributes.length > 0 && [...e.attributes] || false,
 							html = ["pReact.createDom('" + (Object.is(e.nodeType, 3) ? "textNode" : e.tagName) + "'"];
 						if (attrs) {
 							html.push(",{")
@@ -116,7 +116,7 @@
 				temp.children[0] && (attrs = temp.children[0].attributes);
 				if (attrs) {
 					var f = [];
-					[].slice.call(attrs).forEach((t) => {
+					[...attrs].forEach((t) => {
 						f.push(t.name.toLowerCase() + ":\"" + t.value.toLowerCase() + "\"")
 					});
 					a = a.replace(b, c + ",{" + f.join(',') + "}");
@@ -129,12 +129,12 @@
 		},
 		tmpl(element, data, obj) {
 			var f = (element) => {
-					element && ("length" in element ? Object.is(element.nodeType, 11) ? [].slice.call(element.childNodes) : [].slice.call(element) : [element]).forEach((e) => {
+					element && (Reflect.has(element, "length") ? Object.is(element.nodeType, 11) ? [...element.childNodes] : [...element] : [element]).forEach((e) => {
 						//console.log(e)
 						if (e.tagName && !Object.is(pReact.Class[e.tagName.toLowerCase()], undefined)) {
 							//console.log(e)
 							let parent = e.parentNode;
-							var attrs = e.attributes && e.attributes.length > 0 && [].slice.call(e.attributes) || false,
+							var attrs = e.attributes && e.attributes.length > 0 && [...e.attributes] || false,
 								options = {};
 							if (attrs) {
 								attrs.forEach((a) => {
@@ -173,7 +173,7 @@
 						} else {
 							!e["_factory"] && (e["_factory"] = obj);
 							!e["_data"] && (e["_data"] = data);
-							var attrs = e.attributes && e.attributes.length > 0 && [].slice.call(e.attributes) || false;
+							var attrs = e.attributes && e.attributes.length > 0 && [...e.attributes] || false;
 							if (attrs) {
 								attrs.forEach((a) => {
 									for (let name in data) {
@@ -329,16 +329,25 @@
 					return this;
 				},
 				_findNode(selector) {
-					var then = this;
-					return module.fineNode(then, selector);
+					var then = this,
+						result = [];
+					selector.split(' ').forEach((e) => {
+						result = result.concat(module.fineNode(then, e));
+					});
+					result.forEach((e) => {
+						if (!e.xTagName) {
+							module.mixElement(e);
+						}
+					});
+					return result;
 				},
 				_contents() {
 					let elem = this;
-					return elem.tagName && elem.tagName.toLowerCase() == "iframe" ? elem.contentDocument || elem.contentWindow.document : elem.childNodes && [].slice.call(elem.childNodes) || [];
+					return elem.tagName && elem.tagName.toLowerCase() == "iframe" ? elem.contentDocument || elem.contentWindow.document : elem.childNodes && [...elem.childNodes] || [];
 				},
 				_empty() {
 					module.toggle(this, (element) => {
-						[].slice.call(element.childNodes).forEach((e) => {
+						[...element.childNodes].forEach((e) => {
 							e._remove();
 						})
 					});
@@ -356,9 +365,9 @@
 				},
 				_children(selector) {
 					if (selector) {
-						return [].slice.call(this.querySelectorAll(selector))
+						return [...this.querySelectorAll(selector)]
 					} else {
-						return [].slice.call(this.children);
+						return [...this.children];
 					}
 				},
 				_removeAttr(name) {
@@ -649,6 +658,7 @@
 			};
 			element.tagName && (element.xTagName = "x" + element.tagName.toLowerCase());
 			module.extend(element, attrs);
+			return element;
 		},
 		has(target, obj) {
 			var hasIn = false;
@@ -702,14 +712,14 @@
 			if (/^name=/.test(selector)) {
 				let children = document.getElementsByName && document.getElementsByName(selector.toLowerCase().replace(/^name=/gim, ""));
 				if (children) {
-					return [].slice.call(children);
+					return [...children];
 				}
 			} else if (/\[[^\[\]]+\]/.test(selector)) {
 				let reg = /([^\[\]]+)\s*\[([^\[\]]+)\]/.exec(selector);
 				if (reg) {
 					let nodes = [];
 					//console.log(exp);
-					[].slice.call(element.querySelectorAll(reg[1])).forEach((e) => {
+					[...element.querySelectorAll(reg[1])].forEach((e) => {
 						let exp = new RegExp(reg[2].split('=')[1].replace(/\:/gim, "\\s*\\:\\s*"), "gim"),
 							is = exp.test(e.getAttribute(reg[2].split('=')[0]));
 						if (is) {
@@ -720,7 +730,7 @@
 				}
 			}
 			var node = element.querySelectorAll(selector);
-			return [].slice.call(node);
+			return [...node];
 		},
 		bind(handle, element) {
 			for (let name in handle) !/element/.test(name) && (module.on(element, name, ((e) => {
@@ -889,13 +899,13 @@
 		},
 		setElementClass(element, obj) {
 			!element["_factory"] && (module.is(typeof obj, "string") && module.Class[obj] && (element["_factory"] = module.Class[obj])) || (element["_factory"] = obj);
-			element.childNodes && element.childNodes.length > 0 && [].slice.call(element.childNodes).forEach((e) => {
+			element.childNodes && element.childNodes.length > 0 && [...element.childNodes].forEach((e) => {
 				module.setElementClass(e, obj);
 			});
 		},
 		setElementData(element, data) {
 			!element["_data"] && (element["_data"] = data)
-			element.childNodes && element.childNodes.length > 0 && [].slice.call(element.childNodes).forEach((e) => {
+			element.childNodes && element.childNodes.length > 0 && [...element.childNodes].forEach((e) => {
 				module.setElementData(e, data);
 			});
 		},
@@ -905,9 +915,9 @@
 			return str.replace(/(^\s*)|(\s*$)/g, "");
 		},
 		translateFragment(temp, frags, obj, data) {
-			[].slice.call(temp.childNodes).forEach((e) => {
+			[...temp.childNodes].forEach((e) => {
 				let attrs = {};
-				e.attributes && [].slice.call(e.attributes).forEach((e) => {
+				e.attributes && [...e.attributes].forEach((e) => {
 					attrs[e.name] = e.value;
 				})
 				let dom = pReact.createDom(module.is(e.nodeType, 3) ? "textNode" : e.tagName, module.extend(attrs, module.is(e.nodeType, 3) ? {
@@ -968,8 +978,9 @@
 		Class: module.Class,
 		Styles: module.Styles,
 		touchDirection: module.touchDirection,
+		mixElement: module.mixElement,
 		Callbacks() {
-			let args = arguments && [].slice.call(arguments) || [],
+			let args = arguments && [...arguments] || [],
 				len = args.length,
 				callback = new Callbacks();
 			if (len > 0) args.forEach((a) => {
@@ -982,7 +993,9 @@
 			if (!selector) {
 				elems = typeof element == "string" ? module.fineNode(document, element) : element.nodeType ? [element] : element.document ? [window] : [element];
 			} else {
-				elems = module.fineNode(element, selector);
+				select.splice(' ').forEach((e) => {
+					elems = elems.concat(module.fineNode(element, e));
+				});
 			}
 			elems.forEach((e) => {
 				if (!e.xTagName) {
@@ -1088,54 +1101,40 @@
 			return this;
 		},
 		toAmp() {
-			var html = doc.querySelectorAll("html")[0];
-			html.setAttribute("amp", "");
-			var styles = head.getElementsByTagName("style");
-			[].slice.call(styles).forEach((e) => {
-				e.setAttribute("amp-custom", "");
+			let local = pReact.mixElement(document),
+				styleContext = ['body{-webkit-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-moz-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-ms-animation:-amp-start 8s steps(1,end) 0s 1 normal both;animation:-amp-start 8s steps(1,end) 0s 1 normal both}@-webkit-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-moz-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-ms-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-o-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}', 'body{-webkit-animation:none;-moz-animation:none;-ms-animation:none;animation:none}'];
+			local._findNode("html style script").forEach((e) => {
+				e._attr(e.tagName.toLowerCase() == "html" ? "amp" : e.tagName.toLowerCase() == "style" ? "amp-custom" : "async", "")
 			});
-			var scripts = head.getElementsByTagName("script");
-			[].slice.call(scripts).forEach((e) => {
-				e.setAttribute("async", "");
-			});
-			var script = doc.createElement("script"),
-				link = doc.createElement("link"),
-				styleAmp = doc.createElement("style"),
-				styleAmpNs = doc.createElement("style"),
-				nsAmp = doc.createElement("noscript");
-			var styleContext = ['body{-webkit-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-moz-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-ms-animation:-amp-start 8s steps(1,end) 0s 1 normal both;animation:-amp-start 8s steps(1,end) 0s 1 normal both}@-webkit-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-moz-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-ms-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-o-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}', 'body{-webkit-animation:none;-moz-animation:none;-ms-animation:none;animation:none}'];
-			head.insertBefore(script, head.childNodes[0]);
-			script.setAttribute("src", "https://cdn.ampproject.org/v0.js");
-			script.setAttribute("async", "");
-			head.insertBefore(link, head.childNodes[1]);
-			link.setAttribute("href", location.href);
-			link.setAttribute("rel", "canonical");
-			head.insertBefore(styleAmp, head.childNodes[2]);
-			styleAmp.setAttribute("amp-boilerplate", "");
-			styleAmp.innerHTML = styleContext[0];
-			head.insertBefore(nsAmp, head.childNodes[3]);
-			styleAmpNs.innerHTML = styleContext[1];
-			nsAmp.appendChild(styleAmpNs);
+			pReact.findNode("head")[0]._append(pReact.createDom("docmentfragment", {}, pReact.createDom("script", {
+				"src": "https://cdn.ampproject.org/v0.js",
+				"async": ""
+			}), pReact.createDom("link", {
+				"href": location.href,
+				"rel": "canonical"
+			}), pReact.createDom("style", {
+				"amp-boilerplate": "",
+				html: styleContext[0]
+			}), pReact.createDom("noscript", {}, pReact.createDom("style", {
+				html: styleContext[1]
+			}))));
 			return this;
 		},
 		toMobile(num) {
-			var style = doc.createElement("style");
-			head.appendChild(style);
-			style.innerHTML = "abbr,article,aside,audio,canvas,datalist,details,dialog,eventsource,figure,footer,object,header,hgroup,mark,menu,meter,nav,output,progress,section,time,video{display:block}";
+			pReact.findNode("head")[0]._append(pReact.createDom("docmentfragment", {}, pReact.createDom("style", {
+				html: "abbr,article,aside,audio,canvas,datalist,details,dialog,eventsource,figure,footer,object,header,hgroup,mark,menu,meter,nav,output,progress,section,time,video{display:block}"
+			}), pReact.createDom("meta", {
+				name: "viewport",
+				content: "width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0"
+			}), pReact.createDom("meta", {
+				"http-equiv": "X-UA-Compatible",
+				"content": "IE=edge"
+			})));
 			var e = "abbr,article,aside,audio,canvas,datalist,details,dialog,eventsource,figure,footer,object,header,hgroup,mark,menu,meter,nav,output,progress,section,time,video".split(',');
 			var i = e.length;
 			while (i--) {
 				doc.createElement(e[i])
 			}
-			var meta = doc.createElement("meta"),
-				metaIe = doc.createElement("meta");
-			meta.name = "viewport";
-			meta.content = "width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0";
-			head.appendChild(meta);
-			head.appendChild(metaIe);
-			metaIe.setAttribute("http-equiv", "X-UA-Compatible");
-			metaIe.setAttribute("content", "IE=edge");
-
 			module.setFontSize(num);
 			window.addEventListener("onorientationchange" in window ? "orientationchange" : "resize", (() => {
 				module.setFontSize(num);
@@ -1176,7 +1175,7 @@
 			let then = this;
 			pReact.loading();
 			var script = doc.getElementsByTagName("script");
-			(module.extend([], [].slice.call(script))).forEach((e) => {
+			(module.extend([], [...script])).forEach((e) => {
 				if (module.is(e.type, "text/pReact")) {
 					module.evalContent(module.translateContent(e.innerHTML));
 					e.parentNode.removeChild(e);
