@@ -1243,11 +1243,11 @@
 						case "text":
 							v.forEach((sv) => {
 								if (module.is(typeof sv, "string") && module.is(element.nodeType, 3)) {
-									element.textContent = sv;
+									element._text(sv);
 								} else if (module.is(typeof sv, "function")) {
 									sv = sv();
 									if (module.is(typeof sv, "string")) {
-										element.textContent = sv;
+										element._text(sv);
 									} else if (!module.is(sv.nodeType, undefined)) {
 										element = sv;
 										var r = /\{+\s*([^<>}{,]+)\s*\}+/.exec(n);
@@ -1263,14 +1263,14 @@
 							break;
 						case "src":
 						case "poster":
-							element.setAttribute((/\{+\s*([^<>}{,]+)\s*\}+/.test(v.join('')) ? "data-" + name : name), v.join(''));
+							element._attr((/\{+\s*([^<>}{,]+)\s*\}+/.test(v.join('')) ? "data-" + name : name), v.join(''));
 							break;
 						case "html":
 							n = module.is(typeof n, "function") ? n() : n;
-							element.innerHTML = n.nodeType ? n.innerHTML : n;
+							element._html(n.nodeType ? n.innerHTML : n);
 							break;
 						case "class":
-							element.className += " " + v.join(' ');
+							element._addClass(v.join(' '));
 							break;
 						case "handle":
 							module.bind(v.join(' '), element);
@@ -1285,7 +1285,7 @@
 									let a = {};
 									var fn = sv;
 									if (/href/.test(name) && /\{\s*[^{}]+\s*\}/.test(sv)) {
-										element.setAttribute(name, "javascript:;");
+										element._attr(name, "javascript:;");
 										name = "onclick";
 									}
 									a[name.replace("on", "")] = fn;
@@ -1295,7 +1295,7 @@
 									if (name == "style") {
 										element[name] && (element[name].cssText += sv);
 									} else {
-										!/element|tagName/.test(name) && element.setAttribute(name, sv)
+										!/element|tagName/.test(name) && element._attr(name, sv)
 									}
 								}
 							})
