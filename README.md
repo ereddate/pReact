@@ -1,5 +1,5 @@
 # pReact + pjs template
-pReact，仅支持ios和android设备。模板文件扩展名为*.pjs。
+pReact，仅支持ios和android设备。模板文件扩展名为*.pjs。QQ讨论群:9786575
 
 未对ES6做处理，仅依靠浏览器自身支持。
 
